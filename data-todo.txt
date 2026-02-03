@@ -1,0 +1,56 @@
+# ============================================================================
+# TODO: Download Annotation Files (when you have better internet)
+# ============================================================================
+
+# 1. LOCAL: Download from MIDRC
+# -----------------------------------------------------------------------------
+# Go to: https://data.midrc.org/discovery/H6K0-A61V
+# Download: "Annotation Files" (1255 annotation files for Duke CSpineSeg)
+# File: DukeCSpineSeg_annotation.zip
+# Expected location: ~/Downloads/DukeCSpineSeg_annotation.zip
+
+# 2. LOCAL: Transfer to HPC
+# -----------------------------------------------------------------------------
+scp ~/Downloads/DukeCSpineSeg_annotation.zip \
+  s225224@transfer.gbar.dtu.dk:/work3/s225224/data/cspineseg/raw/
+
+# 3. HPC: Extract to the correct location
+# -----------------------------------------------------------------------------
+ssh s225224@login.hpc.dtu.dk
+cd /work3/s225224/data/cspineseg
+
+# Extract annotation files
+unzip raw/DukeCSpineSeg_annotation.zip -d extracted/annotation/
+
+# 4. HPC: Verify extraction
+# -----------------------------------------------------------------------------
+# Check number of NIfTI files (should be 1255 scans + 481 segmentations)
+ls -1 extracted/annotation/*.nii.gz | wc -l
+
+# Explore structure
+ls -lh extracted/annotation/ | head -20
+
+# Check a specific case to understand naming convention
+ls extracted/annotation/593973-000001*
+
+# ============================================================================
+# Expected file structure after extraction:
+# ============================================================================
+# /work3/s225224/data/cspineseg/
+# ├── raw/
+# │   ├── DukeCSpineSeg_segmentation.zip
+# │   ├── DukeCSpineSeg_structured.zip
+# │   └── DukeCSpineSeg_annotation.zip          # <- NEW
+# └── extracted/
+#     ├── segmentation/                          # Already done ✅
+#     ├── structured/                            # Already done ✅
+#     └── annotation/                            # <- NEW
+#         ├── 593973-000001_Study-MR-1_Series-22.nii.gz (scan)
+#         ├── 593973-000001_Study-MR-1_Series-22_SEG.nii.gz (segmentation)
+#         ├── 593973-000002_Study-MR-2_Series-3.nii.gz
+#         └── ...
+
+# ============================================================================
+# Note: Files with "_SEG" suffix are segmentation masks
+#       Files without "_SEG" are the actual MRI scans
+# ============================================================================
