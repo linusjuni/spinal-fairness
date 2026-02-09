@@ -1,4 +1,4 @@
-# Cervical Spine Segmentation Fairness
+# Fairness in Cervical Spine MRI Segmentation
 
 > 🚧 **Work in Progress** — This project is in early development
 
