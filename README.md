@@ -26,5 +26,7 @@ Based on recent work examining bias in medical imaging datasets (MAMA-MIA) and t
 
 ---
 **Student**: Linus Juni
-**Supervisors**: Aditya Parikh, Aasa Feragen  
+
+**Supervisors**: Aditya Parikh, Aasa Feragen
+
 **Institution**: DTU Compute
