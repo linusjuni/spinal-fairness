@@ -1,5 +1,3 @@
-"""EDA: demographic cross-cuts (age x sex, age x race, sex x race)."""
-
 import seaborn as sns
 
 from src.data.loader import load_metadata

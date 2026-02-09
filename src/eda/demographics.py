@@ -1,5 +1,3 @@
-"""EDA: demographic distributions."""
-
 import seaborn as sns
 
 from src.data.loader import load_metadata
