@@ -1,10 +1,10 @@
 """
 Join logic:
 All three TSVs have a "submitter_id" column, but it means something different
-in each: 
+in each:
     - patient ID in case_RSNA_20250321.tsv
     - study UID in imaging_study_RSNA_20250321.tsv
-    - series UID in mr_series_RSNA_20250321.tsv 
+    - series UID in mr_series_RSNA_20250321.tsv
 
 The foreign keys that link them are:
     - series["imaging_studies.submitter_id"]  ==  study["submitter_id"]   (study UIDs)
@@ -52,7 +52,11 @@ def load_metadata() -> pl.DataFrame:
     df = (
         series.join(studies, on="study_submitter_id", how="left")
         .join(cases, on="patient_id", how="left")
-        .drop("study_submitter_id", "patient_id_right", "cases.submitter_id", "case_ids")
+        .drop(
+            "study_submitter_id", "patient_id_right", "cases.submitter_id", "case_ids"
+        )
+        # Normalize manufacturer casing ("Siemens" → "SIEMENS")
+        .with_columns(pl.col("manufacturer").str.to_uppercase())
     )
 
     logger.success("Loaded metadata", rows=df.height, cols=df.width)
