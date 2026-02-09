@@ -32,7 +32,8 @@ with EDAReport("crosscuts") as report:
     with report.figure("sex_by_race", figsize=(10, 4)) as fig:
         ax = fig.subplots()
         cross_pd = (
-            df.group_by("sex", "race").len()
+            df.group_by("sex", "race")
+            .len()
             .pivot(on="race", index="sex", values="len")
             .fill_null(0)
             .to_pandas()

@@ -1,7 +1,6 @@
 """EDA: demographic distributions."""
 
 import seaborn as sns
-import matplotlib.pyplot as plt
 
 from src.data.loader import load_metadata
 from src.eda.report import EDAReport
