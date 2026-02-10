@@ -8,7 +8,7 @@ sns.set_theme(style="whitegrid", palette="muted")
 
 df = load_metadata()
 
-# Add a string field strength label for plotting (e.g. "3.0T" instead of 3.0)
+# Add a string "field_strength" label for plotting (e.g. "3.0T" instead of 3.0)
 df = df.with_columns(
     (pl.col("magnetic_field_strength").cast(pl.String) + "T").alias("field_strength")
 )
