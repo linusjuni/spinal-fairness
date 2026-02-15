@@ -41,6 +41,11 @@ class EDAReport:
             path=str(self._run_dir),
         )
 
+    @property
+    def run_dir(self) -> Path:
+        assert self._run_dir is not None
+        return self._run_dir
+
     def save_fig(self, fig: Figure, name: str, **kwargs: Any) -> Path:
         """Save a matplotlib figure. kwargs override savefig defaults."""
         assert self._run_dir is not None
