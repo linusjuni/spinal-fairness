@@ -8,7 +8,7 @@ from src.eda.report import EDAReport
 sns.set_theme(style="whitegrid", palette="muted")
 
 # Load data
-volumes = load_volume_properties()
+volumes = load_volume_properties(force_refresh=False)
 metadata = load_metadata()
 
 # Merge on series_submitter_id
@@ -87,17 +87,17 @@ with EDAReport("volumes") as report:
     with report.figure("shape_distributions", figsize=(15, 4)) as fig:
         axes = fig.subplots(1, 3)
 
-        sns.histplot(df["width"], bins=30, kde=True, ax=axes[0])
+        sns.histplot(df["width"], bins=30, kde=False, ax=axes[0])
         axes[0].set_xlabel("Width (voxels)")
         axes[0].set_ylabel("Count")
         axes[0].set_title("Width Distribution")
 
-        sns.histplot(df["height"], bins=30, kde=True, ax=axes[1])
+        sns.histplot(df["height"], bins=30, kde=False, ax=axes[1])
         axes[1].set_xlabel("Height (voxels)")
         axes[1].set_ylabel("Count")
         axes[1].set_title("Height Distribution")
 
-        sns.histplot(df["n_slices"], bins=30, kde=True, ax=axes[2])
+        sns.histplot(df["n_slices"], bins=30, kde=False, ax=axes[2])
         axes[2].set_xlabel("Number of Slices")
         axes[2].set_ylabel("Count")
         axes[2].set_title("Slice Count Distribution")
@@ -106,17 +106,17 @@ with EDAReport("volumes") as report:
     with report.figure("spacing_distributions", figsize=(15, 4)) as fig:
         axes = fig.subplots(1, 3)
 
-        sns.histplot(df["spacing_x"], bins=30, kde=True, ax=axes[0])
+        sns.histplot(df["spacing_x"], bins=30, kde=False, ax=axes[0])
         axes[0].set_xlabel("Spacing X (mm)")
         axes[0].set_ylabel("Count")
         axes[0].set_title("In-Plane Spacing X Distribution")
 
-        sns.histplot(df["spacing_y"], bins=30, kde=True, ax=axes[1])
+        sns.histplot(df["spacing_y"], bins=30, kde=False, ax=axes[1])
         axes[1].set_xlabel("Spacing Y (mm)")
         axes[1].set_ylabel("Count")
         axes[1].set_title("In-Plane Spacing Y Distribution")
 
-        sns.histplot(df["spacing_z"], bins=30, kde=True, ax=axes[2])
+        sns.histplot(df["spacing_z"], bins=30, kde=False, ax=axes[2])
         axes[2].set_xlabel("Spacing Z (mm)")
         axes[2].set_ylabel("Count")
         axes[2].set_title("Slice Thickness Distribution")
@@ -125,17 +125,17 @@ with EDAReport("volumes") as report:
     with report.figure("physical_size_distributions", figsize=(15, 4)) as fig:
         axes = fig.subplots(1, 3)
 
-        sns.histplot(df["physical_width"], bins=30, kde=True, ax=axes[0])
+        sns.histplot(df["physical_width"], bins=30, kde=False, ax=axes[0])
         axes[0].set_xlabel("Physical Width (mm)")
         axes[0].set_ylabel("Count")
         axes[0].set_title("Physical Width Distribution")
 
-        sns.histplot(df["physical_height"], bins=30, kde=True, ax=axes[1])
+        sns.histplot(df["physical_height"], bins=30, kde=False, ax=axes[1])
         axes[1].set_xlabel("Physical Height (mm)")
         axes[1].set_ylabel("Count")
         axes[1].set_title("Physical Height Distribution")
 
-        sns.histplot(df["physical_depth"], bins=30, kde=True, ax=axes[2])
+        sns.histplot(df["physical_depth"], bins=30, kde=False, ax=axes[2])
         axes[2].set_xlabel("Physical Depth (mm)")
         axes[2].set_ylabel("Count")
         axes[2].set_title("Physical Depth Distribution")

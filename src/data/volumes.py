@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import polars as pl
+import nibabel as nib
 
 from src.utils.logger import get_logger
 from src.utils.settings import settings
@@ -9,23 +10,7 @@ logger = get_logger("data.volumes")
 
 
 def load_annotation_file() -> pl.DataFrame:
-    """
-    Load annotation_file TSV and filter to image files only.
-
-    The annotation file contains 2,510 rows (1,255 images + 1,255 segmentations).
-    This function filters to only the image files by excluding files ending with
-    "_SEG.nii.gz".
-
-    Returns:
-        DataFrame with columns:
-            - filename (str): NIfTI filename without path
-            - series_submitter_id (str): Series UID for joining with metadata
-
-        Shape: 1,255 rows (images only)
-
-    Raises:
-        FileNotFoundError: If annotation file TSV doesn't exist
-    """
+    """Load annotation_file TSV and filter to image files only."""
     path = settings.structured_dir / "annotation_file_RSNA_20250321.tsv"
 
     if not path.exists():
@@ -57,27 +42,6 @@ def extract_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
         - force_refresh=True
         - Cache file doesn't exist
         - Cache file is older than annotation_file TSV (staleness check)
-
-    Args:
-        force_refresh: If True, bypass cache and recompute properties
-
-    Returns:
-        DataFrame with columns:
-            - filename (str)
-            - series_submitter_id (str)
-            - width, height, n_slices (int) - voxel dimensions
-            - total_voxels (int)
-            - spacing_x, spacing_y, spacing_z (float) - mm per voxel
-            - physical_width, physical_height, physical_depth (float) - mm
-            - physical_volume (float) - mm³
-            - aspect_ratio_xy, aspect_ratio_xz, aspect_ratio_yz (float)
-            - anisotropy_factor (float)
-
-        Shape: 1,255 rows
-
-    Raises:
-        FileNotFoundError: If annotation directory doesn't exist
-        ValueError: If critical NIfTI loading errors prevent extraction
     """
     cache_path = settings.processed_dir / "volume_properties.parquet"
 
@@ -104,9 +68,6 @@ def extract_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
     # Load annotation file to get filename -> series_submitter_id mapping
     annotation_df = load_annotation_file()
     logger.info("Starting volume property extraction", files=annotation_df.height)
-
-    # Import nibabel here (only needed for extraction, not for cache loading)
-    import nibabel as nib
 
     properties = []
     failed_files = []
@@ -221,26 +182,5 @@ def extract_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
 
 
 def load_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
-    """
-    Load volume properties, extracting if cache is stale or missing.
-
-    This is the main public API for accessing volume properties. It handles
-    caching logic transparently - first checking for a valid cache, and only
-    extracting from NIfTI files if necessary.
-
-    Args:
-        force_refresh: If True, bypass cache and recompute properties
-
-    Returns:
-        DataFrame with volume properties
-        Shape: 1,255 rows × 18 columns
-
-    Example:
-        >>> from src.data.volumes import load_volume_properties
-        >>> volumes = load_volume_properties()
-        >>> print(volumes.shape)
-        (1255, 18)
-        >>> print(volumes.columns[:5])
-        ['filename', 'series_submitter_id', 'width', 'height', 'n_slices']
-    """
+    """Load volume properties, extracting if cache is stale or missing."""
     return extract_volume_properties(force_refresh)
