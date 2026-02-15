@@ -17,6 +17,7 @@ are dropped after merging.
 
 import polars as pl
 
+from src.data.exclusions import filter_excluded_cases
 from src.utils.settings import settings
 from src.utils.logger import get_logger
 
@@ -58,6 +59,8 @@ def load_metadata() -> pl.DataFrame:
         # Normalize manufacturer casing ("Siemens" → "SIEMENS")
         .with_columns(pl.col("manufacturer").str.to_uppercase())
     )
+
+    df = filter_excluded_cases(df, logger)
 
     logger.success("Loaded metadata", rows=df.height, cols=df.width)
     return df

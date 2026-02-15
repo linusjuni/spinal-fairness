@@ -3,6 +3,7 @@ from __future__ import annotations
 import polars as pl
 import nibabel as nib
 
+from src.data.exclusions import filter_excluded_cases
 from src.utils.logger import get_logger
 from src.utils.settings import settings
 
@@ -183,4 +184,6 @@ def extract_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
 
 def load_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
     """Load volume properties, extracting if cache is stale or missing."""
-    return extract_volume_properties(force_refresh)
+    df = extract_volume_properties(force_refresh)
+    df = filter_excluded_cases(df, logger)
+    return df
