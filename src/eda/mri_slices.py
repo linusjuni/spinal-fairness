@@ -28,10 +28,9 @@ with EDAReport("mri_slices") as report:
 
         shape = (row["width"], row["height"], row["n_slices"])
         spacing = (row["spacing_x"], row["spacing_y"], row["spacing_z"])
-        title = f"{label} | {shape} | spacing {spacing[0]:.2f}x{spacing[1]:.2f}x{spacing[2]:.2f} mm"
 
         output_path = report.run_dir / f"ortho_{label}.png"
-        plot_ortho_slices(nifti_path, title=title, output_file=output_path)
+        plot_ortho_slices(nifti_path, output_file=output_path)
 
         report.log_stat(
             label,

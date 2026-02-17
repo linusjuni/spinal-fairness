@@ -18,7 +18,7 @@ def plot_ortho_slices(
     *,
     title: str | None = None,
     output_file: str | Path | None = None,
-    cut_coords: int = 5,
+    cut_coords: tuple[float, float, float] | None = None,
     draw_cross: bool = False,
 ):
     """Plot orthogonal anatomical slices of an MRI volume.
@@ -29,7 +29,7 @@ def plot_ortho_slices(
         NIfTI file to visualize (nilearn accepts both).
     title : optional display title
     output_file : when set, saves the figure to this path and returns None.
-    cut_coords : number of slices per orientation (default 5).
+    cut_coords : (x, y, z) coordinates for the cut, or None to auto-detect center.
     draw_cross : whether to draw crosshairs on the slices.
 
     Returns
