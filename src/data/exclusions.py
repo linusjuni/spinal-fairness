@@ -1,3 +1,5 @@
+import polars as pl
+
 # Series IDs to exclude from all analyses
 EXCLUDED_SERIES_IDS = [
     # Excluded 2026-02-10: Localizer/scout scan with abnormal dimensions
@@ -22,7 +24,6 @@ def filter_excluded_cases(df, logger=None):
     Returns:
         Filtered DataFrame with excluded cases removed
     """
-    import polars as pl
 
     n_before = df.height
     df = df.filter(~pl.col("series_submitter_id").is_in(EXCLUDED_SERIES_IDS))
