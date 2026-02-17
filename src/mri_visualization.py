@@ -35,6 +35,7 @@ def plot_mri(
     output_file: str | Path | None = None,
     cut_coords: tuple[float, ...] | int | float | None = None,
     draw_cross: bool = False,
+    dpi: int = 300,
 ):
     """Plot anatomical slices of an MRI volume.
 
@@ -55,20 +56,22 @@ def plot_mri(
     nilearn display object when output_file is None, otherwise None.
     """
     if cut_coords is None and display_mode in _SINGLE_AXIS_MODES:
-        cut_coords = _center_cut(img, display_mode)
+        cut_coords = [_center_cut(img, display_mode)]
 
     logger.info("Plotting slices", display_mode=display_mode, title=title or "(untitled)")
 
     display = plotting.plot_anat(
         img,
         title=title,
-        output_file=str(output_file) if output_file else None,
         cut_coords=cut_coords,
         draw_cross=draw_cross,
         display_mode=display_mode,
     )
 
     if output_file:
+        display.savefig(str(output_file), dpi=dpi)
+        display.close()
         logger.info("Saved figure", path=str(output_file))
+        return None
 
     return display
