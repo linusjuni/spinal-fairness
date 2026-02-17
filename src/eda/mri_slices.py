@@ -1,7 +1,7 @@
 from src.data.loader import load_metadata
 from src.data.volumes import load_volume_properties
 from src.eda.report import EDAReport
-from src.mri_visualization import plot_ortho_slices
+from src.mri_visualization import plot_mri
 from src.utils.settings import settings
 
 # Load data
@@ -29,8 +29,8 @@ with EDAReport("mri_slices") as report:
         shape = (row["width"], row["height"], row["n_slices"])
         spacing = (row["spacing_x"], row["spacing_y"], row["spacing_z"])
 
-        output_path = report.run_dir / f"ortho_{label}.png"
-        plot_ortho_slices(nifti_path, output_file=output_path)
+        output_path = report.run_dir / f"sagittal_{label}.png"
+        plot_mri(nifti_path, output_file=output_path)
 
         report.log_stat(
             label,
