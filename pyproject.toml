@@ -9,6 +9,7 @@ dependencies = [
     "nibabel>=5.3.3",
     "nilearn>=0.13.1",
     "numpy>=2.4.2",
+    "patito>=0.8.6",
     "polars>=1.38.1",
     "pyarrow>=23.0.0",
     "pydantic>=2.12.5",

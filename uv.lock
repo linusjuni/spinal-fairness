@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.13"
 resolution-markers = [
     "python_full_version >= '3.14' and sys_platform == 'win32'",
@@ -491,6 +491,20 @@ wheels = [
 ]
 
 [[package]]
+name = "patito"
+version = "0.8.6"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "polars" },
+    { name = "pydantic" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8b/6a/232af838aaad14b58860cafa60309f026a3fb0c8df9043a2e4ec4d144ff5/patito-0.8.6.tar.gz", hash = "sha256:0ce3fcff07b9f20f82a4d26ade77151d6251c4b13d37889c39527e44bfc9b01f", size = 216424, upload-time = "2026-02-04T07:44:41.935Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/16/c6/9e76a75b99339367c9fdc8eb27bdc3ed73f8a4944a7484025072dd45e388/patito-0.8.6-py3-none-any.whl", hash = "sha256:f8e1a28e72e3b35e7fe8849672d3f22b3cfcdc928834f05738d5d0bea56ce09d", size = 43250, upload-time = "2026-02-04T07:44:40.504Z" },
+]
+
+[[package]]
 name = "pillow"
 version = "12.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -885,6 +899,7 @@ dependencies = [
     { name = "nibabel" },
     { name = "nilearn" },
     { name = "numpy" },
+    { name = "patito" },
     { name = "polars" },
     { name = "pyarrow" },
     { name = "pydantic" },
@@ -901,6 +916,7 @@ requires-dist = [
     { name = "nibabel", specifier = ">=5.3.3" },
     { name = "nilearn", specifier = ">=0.13.1" },
     { name = "numpy", specifier = ">=2.4.2" },
+    { name = "patito", specifier = ">=0.8.6" },
     { name = "polars", specifier = ">=1.38.1" },
     { name = "pyarrow", specifier = ">=23.0.0" },
     { name = "pydantic", specifier = ">=2.12.5" },
