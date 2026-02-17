@@ -1,16 +1,11 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING
-
 import nibabel as nib
 import numpy as np
 from nilearn import plotting
 
 from src.utils.logger import get_logger
-
-if TYPE_CHECKING:
-    pass
 
 logger = get_logger("mri_visualization")
 
