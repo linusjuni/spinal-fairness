@@ -13,19 +13,48 @@ We rename these to a shared name (study_submitter_id / patient_id) so polars
 can join on a single column. Columns that collide (type, case_ids,
 image_data_modified) are prefixed per table. Redundant copies of join keys
 are dropped after merging.
+
+The annotation_file TSV is joined to add NIfTI filenames (needed for nnU-Net
+prep and evaluation). It maps series_submitter_id → filename.
 """
 
 import polars as pl
 
 from src.data.exclusions import filter_excluded_cases
-from src.utils.settings import settings
+from src.data.schemas import ExamSchema
 from src.utils.logger import get_logger
+from src.utils.settings import settings
 
 logger = get_logger("data.loader")
 
 
+def _load_annotation_filenames() -> pl.DataFrame:
+    """Load annotation_file TSV and return filename → series mapping.
+
+    Filters to image files only (excludes _SEG segmentation masks).
+    """
+    path = settings.structured_dir / "annotation_file_RSNA_20250321.tsv"
+    df = pl.read_csv(path, separator="\t")
+    return (
+        df.filter(~pl.col("file_name").str.ends_with("_SEG.nii.gz"))
+        .select(
+            pl.col("file_name").alias("filename"),
+            pl.col("mr_series_files.submitter_id").alias("series_submitter_id"),
+        )
+    )
+
+
 def load_metadata() -> pl.DataFrame:
-    """Load and merge the three metadata TSVs into one exam-level DataFrame."""
+    """Load and merge metadata TSVs into one exam-level DataFrame.
+
+    Joins series, study, case, and annotation-file TSVs. Applies
+    exclusions and validates the result against ExamSchema.
+
+    Returns:
+        Validated Polars DataFrame with one row per exam (~1,254 rows,
+        ~71 columns). Key columns are type-checked; extra MIDRC platform
+        columns pass through untouched.
+    """
     d = settings.structured_dir
 
     cases = pl.read_csv(d / "case_RSNA_20250321.tsv", separator="\t").rename(
@@ -50,9 +79,12 @@ def load_metadata() -> pl.DataFrame:
         }
     )
 
+    annotations = _load_annotation_filenames()
+
     df = (
         series.join(studies, on="study_submitter_id", how="left")
         .join(cases, on="patient_id", how="left")
+        .join(annotations, on="series_submitter_id", how="left")
         .drop(
             "study_submitter_id", "patient_id_right", "cases.submitter_id", "case_ids"
         )
@@ -61,6 +93,9 @@ def load_metadata() -> pl.DataFrame:
     )
 
     df = filter_excluded_cases(df, logger)
+
+    # Validate against schema (extra MIDRC columns pass through)
+    df = ExamSchema.validate(df, allow_superfluous_columns=True)
 
     logger.success("Loaded metadata", rows=df.height, cols=df.width)
     return df
