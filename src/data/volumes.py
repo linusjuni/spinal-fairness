@@ -4,36 +4,12 @@ import polars as pl
 import nibabel as nib
 
 from src.data.exclusions import filter_excluded_cases
+from src.data.loader import load_annotation_filenames
 from src.data.schemas import Col, VolumeCol, VolumeSchema
 from src.utils.logger import get_logger
 from src.utils.settings import settings
 
 logger = get_logger("data.volumes")
-
-# Raw column names in the annotation_file TSV (external, fragile strings)
-_RAW_FILENAME = "file_name"
-_RAW_SERIES_ID = "mr_series_files.submitter_id"
-
-
-def load_annotation_file() -> pl.DataFrame:
-    """Load annotation_file TSV and filter to image files only."""
-    path = settings.structured_dir / "annotation_file_RSNA_20250321.tsv"
-
-    if not path.exists():
-        raise FileNotFoundError(f"Annotation file not found: {path}")
-
-    df = pl.read_csv(path, separator="\t")
-
-    # Filter to images only (exclude segmentations ending with _SEG.nii.gz)
-    df = df.filter(~pl.col(_RAW_FILENAME).str.ends_with("_SEG.nii.gz"))
-
-    logger.success("Loaded annotation file", rows=df.height)
-
-    # Return only the columns we need, with renamed columns
-    return df.select([
-        pl.col(_RAW_FILENAME).alias(Col.FILENAME),
-        pl.col(_RAW_SERIES_ID).alias(Col.SERIES_SUBMITTER_ID),
-    ])
 
 
 def extract_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
@@ -72,7 +48,7 @@ def extract_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
         )
 
     # Load annotation file to get filename -> series_submitter_id mapping
-    annotation_df = load_annotation_file()
+    annotation_df = load_annotation_filenames()
     logger.info("Starting volume property extraction", files=annotation_df.height)
 
     properties = []

@@ -21,27 +21,31 @@ prep and evaluation). It maps series_submitter_id → filename.
 import polars as pl
 
 from src.data.exclusions import filter_excluded_cases
-from src.data.schemas import ExamSchema
+from src.data.schemas import Col, ExamSchema
 from src.utils.logger import get_logger
 from src.utils.settings import settings
 
 logger = get_logger("data.loader")
 
 
-def _load_annotation_filenames() -> pl.DataFrame:
+def load_annotation_filenames() -> pl.DataFrame:
     """Load annotation_file TSV and return filename → series mapping.
 
     Filters to image files only (excludes _SEG segmentation masks).
     """
     path = settings.structured_dir / "annotation_file_RSNA_20250321.tsv"
+    if not path.exists():
+        raise FileNotFoundError(f"Annotation file not found: {path}")
     df = pl.read_csv(path, separator="\t")
-    return (
+    df = (
         df.filter(~pl.col("file_name").str.ends_with("_SEG.nii.gz"))
         .select(
-            pl.col("file_name").alias("filename"),
-            pl.col("mr_series_files.submitter_id").alias("series_submitter_id"),
+            pl.col("file_name").alias(Col.FILENAME),
+            pl.col("mr_series_files.submitter_id").alias(Col.SERIES_SUBMITTER_ID),
         )
     )
+    logger.success("Loaded annotation filenames", rows=df.height)
+    return df
 
 
 def load_metadata() -> pl.DataFrame:
@@ -79,7 +83,7 @@ def load_metadata() -> pl.DataFrame:
         }
     )
 
-    annotations = _load_annotation_filenames()
+    annotations = load_annotation_filenames()
 
     df = (
         series.join(studies, on="study_submitter_id", how="left")

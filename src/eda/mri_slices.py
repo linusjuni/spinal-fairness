@@ -1,4 +1,5 @@
 from src.data.loader import load_metadata
+from src.data.schemas import Col, VolumeCol
 from src.data.volumes import load_volume_properties
 from src.eda.report import EDAReport
 from src.mri_visualization import plot_mri
@@ -9,7 +10,7 @@ volumes = load_volume_properties()
 metadata = load_metadata()
 
 # Merge on series_submitter_id for demographics
-df = volumes.join(metadata, on="series_submitter_id", how="left")
+df = volumes.join(metadata, on=Col.SERIES_SUBMITTER_ID, how="left")
 
 # Sort by total_voxels and pick 3 representative volumes
 df_sorted = df.sort("total_voxels")
@@ -23,11 +24,11 @@ with EDAReport("mri_slices") as report:
     for label, idx in indices.items():
         row = df_sorted.row(idx, named=True)
 
-        filename = row["filename"]
+        filename = row[Col.FILENAME]
         nifti_path = settings.annotation_dir / filename
 
-        shape = (row["width"], row["height"], row["n_slices"])
-        spacing = (row["spacing_x"], row["spacing_y"], row["spacing_z"])
+        shape = (row[VolumeCol.WIDTH], row[VolumeCol.HEIGHT], row[VolumeCol.N_SLICES])
+        spacing = (row[VolumeCol.SPACING_X], row[VolumeCol.SPACING_Y], row[VolumeCol.SPACING_Z])
 
         output_path = report.run_dir / f"sagittal_{label}.png"
         plot_mri(nifti_path, output_file=output_path)
@@ -35,12 +36,12 @@ with EDAReport("mri_slices") as report:
         report.log_stat(
             label,
             {
-                "filename": filename,
+                Col.FILENAME: filename,
                 "shape": list(shape),
                 "spacing": [round(s, 4) for s in spacing],
-                "total_voxels": row["total_voxels"],
-                "age_at_imaging": row.get("age_at_imaging"),
-                "sex": row.get("sex"),
-                "race": row.get("race"),
+                VolumeCol.TOTAL_VOXELS: row[VolumeCol.TOTAL_VOXELS],
+                Col.AGE: row.get(Col.AGE),
+                Col.SEX: row.get(Col.SEX),
+                Col.RACE: row.get(Col.RACE),
             },
         )

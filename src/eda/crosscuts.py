@@ -2,6 +2,7 @@ import polars as pl
 import seaborn as sns
 
 from src.data.loader import load_metadata
+from src.data.schemas import Col
 from src.eda.report import EDAReport
 
 sns.set_theme(style="whitegrid", palette="muted")
@@ -10,7 +11,7 @@ df = load_metadata()
 
 # Add a string "field_strength" label for plotting (e.g. "3.0T" instead of 3.0)
 df = df.with_columns(
-    (pl.col("magnetic_field_strength").cast(pl.String) + "T").alias("field_strength")
+    (pl.col(Col.FIELD_STRENGTH).cast(pl.String) + "T").alias("field_strength")
 )
 
 with EDAReport("crosscuts") as report:
@@ -18,9 +19,9 @@ with EDAReport("crosscuts") as report:
     with report.figure("age_by_sex", figsize=(8, 5)) as fig:
         ax = fig.subplots()
         sns.violinplot(
-            data=df.select("sex", "age_at_imaging").drop_nulls(),
-            x="sex",
-            y="age_at_imaging",
+            data=df.select(Col.SEX, Col.AGE).drop_nulls(),
+            x=Col.SEX,
+            y=Col.AGE,
             ax=ax,
         )
         ax.set_xlabel("Sex")
@@ -31,9 +32,9 @@ with EDAReport("crosscuts") as report:
     with report.figure("age_by_race", figsize=(12, 5)) as fig:
         ax = fig.subplots()
         sns.violinplot(
-            data=df.select("race", "age_at_imaging").drop_nulls(),
-            x="race",
-            y="age_at_imaging",
+            data=df.select(Col.RACE, Col.AGE).drop_nulls(),
+            x=Col.RACE,
+            y=Col.AGE,
             ax=ax,
         )
         ax.set_xlabel("Race")
@@ -45,9 +46,9 @@ with EDAReport("crosscuts") as report:
     with report.figure("sex_by_race", figsize=(10, 4)) as fig:
         ax = fig.subplots()
         pivot = (
-            df.group_by("sex", "race")
+            df.group_by(Col.SEX, Col.RACE)
             .len()
-            .pivot(on="race", index="sex", values="len")
+            .pivot(on=Col.RACE, index=Col.SEX, values="len")
             .fill_null(0)
         )
         cross_pd = pivot.to_pandas().set_index("sex")
@@ -62,9 +63,9 @@ with EDAReport("crosscuts") as report:
     with report.figure("race_by_manufacturer", figsize=(8, 4)) as fig:
         ax = fig.subplots()
         pivot = (
-            df.group_by("race", "manufacturer")
+            df.group_by(Col.RACE, Col.MANUFACTURER)
             .len()
-            .pivot(on="manufacturer", index="race", values="len")
+            .pivot(on=Col.MANUFACTURER, index=Col.RACE, values="len")
             .fill_null(0)
         )
         cross_pd = pivot.to_pandas().set_index("race")
@@ -96,9 +97,9 @@ with EDAReport("crosscuts") as report:
     with report.figure("age_by_manufacturer", figsize=(8, 5)) as fig:
         ax = fig.subplots()
         sns.violinplot(
-            data=df.select("manufacturer", "age_at_imaging").drop_nulls(),
-            x="manufacturer",
-            y="age_at_imaging",
+            data=df.select(Col.MANUFACTURER, Col.AGE).drop_nulls(),
+            x=Col.MANUFACTURER,
+            y=Col.AGE,
             ax=ax,
         )
         ax.set_xlabel("Manufacturer")
