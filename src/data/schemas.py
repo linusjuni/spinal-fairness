@@ -49,6 +49,33 @@ class Col(StrEnum):
     REPETITION_TIME = "repetition_time"
 
 
+class VolumeCol(StrEnum):
+    """Column names in the volume properties DataFrame (output of extract_volume_properties)."""
+
+    # Shape
+    WIDTH = "width"
+    HEIGHT = "height"
+    N_SLICES = "n_slices"
+    TOTAL_VOXELS = "total_voxels"
+
+    # Voxel spacing (mm)
+    SPACING_X = "spacing_x"
+    SPACING_Y = "spacing_y"
+    SPACING_Z = "spacing_z"
+
+    # Physical size (mm)
+    PHYSICAL_WIDTH = "physical_width"
+    PHYSICAL_HEIGHT = "physical_height"
+    PHYSICAL_DEPTH = "physical_depth"
+    PHYSICAL_VOLUME = "physical_volume"
+
+    # Derived
+    ASPECT_RATIO_XY = "aspect_ratio_xy"
+    ASPECT_RATIO_XZ = "aspect_ratio_xz"
+    ASPECT_RATIO_YZ = "aspect_ratio_yz"
+    ANISOTROPY_FACTOR = "anisotropy_factor"
+
+
 # ---------------------------------------------------------------------------
 # Categorical value enums
 # ---------------------------------------------------------------------------

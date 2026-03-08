@@ -4,10 +4,15 @@ import polars as pl
 import nibabel as nib
 
 from src.data.exclusions import filter_excluded_cases
+from src.data.schemas import Col, VolumeCol
 from src.utils.logger import get_logger
 from src.utils.settings import settings
 
 logger = get_logger("data.volumes")
+
+# Raw column names in the annotation_file TSV (external, fragile strings)
+_RAW_FILENAME = "file_name"
+_RAW_SERIES_ID = "mr_series_files.submitter_id"
 
 
 def load_annotation_file() -> pl.DataFrame:
@@ -20,14 +25,14 @@ def load_annotation_file() -> pl.DataFrame:
     df = pl.read_csv(path, separator="\t")
 
     # Filter to images only (exclude segmentations ending with _SEG.nii.gz)
-    df = df.filter(~pl.col("file_name").str.ends_with("_SEG.nii.gz"))
+    df = df.filter(~pl.col(_RAW_FILENAME).str.ends_with("_SEG.nii.gz"))
 
     logger.success("Loaded annotation file", rows=df.height)
 
     # Return only the columns we need, with renamed columns
     return df.select([
-        pl.col("file_name").alias("filename"),
-        pl.col("mr_series_files.submitter_id").alias("series_submitter_id"),
+        pl.col(_RAW_FILENAME).alias(Col.FILENAME),
+        pl.col(_RAW_SERIES_ID).alias(Col.SERIES_SUBMITTER_ID),
     ])
 
 
@@ -74,8 +79,8 @@ def extract_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
     failed_files = []
 
     for i, row in enumerate(annotation_df.iter_rows(named=True)):
-        filename = row["filename"]
-        series_submitter_id = row["series_submitter_id"]
+        filename = row[Col.FILENAME]
+        series_submitter_id = row[Col.SERIES_SUBMITTER_ID]
 
         # Progress logging
         if i % 100 == 0:
@@ -135,23 +140,23 @@ def extract_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
 
             properties.append(
                 {
-                    "filename": filename,
-                    "series_submitter_id": series_submitter_id,
-                    "width": int(width),
-                    "height": int(height),
-                    "n_slices": int(n_slices),
-                    "total_voxels": int(total_voxels),
-                    "spacing_x": float(spacing_x),
-                    "spacing_y": float(spacing_y),
-                    "spacing_z": float(spacing_z),
-                    "physical_width": float(physical_width),
-                    "physical_height": float(physical_height),
-                    "physical_depth": float(physical_depth),
-                    "physical_volume": float(physical_volume),
-                    "aspect_ratio_xy": float(aspect_ratio_xy),
-                    "aspect_ratio_xz": float(aspect_ratio_xz),
-                    "aspect_ratio_yz": float(aspect_ratio_yz),
-                    "anisotropy_factor": float(anisotropy_factor),
+                    Col.FILENAME: filename,
+                    Col.SERIES_SUBMITTER_ID: series_submitter_id,
+                    VolumeCol.WIDTH: int(width),
+                    VolumeCol.HEIGHT: int(height),
+                    VolumeCol.N_SLICES: int(n_slices),
+                    VolumeCol.TOTAL_VOXELS: int(total_voxels),
+                    VolumeCol.SPACING_X: float(spacing_x),
+                    VolumeCol.SPACING_Y: float(spacing_y),
+                    VolumeCol.SPACING_Z: float(spacing_z),
+                    VolumeCol.PHYSICAL_WIDTH: float(physical_width),
+                    VolumeCol.PHYSICAL_HEIGHT: float(physical_height),
+                    VolumeCol.PHYSICAL_DEPTH: float(physical_depth),
+                    VolumeCol.PHYSICAL_VOLUME: float(physical_volume),
+                    VolumeCol.ASPECT_RATIO_XY: float(aspect_ratio_xy),
+                    VolumeCol.ASPECT_RATIO_XZ: float(aspect_ratio_xz),
+                    VolumeCol.ASPECT_RATIO_YZ: float(aspect_ratio_yz),
+                    VolumeCol.ANISOTROPY_FACTOR: float(anisotropy_factor),
                 }
             )
 
