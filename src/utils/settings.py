@@ -46,5 +46,9 @@ class Settings(BaseSettings):
     def processed_dir(self) -> Path:
         return self.DATA_DIR / "processed"
 
+    @property
+    def splits_dir(self) -> Path:
+        return self.DATA_DIR / "splits"
+
 
 settings = Settings()
