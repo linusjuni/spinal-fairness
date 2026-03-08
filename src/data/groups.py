@@ -97,12 +97,11 @@ class EthnicityStrategy(StrEnum):
 # ---------------------------------------------------------------------------
 
 def _age_three_bins(df: pl.DataFrame, out_col: str) -> pl.DataFrame:
-    """Bin age into <40 / 40-60 / 60+. Drops rows with null age."""
-    return df.filter(pl.col(Col.AGE).is_not_null()).with_columns(
-        pl.when(pl.col(Col.AGE) < 40)
-        .then(pl.lit("<40"))
-        .when(pl.col(Col.AGE) < 60)
-        .then(pl.lit("40-60"))
+    """Bin age into <40 / 40-60 / 60+. Null ages (confirmed >89) map to 60+."""
+    return df.with_columns(
+        pl.when(pl.col(Col.AGE).is_null()).then(pl.lit("60+"))
+        .when(pl.col(Col.AGE) < 40).then(pl.lit("<40"))
+        .when(pl.col(Col.AGE) < 60).then(pl.lit("40-60"))
         .otherwise(pl.lit("60+"))
         .alias(out_col)
     )
