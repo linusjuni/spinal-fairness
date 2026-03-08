@@ -4,7 +4,7 @@ import polars as pl
 import nibabel as nib
 
 from src.data.exclusions import filter_excluded_cases
-from src.data.schemas import Col, VolumeCol
+from src.data.schemas import Col, VolumeCol, VolumeSchema
 from src.utils.logger import get_logger
 from src.utils.settings import settings
 
@@ -176,6 +176,9 @@ def extract_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
 
     if df.height == 0:
         raise ValueError("No properties extracted - all files failed to load")
+
+    # Validate schema before caching
+    VolumeSchema.validate(df)
 
     # Cache to Parquet
     settings.processed_dir.mkdir(parents=True, exist_ok=True)

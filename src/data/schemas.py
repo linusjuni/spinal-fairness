@@ -49,6 +49,28 @@ class Col(StrEnum):
     REPETITION_TIME = "repetition_time"
 
 
+class VolumeSchema(pt.Model):
+    """Schema for the volume properties DataFrame (output of extract_volume_properties)."""
+
+    filename: str = pt.Field(unique=True)
+    series_submitter_id: str = pt.Field(unique=True)
+    width: int
+    height: int
+    n_slices: int
+    total_voxels: int
+    spacing_x: float
+    spacing_y: float
+    spacing_z: float
+    physical_width: float
+    physical_height: float
+    physical_depth: float
+    physical_volume: float
+    aspect_ratio_xy: float
+    aspect_ratio_xz: float
+    aspect_ratio_yz: float
+    anisotropy_factor: float
+
+
 class VolumeCol(StrEnum):
     """Column names in the volume properties DataFrame (output of extract_volume_properties)."""
 
