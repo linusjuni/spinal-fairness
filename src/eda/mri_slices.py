@@ -2,7 +2,7 @@ from src.data.loader import load_metadata
 from src.data.schemas import Col, VolumeCol
 from src.data.volumes import load_volume_properties
 from src.eda.report import EDAReport
-from src.mri_visualization import plot_mri
+from src.mri_visualization import plot_mri, plot_mri_with_seg
 from src.utils.settings import settings
 
 # Load data
@@ -32,6 +32,11 @@ with EDAReport("mri_slices") as report:
 
         output_path = report.run_dir / f"sagittal_{label}.png"
         plot_mri(nifti_path, output_file=output_path)
+
+        seg_filename = filename.replace(".nii.gz", "_SEG.nii.gz")
+        seg_path = settings.segmentation_dir / seg_filename
+        output_path_seg = report.run_dir / f"sagittal_{label}_seg.png"
+        plot_mri_with_seg(nifti_path, seg_path, output_file=output_path_seg)
 
         report.log_stat(
             label,
