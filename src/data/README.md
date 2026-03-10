@@ -81,6 +81,19 @@ flowchart TD
 | Field strengths | 1.5T (747 exams), 3.0T (508 exams) |
 | Segmentation labels | 0 = background, 1 = vertebral bodies, 2 = intervertebral discs |
 
+## Volume Properties
+
+Each scan is a small stack of 2D MRI slices — typically 12–19 slices, most commonly 14–15. The slices are high-resolution within each image (around 512×512 pixels at ~0.5 mm/pixel) but the gap between slices is large (~4 mm). This means the data is essentially 2D: you get a thin slab through the spine, not a dense 3D volume. Models are therefore trained slice-by-slice rather than volumetrically.
+
+| Property | Typical range |
+|----------|--------------|
+| Image size | 320×320 to 512×512 px (a few up to 768×768) |
+| Number of slices | 12–19 (mean ~16) |
+| In-plane resolution | 0.43–0.69 mm/px |
+| Slice thickness | 3.3–5.32 mm (~4 mm typical) |
+
+One outlier scan (`593973-001216`) is a true 3D acquisition with 512 slices at ~0.49 mm spacing — it can be excluded or handled separately.
+
 ## File Naming Convention
 
 **Format:** `{PatientID}_Study-MR-{StudyNumber}_Series-{SeriesNumber}[_SEG].nii.gz`
