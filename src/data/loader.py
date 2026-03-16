@@ -37,12 +37,9 @@ def load_annotation_filenames() -> pl.DataFrame:
     if not path.exists():
         raise FileNotFoundError(f"Annotation file not found: {path}")
     df = pl.read_csv(path, separator="\t")
-    df = (
-        df.filter(~pl.col("file_name").str.ends_with("_SEG.nii.gz"))
-        .select(
-            pl.col("file_name").alias(Col.FILENAME),
-            pl.col("mr_series_files.submitter_id").alias(Col.SERIES_SUBMITTER_ID),
-        )
+    df = df.filter(~pl.col("file_name").str.ends_with("_SEG.nii.gz")).select(
+        pl.col("file_name").alias(Col.FILENAME),
+        pl.col("mr_series_files.submitter_id").alias(Col.SERIES_SUBMITTER_ID),
     )
     logger.success("Loaded annotation filenames", rows=df.height)
     return df

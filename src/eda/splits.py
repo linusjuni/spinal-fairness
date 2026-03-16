@@ -10,16 +10,16 @@ sns.set_theme(style="whitegrid", palette="muted")
 
 SPLIT_ORDER = ["train", "val", "test"]
 
-df = apply_splits(load_metadata())
+VERSION = "split_v1"
 
-with EDAReport("splits") as report:
+df = apply_splits(load_metadata(), version=VERSION)
 
+with EDAReport(f"splits/{VERSION}") as report:
     # 1. Overall split counts
     with report.figure("split_counts", figsize=(6, 4)) as fig:
         ax = fig.subplots()
         counts = (
-            df.group_by("split").len()
-            .sort(pl.col("split").cast(pl.Enum(SPLIT_ORDER)))
+            df.group_by("split").len().sort(pl.col("split").cast(pl.Enum(SPLIT_ORDER)))
         )
         sns.barplot(x=counts["split"], y=counts["len"], order=SPLIT_ORDER, ax=ax)
         ax.set_xlabel("Split")
@@ -30,18 +30,23 @@ with EDAReport("splits") as report:
                 bar.get_x() + bar.get_width() / 2,
                 bar.get_height() + 5,
                 str(val),
-                ha="center", va="bottom", fontsize=10,
+                ha="center",
+                va="bottom",
+                fontsize=10,
             )
 
     # 2. Race distribution per split (primary groups only)
     with report.figure("race_per_split", figsize=(8, 4)) as fig:
         ax = fig.subplots()
-        counts = (
-            df.group_by("split", "race_bin").len().to_pandas()
-        )
+        counts = df.group_by("split", "race_bin").len().to_pandas()
         sns.barplot(
-            data=counts, x="split", y="len", hue="race_bin",
-            order=SPLIT_ORDER, hue_order=["White", "Black", "Other"], ax=ax,
+            data=counts,
+            x="split",
+            y="len",
+            hue="race_bin",
+            order=SPLIT_ORDER,
+            hue_order=["White", "Black", "Other"],
+            ax=ax,
         )
         ax.set_xlabel("Split")
         ax.set_ylabel("Count")
@@ -52,16 +57,21 @@ with EDAReport("splits") as report:
     with report.figure("race_pct_per_split", figsize=(8, 4)) as fig:
         ax = fig.subplots()
         pct = (
-            df.group_by("split", "race_bin").len()
+            df.group_by("split", "race_bin")
+            .len()
             .with_columns(
-                (pl.col("len") / pl.col("len").sum().over("split") * 100)
-                .alias("pct")
+                (pl.col("len") / pl.col("len").sum().over("split") * 100).alias("pct")
             )
             .to_pandas()
         )
         sns.barplot(
-            data=pct, x="split", y="pct", hue="race_bin",
-            order=SPLIT_ORDER, hue_order=["White", "Black", "Other"], ax=ax,
+            data=pct,
+            x="split",
+            y="pct",
+            hue="race_bin",
+            order=SPLIT_ORDER,
+            hue_order=["White", "Black", "Other"],
+            ax=ax,
         )
         ax.set_xlabel("Split")
         ax.set_ylabel("% within split")
@@ -72,16 +82,21 @@ with EDAReport("splits") as report:
     with report.figure("age_per_split", figsize=(8, 4)) as fig:
         ax = fig.subplots()
         pct = (
-            df.group_by("split", "age_bin").len()
+            df.group_by("split", "age_bin")
+            .len()
             .with_columns(
-                (pl.col("len") / pl.col("len").sum().over("split") * 100)
-                .alias("pct")
+                (pl.col("len") / pl.col("len").sum().over("split") * 100).alias("pct")
             )
             .to_pandas()
         )
         sns.barplot(
-            data=pct, x="split", y="pct", hue="age_bin",
-            order=SPLIT_ORDER, hue_order=["<40", "40-60", "60+"], ax=ax,
+            data=pct,
+            x="split",
+            y="pct",
+            hue="age_bin",
+            order=SPLIT_ORDER,
+            hue_order=["<40", "40-60", "60+"],
+            ax=ax,
         )
         ax.set_xlabel("Split")
         ax.set_ylabel("% within split")
@@ -100,13 +115,11 @@ with EDAReport("splits") as report:
         for split in SPLIT_ORDER:
             pivot = (
                 df.filter(
-                    (pl.col("split") == split) &
-                    pl.col("race_bin").is_in(ROW_ORDER)
+                    (pl.col("split") == split) & pl.col("race_bin").is_in(ROW_ORDER)
                 )
-                .group_by("race_bin", "age_bin").len()
-                .with_columns(
-                    (pl.col("len") / pl.col("len").sum() * 100).alias("pct")
-                )
+                .group_by("race_bin", "age_bin")
+                .len()
+                .with_columns((pl.col("len") / pl.col("len").sum() * 100).alias("pct"))
                 .pivot(on="age_bin", index="race_bin", values="pct")
                 .fill_null(0)
                 .to_pandas()
@@ -121,8 +134,13 @@ with EDAReport("splits") as report:
 
         for ax, split in zip(axes, SPLIT_ORDER):
             sns.heatmap(
-                pivots[split], annot=True, fmt=".1f", cmap="Blues",
-                vmin=0, vmax=vmax, ax=ax,
+                pivots[split],
+                annot=True,
+                fmt=".1f",
+                cmap="Blues",
+                vmin=0,
+                vmax=vmax,
+                ax=ax,
             )
             ax.set_title(split.capitalize())
             ax.set_xlabel("Age Bin")
@@ -133,16 +151,21 @@ with EDAReport("splits") as report:
     with report.figure("sex_per_split", figsize=(8, 4)) as fig:
         ax = fig.subplots()
         pct = (
-            df.group_by("split", Col.SEX).len()
+            df.group_by("split", Col.SEX)
+            .len()
             .with_columns(
-                (pl.col("len") / pl.col("len").sum().over("split") * 100)
-                .alias("pct")
+                (pl.col("len") / pl.col("len").sum().over("split") * 100).alias("pct")
             )
             .to_pandas()
         )
         sns.barplot(
-            data=pct, x="split", y="pct", hue=Col.SEX,
-            order=SPLIT_ORDER, ax=ax,
+            data=pct,
+            x="split",
+            y="pct",
+            hue=Col.SEX,
+            order=SPLIT_ORDER,
+            hue_order=["Male", "Female"],
+            ax=ax,
         )
         ax.set_xlabel("Split")
         ax.set_ylabel("% within split")

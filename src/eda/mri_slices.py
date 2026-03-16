@@ -28,7 +28,11 @@ with EDAReport("mri_slices") as report:
         nifti_path = settings.annotation_dir / filename
 
         shape = (row[VolumeCol.WIDTH], row[VolumeCol.HEIGHT], row[VolumeCol.N_SLICES])
-        spacing = (row[VolumeCol.SPACING_X], row[VolumeCol.SPACING_Y], row[VolumeCol.SPACING_Z])
+        spacing = (
+            row[VolumeCol.SPACING_X],
+            row[VolumeCol.SPACING_Y],
+            row[VolumeCol.SPACING_Z],
+        )
 
         output_path = report.run_dir / f"sagittal_{label}.png"
         plot_mri(nifti_path, output_file=output_path)

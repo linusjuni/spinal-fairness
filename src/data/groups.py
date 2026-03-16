@@ -28,6 +28,7 @@ from src.data.schemas import Col, Ethnicity, Race
 # Grouping specification
 # ---------------------------------------------------------------------------
 
+
 @dataclass(frozen=True, slots=True)
 class GroupingSpec:
     """Immutable specification for mapping raw values to analysis groups.
@@ -60,9 +61,7 @@ class GroupingSpec:
 
         if self.mapping is not None:
             df = df.with_columns(
-                pl.col(col)
-                .replace_strict(self.mapping, default=None)
-                .alias(out_col)
+                pl.col(col).replace_strict(self.mapping, default=None).alias(out_col)
             )
             return df.filter(pl.col(out_col).is_not_null())
 
@@ -76,6 +75,7 @@ class GroupingSpec:
 # ---------------------------------------------------------------------------
 # Strategy enums
 # ---------------------------------------------------------------------------
+
 
 class RaceStrategy(StrEnum):
     WHITE_VS_BLACK = "white_vs_black"
@@ -96,12 +96,16 @@ class EthnicityStrategy(StrEnum):
 # Binner helpers (for numeric columns)
 # ---------------------------------------------------------------------------
 
+
 def _age_three_bins(df: pl.DataFrame, out_col: str) -> pl.DataFrame:
     """Bin age into <40 / 40-60 / 60+. Null ages (confirmed >89) map to 60+."""
     return df.with_columns(
-        pl.when(pl.col(Col.AGE).is_null()).then(pl.lit("60+"))
-        .when(pl.col(Col.AGE) < 40).then(pl.lit("<40"))
-        .when(pl.col(Col.AGE) < 60).then(pl.lit("40-60"))
+        pl.when(pl.col(Col.AGE).is_null())
+        .then(pl.lit("60+"))
+        .when(pl.col(Col.AGE) < 40)
+        .then(pl.lit("<40"))
+        .when(pl.col(Col.AGE) < 60)
+        .then(pl.lit("40-60"))
         .otherwise(pl.lit("60+"))
         .alias(out_col)
     )

@@ -55,7 +55,9 @@ def plot_mri(
     if cut_coords is None and display_mode in _SINGLE_AXIS_MODES:
         cut_coords = [_center_cut(img, display_mode)]
 
-    logger.info("Plotting slices", display_mode=display_mode, title=title or "(untitled)")
+    logger.info(
+        "Plotting slices", display_mode=display_mode, title=title or "(untitled)"
+    )
 
     display = plotting.plot_anat(
         img,
@@ -116,26 +118,33 @@ def plot_mri_with_seg(
 
     # Axis-0 is left-right (sagittal through-plane) after canonical reorientation
     mid = mri_data.shape[0] // 2
-    mri_slice = mri_data[mid]   # (AP, IS)
-    seg_slice  = seg_data[mid]  # (AP, IS)
+    mri_slice = mri_data[mid]  # (AP, IS)
+    seg_slice = seg_data[mid]  # (AP, IS)
 
     # Transpose so display rows = IS (vertical) and cols = AP (horizontal)
     mri_t = mri_slice.T
-    seg_t  = seg_slice.T
+    seg_t = seg_slice.T
 
-    zooms  = img.header.get_zooms()
+    zooms = img.header.get_zooms()
     aspect = float(zooms[1]) / float(zooms[2])  # AP_mm / IS_mm → square pixels
 
     nonzero = mri_data[mri_data > 0]
-    vmin, vmax = (np.percentile(nonzero, [1, 99]) if nonzero.size else (0.0, 1.0))
+    vmin, vmax = np.percentile(nonzero, [1, 99]) if nonzero.size else (0.0, 1.0)
 
     fig, ax = plt.subplots(figsize=(5, 6))
-    ax.imshow(mri_t, cmap="gray", vmin=vmin, vmax=vmax,
-              origin="lower", aspect=aspect, interpolation="bilinear")
+    ax.imshow(
+        mri_t,
+        cmap="gray",
+        vmin=vmin,
+        vmax=vmax,
+        origin="lower",
+        aspect=aspect,
+        interpolation="bilinear",
+    )
 
     overlay = np.zeros((*mri_t.shape, 4), dtype=np.float32)
-    overlay[seg_t == 1] = [1.0,  0.15, 0.15, alpha]   # red   — vertebral body
-    overlay[seg_t == 2] = [0.15, 0.9,  0.15, alpha]   # green — disc
+    overlay[seg_t == 1] = [1.0, 0.15, 0.15, alpha]  # red   — vertebral body
+    overlay[seg_t == 2] = [0.15, 0.9, 0.15, alpha]  # green — disc
     ax.imshow(overlay, origin="lower", aspect=aspect, interpolation="nearest")
 
     ax.axis("off")
@@ -143,8 +152,8 @@ def plot_mri_with_seg(
         ax.set_title(title, fontsize=10)
 
     legend_patches = [
-        mpatches.Patch(color=[1.0,  0.15, 0.15], label="Vertebral body"),
-        mpatches.Patch(color=[0.15, 0.9,  0.15], label="Intervertebral disc"),
+        mpatches.Patch(color=[1.0, 0.15, 0.15], label="Vertebral body"),
+        mpatches.Patch(color=[0.15, 0.9, 0.15], label="Intervertebral disc"),
     ]
     ax.legend(handles=legend_patches, loc="lower right", fontsize=7, framealpha=0.7)
 

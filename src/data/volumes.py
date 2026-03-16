@@ -66,7 +66,7 @@ def extract_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
 
         # Check file exists
         if not path.exists():
-            logger.warning(f"File not found", filename=filename)
+            logger.warning("File not found", filename=filename)
             failed_files.append((filename, "File not found on disk"))
             continue
 
@@ -80,7 +80,7 @@ def extract_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
             # Validate shape is 3D
             if len(shape) != 3:
                 logger.warning(
-                    f"Unexpected shape",
+                    "Unexpected shape",
                     filename=filename,
                     shape=shape,
                     action="skipping",
@@ -91,7 +91,7 @@ def extract_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
             # Validate spacing information exists
             if len(spacing) < 3:
                 logger.warning(
-                    f"Missing spacing information", filename=filename, action="skipping"
+                    "Missing spacing information", filename=filename, action="skipping"
                 )
                 failed_files.append((filename, "Missing spacing information"))
                 continue
@@ -137,7 +137,7 @@ def extract_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
             )
 
         except Exception as e:
-            logger.warning(f"Failed to load", filename=filename, error=str(e))
+            logger.warning("Failed to load", filename=filename, error=str(e))
             failed_files.append((filename, str(e)))
 
     # Log failed files summary

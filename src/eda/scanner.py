@@ -33,9 +33,7 @@ with EDAReport("scanner") as report:
     # Field strength
     with report.figure("field_strength", figsize=(6, 5)) as fig:
         ax = fig.subplots()
-        counts = (
-            df[Col.FIELD_STRENGTH].value_counts().sort(Col.FIELD_STRENGTH)
-        )
+        counts = df[Col.FIELD_STRENGTH].value_counts().sort(Col.FIELD_STRENGTH)
         labels = [f"{v}T" for v in counts[Col.FIELD_STRENGTH].to_list()]
         sns.barplot(x=labels, y=counts["count"], ax=ax)
         ax.set_xlabel("Field Strength")

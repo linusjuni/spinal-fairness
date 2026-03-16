@@ -22,6 +22,7 @@ import patito as pt
 # Column name enum (only columns we reference in code)
 # ---------------------------------------------------------------------------
 
+
 class Col(StrEnum):
     """Column names in the merged exam-level DataFrame."""
 
@@ -102,6 +103,7 @@ class VolumeCol(StrEnum):
 # Categorical value enums
 # ---------------------------------------------------------------------------
 
+
 class Race(StrEnum):
     """Valid values in the race column."""
 
@@ -139,6 +141,7 @@ class Manufacturer(StrEnum):
 # ---------------------------------------------------------------------------
 # Patito schema — validated at load time
 # ---------------------------------------------------------------------------
+
 
 class ExamSchema(pt.Model):
     """Schema for the merged exam-level DataFrame.

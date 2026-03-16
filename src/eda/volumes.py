@@ -143,7 +143,14 @@ with EDAReport("volumes") as report:
 
     # 5. Outlier detection
     outlier_data = []
-    for col in [VolumeCol.WIDTH, VolumeCol.HEIGHT, VolumeCol.N_SLICES, VolumeCol.SPACING_X, VolumeCol.SPACING_Y, VolumeCol.SPACING_Z]:
+    for col in [
+        VolumeCol.WIDTH,
+        VolumeCol.HEIGHT,
+        VolumeCol.N_SLICES,
+        VolumeCol.SPACING_X,
+        VolumeCol.SPACING_Y,
+        VolumeCol.SPACING_Z,
+    ]:
         mean = df[col].mean()
         std = df[col].std()
 

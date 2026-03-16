@@ -33,4 +33,3 @@ def filter_excluded_cases(df, logger=None):
         logger.info(f"Excluded {n_excluded} outlier cases", total=df.height)
 
     return df
-
