@@ -9,10 +9,10 @@ from src.data.schemas import Col, VolumeCol, VolumeSchema
 from src.utils.logger import get_logger
 from src.utils.settings import settings
 
-logger = get_logger("data.volumes")
+logger = get_logger(__name__)
 
 
-def extract_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
+def extract_mri_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
     """
     Extract volume properties from all NIfTI files, with Parquet caching.
 
@@ -166,8 +166,8 @@ def extract_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
     return df
 
 
-def load_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
+def load_mri_volume_properties(force_refresh: bool = False) -> pl.DataFrame:
     """Load volume properties, extracting if cache is stale or missing."""
-    df = extract_volume_properties(force_refresh)
+    df = extract_mri_volume_properties(force_refresh)
     df = filter_excluded_cases(df, logger)
     return df

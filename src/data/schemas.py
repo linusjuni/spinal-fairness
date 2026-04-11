@@ -99,6 +99,35 @@ class VolumeCol(StrEnum):
     ANISOTROPY_FACTOR = "anisotropy_factor"
 
 
+class SegmentationVolumeSchema(pt.Model):
+    """Schema for the segmentation volume properties DataFrame."""
+
+    filename: str = pt.Field(unique=True)
+    series_submitter_id: str = pt.Field(unique=True)
+    n_voxels_vertebral_body: int
+    n_voxels_disc: int
+    volume_mm3_vertebral_body: float
+    volume_mm3_disc: float
+    n_components_vertebral_body: int
+    n_components_disc: int
+
+
+class SegmentationVolumeCol(StrEnum):
+    """Column names in the segmentation volume properties DataFrame."""
+
+    # Voxel counts
+    N_VOXELS_VERTEBRAL_BODY = "n_voxels_vertebral_body"
+    N_VOXELS_DISC = "n_voxels_disc"
+
+    # Physical volumes (mm³)
+    VOLUME_MM3_VERTEBRAL_BODY = "volume_mm3_vertebral_body"
+    VOLUME_MM3_DISC = "volume_mm3_disc"
+
+    # Connected components (individual structures)
+    N_COMPONENTS_VERTEBRAL_BODY = "n_components_vertebral_body"
+    N_COMPONENTS_DISC = "n_components_disc"
+
+
 # ---------------------------------------------------------------------------
 # Categorical value enums
 # ---------------------------------------------------------------------------

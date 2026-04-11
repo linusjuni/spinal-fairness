@@ -25,7 +25,7 @@ from src.data.schemas import Col, ExamSchema
 from src.utils.logger import get_logger
 from src.utils.settings import settings
 
-logger = get_logger("data.loader")
+logger = get_logger(__name__)
 
 
 def load_annotation_filenames() -> pl.DataFrame:
