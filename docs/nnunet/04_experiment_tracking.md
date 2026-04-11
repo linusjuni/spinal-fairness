@@ -2,161 +2,39 @@
 
 ## Overview
 
-nnU-Net v2 has no built-in W&B support. The right integration point is a **custom trainer
-subclass** that overrides the logging hooks in `nnUNetTrainer`. This keeps our changes
-fully contained — no patches to the nnU-Net package are needed.
+nnU-Net v2 now has **native Weights & Biases support** (added ~January 2026 in the v2.6+
+line). For basic experiment tracking, no custom trainer is needed — just set environment
+variables. A custom trainer subclass is only required for advanced logging (e.g., uploading
+artifacts, logging custom metrics, enabling BF16).
 
-The trainer is selected at training time via the `-tr` flag:
+---
+
+## Option A: Built-in W&B Integration (Recommended)
+
+Enable W&B by setting environment variables before training:
+
 ```bash
-nnUNetv2_train 1 2d 0 --npz -tr nnUNetTrainerWandB
+export nnUNet_wandb_enabled=1
+export nnUNet_wandb_project="spinal-fairness"
+export nnUNet_wandb_mode="online"   # or "offline" for compute nodes without internet
+
+nnUNetv2_train 1 2d 0 --npz
 ```
 
-nnU-Net discovers the trainer class by importing it from `PYTHONPATH`. As long as our
-`src/` is on the path (which it is when running via `uv run -m`), no registration step
-is needed.
+The built-in `WandbLogger` (wrapped inside nnU-Net's `MetaLogger`) automatically logs:
+- `train_losses` per epoch
+- `val_losses` per epoch
+- `mean_fg_dice` and `ema_fg_dice` per epoch
+- `dice_per_class_or_region` (split into `mean_fg_dice/class_1`, `mean_fg_dice/class_2`, etc.)
+- Learning rate (`lrs`)
+- Epoch timestamps
+- Hyperparameters (plans, configuration, fold)
+- Cluster job ID (SLURM `SLURM_JOB_ID` / LSF `LSB_JOBID`)
 
----
+Resume is automatic: if a `wandb/` directory exists from a previous run, the logger
+extracts the run ID and appends to the existing run.
 
-## What nnUNetTrainer Logs Internally
-
-Understanding the internal logging hooks is necessary to know what to intercept:
-
-| Hook method | Metrics available | When called |
-|---|---|---|
-| `on_train_epoch_end` | `train_losses` | After each training epoch |
-| `on_validation_epoch_end` | `val_losses`, `mean_fg_dice`, `dice_per_class_or_region` | After each validation epoch |
-| `on_epoch_end` | `lrs`, `ema_fg_dice`, `epoch_*_timestamps` | End of each full epoch; also saves `progress.png` |
-| `on_train_end` | — | Training complete; saves `checkpoint_final.pth` |
-
-Metrics are stored on `self.logger` (a `MetaLogger` instance). Retrieve the latest value
-with `self.logger.my_fantastic_logging_values[-1]` or via internal list indexing.
-
----
-
-## nnUNetTrainerWandB Implementation
-
-Location: `src/nnunet/trainer.py`
-
-```python
-from __future__ import annotations
-
-import os
-from typing import TYPE_CHECKING
-
-import torch
-import wandb
-from nnunetv2.training.nnUNetTrainer.nnUNetTrainer import nnUNetTrainer
-
-if TYPE_CHECKING:
-    pass
-
-
-class nnUNetTrainerWandB(nnUNetTrainer):
-    """nnUNetTrainer subclass that logs metrics and artifacts to Weights & Biases."""
-
-    def __init__(self, plans, configuration, fold, dataset_json, unpack_dataset=True,
-                 device=torch.device("cuda")):
-        super().__init__(plans, configuration, fold, dataset_json, unpack_dataset, device)
-
-        # Prefer BF16 on Ampere GPUs (A100) for numerical stability
-        if torch.cuda.is_available() and torch.cuda.get_device_capability()[0] >= 8:
-            self.autocast_dtype = torch.bfloat16
-
-        if self.local_rank == 0:  # Only rank-0 process initialises W&B
-            wandb.init(
-                project=os.environ.get("WANDB_PROJECT", "spinal-fairness"),
-                name=f"{configuration}_fold{fold}",
-                group=configuration,
-                tags=[configuration, f"fold{fold}", "nnunet"],
-                config={
-                    "dataset": "CSpineSeg",
-                    "configuration": configuration,
-                    "fold": fold,
-                    "plans": plans,
-                },
-                resume="allow",  # Safe to re-run after a crash
-            )
-
-    def on_train_epoch_end(self, train_outputs: list[dict]) -> None:
-        super().on_train_epoch_end(train_outputs)
-        if self.local_rank == 0:
-            wandb.log(
-                {"train/loss": self.logger.my_fantastic_logging_values["train_losses"][-1]},
-                step=self.current_epoch,
-            )
-
-    def on_validation_epoch_end(self, val_outputs: list[dict]) -> None:
-        super().on_validation_epoch_end(val_outputs)
-        if self.local_rank == 0:
-            dice_per_class = self.logger.my_fantastic_logging_values[
-                "dice_per_class_or_region"
-            ][-1]
-            log_dict = {
-                "val/loss": self.logger.my_fantastic_logging_values["val_losses"][-1],
-                "val/mean_fg_dice": self.logger.my_fantastic_logging_values[
-                    "mean_fg_dice"
-                ][-1],
-                "val/dice_vertebral_body": dice_per_class[0]
-                if len(dice_per_class) > 0
-                else None,
-                "val/dice_disc": dice_per_class[1] if len(dice_per_class) > 1 else None,
-            }
-            wandb.log({k: v for k, v in log_dict.items() if v is not None},
-                      step=self.current_epoch)
-
-    def on_epoch_end(self) -> None:
-        super().on_epoch_end()
-        if self.local_rank == 0:
-            wandb.log(
-                {
-                    "train/lr": self.logger.my_fantastic_logging_values["lrs"][-1],
-                    "val/ema_fg_dice": self.logger.my_fantastic_logging_values[
-                        "ema_fg_dice"
-                    ][-1],
-                },
-                step=self.current_epoch,
-            )
-            # Upload the live progress plot as a W&B image
-            progress_path = self.output_folder / "progress.png"
-            if progress_path.exists():
-                wandb.log(
-                    {"charts/progress": wandb.Image(str(progress_path))},
-                    step=self.current_epoch,
-                )
-
-    def on_train_end(self) -> None:
-        super().on_train_end()
-        if self.local_rank == 0:
-            # Log the final checkpoint as a W&B artifact for reproducibility
-            artifact = wandb.Artifact(
-                name=f"checkpoint-fold{self.fold}",
-                type="model",
-                description=f"Final nnU-Net checkpoint, fold {self.fold}",
-            )
-            checkpoint_path = self.output_folder / "checkpoint_final.pth"
-            if checkpoint_path.exists():
-                artifact.add_file(str(checkpoint_path))
-                wandb.log_artifact(artifact)
-            wandb.finish()
-```
-
----
-
-## W&B Run Structure
-
-Each fold produces one W&B run. Grouping by configuration lets you compare 2D vs 3D
-across folds in the same W&B project view.
-
-| W&B field | Value |
-|---|---|
-| Project | `spinal-fairness` (override via `WANDB_PROJECT` env var) |
-| Run name | `2d_fold0`, `2d_fold1`, ..., `3d_fullres_fold0`, ... |
-| Group | `2d` or `3d_fullres` |
-| Tags | configuration + fold + `nnunet` |
-
----
-
-## W&B Setup on DTU HPC
+### W&B Setup on DTU HPC
 
 Log in once on a login node:
 ```bash
@@ -166,9 +44,9 @@ wandb login
 This writes credentials to `~/.netrc`. They persist across jobs. Alternatively, set
 `WANDB_API_KEY` in your job script.
 
-To run offline (e.g. if the compute node has no internet):
+For offline mode (compute node has no internet):
 ```bash
-export WANDB_MODE=offline
+export nnUNet_wandb_mode=offline
 ```
 
 Then sync after the job completes:
@@ -176,19 +54,172 @@ Then sync after the job completes:
 wandb sync $nnUNet_results/wandb/offline-run-*/
 ```
 
+### W&B Run Structure
+
+Each fold produces one W&B run.
+
+| W&B field | Value |
+|---|---|
+| Project | `spinal-fairness` (set via `nnUNet_wandb_project`) |
+| Run name | Auto-generated by W&B (includes fold/config info) |
+
+---
+
+## Option B: Custom Trainer Subclass (Advanced)
+
+A custom trainer is needed if you want to:
+- Upload `progress.png` as a W&B image each epoch
+- Save `checkpoint_final.pth` as a W&B artifact for reproducibility
+- Add custom metrics beyond what nnU-Net logs
+- Enable BF16 (see [03 — Training](03_training.md#enabling-bf16-in-a-custom-trainer))
+
+### Trainer Discovery Mechanism
+
+> **Important:** nnU-Net discovers trainers by scanning the `nnunetv2/training/nnUNetTrainer/`
+> directory tree inside the installed package. It does **NOT** search `PYTHONPATH` or use a
+> plugin registry. The `-tr` flag takes a class name, and `recursive_find_python_class()`
+> uses `pkgutil.iter_modules()` to find it.
+>
+> Your custom trainer `.py` file **must be placed physically inside**
+> `nnunetv2/training/nnUNetTrainer/` or a subdirectory thereof. With an editable install
+> (`uv add --editable ./nnUNet` from the cloned repo), you can add files directly to the source tree.
+
+### What nnUNetTrainer Logs Internally
+
+The internal logging hooks are the integration points for custom trainers:
+
+| Hook method | Signature | Metrics available |
+|---|---|---|
+| `on_train_epoch_end` | `(self, train_outputs: list[dict])` | Each dict has `{'loss': numpy_scalar}`. Method computes mean and logs `train_losses`. |
+| `on_validation_epoch_end` | `(self, val_outputs: list[dict])` | Each dict has `{'loss', 'tp_hard', 'fp_hard', 'fn_hard'}`. Method computes Dice per class, mean foreground Dice, validation loss. Logs `mean_fg_dice`, `dice_per_class_or_region`, `val_losses`. |
+| `on_epoch_end` | `(self)` | Logs timestamps, prints summary, handles checkpointing, plots `progress.png`, **increments `self.current_epoch`**. |
+| `on_train_end` | `(self)` | Saves `checkpoint_final.pth`, deletes `checkpoint_latest.pth`, shuts down dataloaders. |
+
+Additional hooks: `on_train_start`, `on_epoch_start`, `on_train_epoch_start`,
+`on_validation_epoch_start`.
+
+### Logger Architecture (MetaLogger)
+
+The trainer's `self.logger` is a `MetaLogger` that wraps multiple backends:
+- Always contains a `LocalLogger` (dict-of-lists for metrics + progress.png generation).
+- Conditionally contains a `WandbLogger` (if `nnUNet_wandb_enabled=1`).
+
+**API:**
+- `self.logger.log(key, value, step)` — logs to all backends.
+- `self.logger.get_value(key, step)` — reads from LocalLogger. If `step` is `None`, returns
+  the entire list.
+
+**Keys available in LocalLogger:**
+```python
+{
+    'mean_fg_dice': list(),
+    'ema_fg_dice': list(),               # auto-computed when mean_fg_dice is logged
+    'dice_per_class_or_region': list(),
+    'train_losses': list(),
+    'val_losses': list(),
+    'lrs': list(),
+    'epoch_start_timestamps': list(),
+    'epoch_end_timestamps': list(),
+}
+```
+
+> **Note:** The old direct-access pattern `self.logger.my_fantastic_logging["key"][-1]` still
+> works via `self.logger.local_logger.my_fantastic_logging["key"][-1]`, but
+> `self.logger.get_value("key", self.current_epoch)` is the stable API.
+
+### Constructor Signature (Current)
+
+```python
+def __init__(self, plans: dict, configuration: str, fold: int, dataset_json: dict,
+             device: torch.device = torch.device('cuda')):
+```
+
+> **Warning:** The `unpack_dataset` parameter was removed in a past version. Do not include
+> it — your trainer will crash with a `TypeError`.
+
+### Example Custom Trainer
+
+Location: place inside `nnunetv2/training/nnUNetTrainer/variants/` (or any subdirectory
+of `nnunetv2/training/nnUNetTrainer/`).
+
+```python
+from __future__ import annotations
+
+import os
+from pathlib import Path
+
+import torch
+import wandb
+from nnunetv2.training.nnUNetTrainer.nnUNetTrainer import nnUNetTrainer
+
+
+class nnUNetTrainerWandBCustom(nnUNetTrainer):
+    """Custom trainer that adds W&B artifact logging on top of built-in W&B support.
+
+    Use this trainer only if you need features beyond what the built-in WandbLogger
+    provides (e.g., checkpoint artifacts, progress.png uploads). For basic metric
+    logging, the built-in integration (nnUNet_wandb_enabled=1) is sufficient.
+    """
+
+    def __init__(self, plans: dict, configuration: str, fold: int, dataset_json: dict,
+                 device: torch.device = torch.device('cuda')):
+        super().__init__(plans, configuration, fold, dataset_json, device)
+
+    def on_epoch_end(self) -> None:
+        super().on_epoch_end()
+        if self.local_rank == 0:
+            # Upload progress.png to W&B as an image
+            progress_path = Path(self.output_folder) / "progress.png"
+            if progress_path.exists() and wandb.run is not None:
+                wandb.log(
+                    {"charts/progress": wandb.Image(str(progress_path))},
+                    step=self.current_epoch - 1,  # current_epoch was already incremented
+                )
+
+    def on_train_end(self) -> None:
+        super().on_train_end()
+        if self.local_rank == 0 and wandb.run is not None:
+            # Log final checkpoint as a W&B artifact
+            artifact = wandb.Artifact(
+                name=f"checkpoint-fold{self.fold}",
+                type="model",
+                description=f"Final nnU-Net checkpoint, fold {self.fold}",
+            )
+            checkpoint_path = Path(self.output_folder) / "checkpoint_final.pth"
+            if checkpoint_path.exists():
+                artifact.add_file(str(checkpoint_path))
+                wandb.log_artifact(artifact)
+```
+
+Usage:
+```bash
+export nnUNet_wandb_enabled=1
+export nnUNet_wandb_project="spinal-fairness"
+nnUNetv2_train 1 2d 0 --npz -tr nnUNetTrainerWandBCustom
+```
+
+### DDP Considerations
+
+- `self.local_rank` is set to `0` in non-DDP mode, or `dist.get_rank()` in DDP mode.
+- All W&B calls and file I/O must be gated on `if self.local_rank == 0:` to prevent
+  duplicate logging in multi-GPU training.
+- The built-in `MetaLogger` already handles this internally — the guard is only needed
+  for custom W&B calls outside the logger.
+
 ---
 
 ## Caveats
 
-- **`self.local_rank == 0` guard:** All W&B calls must be gated on rank 0. In DDP mode,
-  all processes share the same trainer instance and will otherwise log duplicates.
-- **`resume="allow"`:** If a job is killed and restarted with `--c`, W&B will append to
-  the existing run rather than creating a new one. This requires the run ID to be stable
-  — it is, because it is derived from the run name which includes the fold number.
-- **Logger key names:** The internal `MetaLogger` dict keys (`"train_losses"`,
-  `"val_losses"`, etc.) are hardcoded strings in `nnUNetTrainer`. If a future nnU-Net
-  update renames them, the trainer will raise a `KeyError`. Pin the nnU-Net version in
-  `pyproject.toml`.
-- **BF16 and GradScaler:** When `autocast_dtype = torch.bfloat16`, the gradient scaler
-  used internally by nnUNetTrainer is a no-op (BF16 does not underflow like FP16). This
-  is harmless but can be explicitly disabled for clarity in a future refactor.
+- **Built-in vs custom W&B:** If you enable `nnUNet_wandb_enabled=1` AND use a custom
+  trainer that also calls `wandb.init()`, you will get duplicate W&B runs. Either use the
+  built-in integration or disable it (`nnUNet_wandb_enabled=0`) when using a fully custom
+  W&B trainer.
+- **`resume="allow"` in custom trainers:** If a job is killed and restarted with `--c`,
+  W&B should append to the existing run. The built-in WandbLogger handles this automatically
+  by detecting the existing `wandb/` directory.
+- **Logger key names:** The internal `LocalLogger` dict keys (`"train_losses"`,
+  `"val_losses"`, etc.) are hardcoded strings. If a future nnU-Net update renames them,
+  custom logger code will break. Pin the nnU-Net version in your environment.
+- **Trainer file location:** The `.py` file must be inside the nnunetv2 package tree.
+  With `uv add --editable ./nnUNet` this is the cloned repo directory. With a standard
+  `uv add nnunetv2`, it is inside `site-packages/nnunetv2/`.

@@ -8,6 +8,7 @@ dependencies = [
     "matplotlib>=3.10.8",
     "nibabel>=5.3.3",
     "nilearn>=0.13.1",
+    "nnunetv2>=2.7.0",
     "numpy>=2.4.2",
     "patito>=0.8.6",
     "polars>=1.38.1",

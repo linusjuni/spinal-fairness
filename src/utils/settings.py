@@ -18,9 +18,14 @@ class Settings(BaseSettings):
     # General settings
     RANDOM_SEED: int = Field(default=42)
 
-    # Paths
+    # Paths — CSpineSeg source data
     DATA_DIR: Path = Path("/work3/s225224/data/cspineseg")
     OUTPUT_DIR: Path = Path("outputs")
+
+    # Paths — nnU-Net (read from env vars set by the user)
+    nnUNet_raw: Path = Field(default=Path("/work3/s225224/nnunet/raw"))
+    nnUNet_preprocessed: Path = Field(default=Path("/work3/s225224/nnunet/preprocessed"))
+    nnUNet_results: Path = Field(default=Path("/work3/s225224/nnunet/results"))
 
     @property
     def raw_dir(self) -> Path:
