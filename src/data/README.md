@@ -14,8 +14,8 @@ flowchart TD
 
     ROOT --> RAW
     ROOT --> EXT
-    ROOT --> PROC["processed/<br><i>empty — for pipeline outputs</i>"]
-    ROOT --> SPLIT["splits/<br><i>empty — for train/val/test splits</i>"]
+    ROOT --> PROC["processed/<br><i>cached volume &amp; morphology data</i>"]
+    ROOT --> SPLIT["splits/<br><i>split_v1.tsv, split_v2.tsv, split_v3.tsv</i>"]
 
     subgraph RAW["raw/"]
         R1["annotation.zip — 4.9 GB"]
@@ -83,7 +83,7 @@ flowchart TD
 
 ## Volume Properties
 
-Each scan is a small stack of 2D MRI slices — typically 12–19 slices, most commonly 14–15. The slices are high-resolution within each image (around 512×512 pixels at ~0.5 mm/pixel) but the gap between slices is large (~4 mm). This means the data is essentially 2D: you get a thin slab through the spine, not a dense 3D volume. Models are therefore trained slice-by-slice rather than volumetrically.
+Each scan is a small stack of 2D MRI slices — typically 12–19 slices, most commonly 14–15. The slices are high-resolution within each image (around 512×512 pixels at ~0.5 mm/pixel) but the gap between slices is large (~4 mm). The data is therefore highly anisotropic: fine in-plane detail (~0.5 mm) but coarse through-plane (~4 mm). nnU-Net's automatic planner will determine the optimal training configuration (2D, 3D full-res, or 3D cascade) based on these spacings — given the ~8× anisotropy ratio, a 2D or anisotropic 3D plan is expected.
 
 | Property | Typical range |
 |----------|--------------|
