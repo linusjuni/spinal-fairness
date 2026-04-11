@@ -159,7 +159,6 @@ def summarise_splits(df: pl.DataFrame) -> pl.DataFrame:
 
 
 if __name__ == "__main__":
-
     df = load_metadata()
     splits = create_splits(df)
     save_splits(splits, VERSION)

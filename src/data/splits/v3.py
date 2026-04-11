@@ -1,10 +1,12 @@
 """
-split_v3 — Fully sex-balanced splits via downsampling.
+split_v3 — Fully sex-balanced splits via exam-level downsampling.
 
-Builds on v2 (race_bin x age_bin x sex stratification), then downsamples
-female patients in every split (train, val, test) to match the male count
-in that split. Dropped patients are excluded entirely — no data is moved
-between splits.
+Builds on v2 (race_bin x age_bin x sex stratification), then drops female
+exams in every split (train, val, test) until the female exam count exactly
+matches the male exam count. Balancing operates at the exam level: for
+multi-exam patients, some exams may be dropped while others are retained.
+Since v2 already confines all exams from a patient to the same split, this
+does not introduce data leakage.
 
 This mirrors Aditya et al.'s approach of using a fully balanced cohort for
 both training and evaluation, enabling controlled experiments to test whether
@@ -31,24 +33,20 @@ VERSION = "split_v3"
 
 
 def _balance_split(result: pl.DataFrame, split: str, rng: np.random.Generator) -> set:
-    """Return patient IDs to drop from a split to equalise female/male counts."""
-    patients = (
-        result.filter(pl.col("split") == split)
-        .select("patient_id", "sex_bin")
-        .unique("patient_id")
-    )
-    female_ids = patients.filter(pl.col("sex_bin") == "Female")["patient_id"].to_list()
-    male_count = patients.filter(pl.col("sex_bin") == "Male").height
+    """Return series_submitter_ids to drop from a split to equalise female/male exam counts."""
+    split_df = result.filter(pl.col("split") == split)
+    male_exam_count = split_df.filter(pl.col("sex_bin") == "Male").height
+    female_exam_ids = split_df.filter(pl.col("sex_bin") == "Female")["series_submitter_id"].to_list()
 
-    n_drop = len(female_ids) - male_count
+    n_drop = len(female_exam_ids) - male_exam_count
     if n_drop > 0:
-        drop_ids = set(rng.choice(female_ids, size=n_drop, replace=False).tolist())
+        drop_ids = set(rng.choice(female_exam_ids, size=n_drop, replace=False).tolist())
         logger.info(
-            f"Downsampling females in {split}",
-            female_before=len(female_ids),
-            male=male_count,
+            f"Dropping {n_drop} female exams from {split}",
+            female_exams_before=len(female_exam_ids),
+            male_exams=male_exam_count,
             dropping=n_drop,
-            female_after=male_count,
+            female_exams_after=male_exam_count,
         )
         return drop_ids
     logger.info(f"{split} already balanced — no downsampling needed")
@@ -58,8 +56,9 @@ def _balance_split(result: pl.DataFrame, split: str, rng: np.random.Generator) -
 def create_splits(df: pl.DataFrame, seed: int | None = None) -> pl.DataFrame:
     """Create fully sex-balanced train/val/test splits.
 
-    Starts from v2 splits, then downsamples female patients in each split
-    to match the male count in that split. Dropped patients are excluded.
+    Starts from v2 splits, then drops female exams in each split until the
+    female exam count exactly matches the male exam count. For multi-exam
+    patients, some exams may be retained while others are dropped.
 
     Args:
         df:   Exam-level metadata DataFrame from load_metadata().
@@ -77,11 +76,11 @@ def create_splits(df: pl.DataFrame, seed: int | None = None) -> pl.DataFrame:
 
     result = _create_splits_v2(df, seed=seed)
 
-    drop_ids: set = set()
+    drop_exam_ids: set = set()
     for split in ("train", "val", "test"):
-        drop_ids |= _balance_split(result, split, rng)
+        drop_exam_ids |= _balance_split(result, split, rng)
 
-    result = result.filter(~pl.col("patient_id").is_in(drop_ids))
+    result = result.filter(~pl.col("series_submitter_id").is_in(drop_exam_ids))
 
     log_balance(result)
     return result
@@ -99,7 +98,6 @@ def summarise_splits(df: pl.DataFrame) -> pl.DataFrame:
 
 
 if __name__ == "__main__":
-
     df = load_metadata()
     splits = create_splits(df)
     save_splits(splits, VERSION)

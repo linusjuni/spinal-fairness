@@ -6,7 +6,7 @@ from src.data.schemas import Col
 from src.utils.logger import get_logger
 from src.utils.settings import settings
 
-logger = get_logger("data.splits")
+logger = get_logger(__name__)
 
 TRAIN_RATIO = 0.70
 VAL_RATIO = 0.10
