@@ -9,7 +9,7 @@ from nilearn import plotting
 
 from src.utils.logger import get_logger
 
-logger = get_logger("mri_visualization")
+logger = get_logger(__name__)
 
 _SINGLE_AXIS_MODES = {"x": 0, "y": 1, "z": 2}
 

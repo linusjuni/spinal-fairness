@@ -10,7 +10,7 @@ sns.set_theme(style="whitegrid", palette="muted")
 
 SPLIT_ORDER = ["train", "val", "test"]
 
-VERSION = "split_v1"
+VERSION = "split_v3"
 
 df = apply_splits(load_metadata(), version=VERSION)
 
