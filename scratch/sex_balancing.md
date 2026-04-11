@@ -38,25 +38,40 @@ v1. Restratification is not the right tool for sex balancing.
 
 ## split_v3 — Full downsample to 50/50 across all splits
 
-Following Aditya et al. (MAMA-MIA), female patients are downsampled in every
-split to match the male count in that split. Dropped patients are excluded
-entirely. This produces a fully balanced cohort for both training and
-evaluation, enabling controlled experiments to test whether representational
-imbalance causes observed fairness gaps.
+Following Aditya et al. (MAMA-MIA), female exams are downsampled in every
+split until the female exam count exactly matches the male exam count. This
+produces a fully balanced cohort for both training and evaluation, enabling
+controlled experiments to test whether representational imbalance causes
+observed fairness gaps.
 
-Dropped: 89 train / 11 val / 17 test female patients (1254 → 1136 exams total).
+Balancing operates at the **exam level**: female exams to drop are selected
+uniformly at random (seeded for reproducibility). For the 23 multi-exam
+patients, some exams may be retained while others are dropped — this is safe
+because v2 already confines all exams from a patient to the same split, so
+no leakage is introduced.
+
+Dropped: 80 train / 7 val / 25 female exams (1254 → 1142 exams total).
 
 | Split | Female | Male | F% |
 |-------|--------|------|----|
-| Train | 393 | 395 | 49.9% |
-| Val | 56 | 58 | 49.1% |
-| Test | 116 | 118 | 49.6% |
+| Train | 400 | 400 | 50.0% |
+| Val | 58 | 58 | 50.0% |
+| Test | 113 | 113 | 50.0% |
 
-### Caveat: patient-level balancing vs exam-level counts
 
-Balancing is performed at the **patient level** to prevent data leakage from
-the 23 multi-exam patients. Because these patients are not evenly distributed
-by sex across splits, equal patient counts do not guarantee perfectly equal
-exam counts. This produces a residual imbalance of 1–2 exams per split (worst
-case: val 56F vs 58M). This is considered acceptable — the discrepancy is too
-small to meaningfully affect DPD or DIR metrics.
+
+
+
+# Notes from meeting
+
+- ~~Actually we should balance EXACTLY. So we might have to drop some exams for the multiple patients.~~ ✓ Done — v3 now balances at exam level.
+
+- we should do statistical tests to compare means
+
+- make a really good table where we compare different things from the eda in a well structured manner
+
+- aditya will find some libraries that can be used to check segmentations (rounded edges, square, etc)
+
+- do the whole eda on the training set only too (potentially also on val and test just to see what it looks like)
+
+- do a much bigger deep dive into the volumentric analysis
