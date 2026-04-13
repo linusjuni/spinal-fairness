@@ -33,6 +33,12 @@ class nnUNetTrainerWandB(nnUNetTrainer):
     ):
         super().__init__(plans, configuration, fold, dataset_json, device)
 
+    def on_train_start(self) -> None:
+        super().on_train_start()
+
+        if wandb.run is not None:
+            wandb.run.name = f"{self.configuration_name}_fold{self.fold}"
+
     def on_epoch_end(self) -> None:
         super().on_epoch_end()
 
