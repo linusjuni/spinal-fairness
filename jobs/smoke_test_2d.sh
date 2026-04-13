@@ -1,6 +1,6 @@
 #!/bin/bash
 #BSUB -J cspine_smoke_2d
-#BSUB -q gpua100
+#BSUB -q gpul40s
 #BSUB -gpu "num=1:mode=exclusive_process"
 #BSUB -R "span[hosts=1]"
 #BSUB -R "rusage[mem=8GB]"
@@ -19,6 +19,7 @@ PLANS=nnUNetResEncUNetLPlans
 # ----------------------------
 
 export UV_ENV_FILE=".env"
+export nnUNet_compile=false  # skip torch.compile for smoke test — re-enable for real training
 
 uv sync
 
