@@ -1,5 +1,11 @@
 # Documentation Index
 
+## Statistical Analysis
+
+| Document | Contents |
+|---|---|
+| [Statistical Testing](statistical_testing.md) | Test battery for EDA (Mann-Whitney, Kruskal-Wallis, chi-squared), effect sizes, multiple testing correction, and when each technique is/isn't useful |
+
 ## nnU-Net Pipeline
 
 | Document | Contents |
