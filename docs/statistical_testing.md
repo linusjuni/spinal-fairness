@@ -9,6 +9,41 @@ are statistically significant and how large they are.
 
 ---
 
+## Decision Flow
+
+```mermaid
+flowchart TD
+    A([Start: one comparison]) --> B{What kind?}
+
+    B -->|Two groups, continuous| C["Mann-Whitney U<br/>scipy.stats.mannwhitneyu"]
+    B -->|Three+ groups, continuous| D["Kruskal-Wallis H<br/>scipy.stats.kruskal"]
+    B -->|Two categorical variables| E["Chi-squared<br/>scipy.stats.chi2_contingency"]
+
+    C --> C1["Effect size<br/>rank-biserial r_rb<br/>= 1 − 2U / n₁n₂"]
+    D --> D1["Effect size<br/>ε² = (H − k + 1) / (N − k)"]
+    E --> E1["Effect size<br/>Cramér's V<br/>= √[χ² / (N · (min(r,c) − 1))]"]
+
+    D1 --> F{Omnibus p < 0.05?}
+    F -->|No| F1([No post-hoc])
+    F -->|Yes| G["Dunn's post-hoc<br/>scikit_posthocs.posthoc_dunn<br/>Bonferroni within pairs"]
+
+    C1 --> H
+    D1 --> H
+    E1 --> H
+
+    H[("Collect omnibus p-values<br/>per module")] --> I["BH-FDR correction<br/>statsmodels.multipletests<br/>method='fdr_bh'"]
+    I --> J(["Report raw + adjusted p-values<br/>stats_summary.csv"])
+```
+
+Two correction families are applied independently and must not be conflated:
+- **Bonferroni** applies only inside Dunn's post-hoc, controlling the familywise
+  error rate across the three pairwise age-bin comparisons.
+- **BH-FDR** applies once per module across all omnibus p-values (16 in
+  `segmentation_volumes`, 7 in `crosscuts`), controlling the false discovery rate
+  at the module level.
+
+---
+
 ## Test Battery
 
 Three types of comparison appear in the EDA. Each gets one test and one effect size.
@@ -48,8 +83,8 @@ exactly the question we care about.
 |---|---|---|
 | Omnibus test | **Kruskal-Wallis H** | Nonparametric extension of one-way ANOVA for 3+ groups. |
 | Effect size | **Epsilon-squared (ε²)** | `(H - k + 1) / (N - k)` where H is the test statistic, k is the number of groups, N is total observations. |
-| Post-hoc | **Dunn's test** | Pairwise nonparametric comparisons; only run if Kruskal-Wallis is significant (p < 0.05). |
-| Implementation | `scipy.stats.kruskal` + `scikit_posthocs.posthoc_dunn` | Dunn's test reports adjusted p-values for each pair. |
+| Post-hoc | **Dunn's test with Bonferroni correction** | Pairwise nonparametric comparisons; only run if Kruskal-Wallis is significant (p < 0.05). Bonferroni applied within the post-hoc (`p_adjust='bonferroni'`). |
+| Implementation | `scipy.stats.kruskal` + `scikit_posthocs.posthoc_dunn(..., p_adjust='bonferroni')` | Returns a matrix of Bonferroni-adjusted p-values for each pair. |
 
 **Interpretation of ε²:**
 
@@ -60,10 +95,19 @@ exactly the question we care about.
 | 0.06 – 0.14 | Medium |
 | ≥ 0.14 | Large |
 
-**Why Dunn's over pairwise Mann-Whitney:** Dunn's test is designed specifically as
-a post-hoc to Kruskal-Wallis. It uses the pooled rank information rather than
-re-ranking within each pair, which makes it more appropriate and more widely
-cited in the medical literature.
+**Why Dunn's over pairwise Mann-Whitney:** The core issue is ranking consistency.
+Kruskal-Wallis ranks all observations globally across all groups. Pairwise
+Mann-Whitney re-ranks data for each pair using only those two groups' observations
+— a different ranking scheme than the omnibus test used. This makes the two analyses
+analytically inconsistent. Dunn's test uses the same global rankings and pooled
+variance estimate as Kruskal-Wallis, maintaining full consistency with the omnibus
+result. It is the standard recommendation in the biostatistics literature (Dunn, 1964)
+and what is used in Parikh et al. (MAMA-MIA) for post-hoc pairwise comparisons.
+
+**Why Bonferroni (not BH-FDR) inside Dunn's:** Bonferroni controls the familywise
+error rate within the post-hoc comparisons (3 pairs for age bins). BH-FDR is applied
+separately at the module level across all omnibus p-values. These are two distinct
+correction families and should not be conflated.
 
 ### 3. Categorical Independence (Crosstabs)
 
@@ -177,6 +221,18 @@ not because a Shapiro-Wilk test told us so.
 
 ## Where Each Test Is Applied
 
+### Module coverage overview
+
+| Module | Has group comparisons? | Tests added? | Notes |
+|---|---|---|---|
+| `demographics.py` | No | N/A | Univariate distributions only |
+| `scanner.py` | No | N/A | Univariate distributions only |
+| `crosscuts.py` | Yes | Yes | 4 violin plots + 3 heatmaps |
+| `mri_volumes.py` | No | N/A | Univariate histograms only; no demographic splits exist in the current code |
+| `mri_slices.py` | No | N/A | Image rendering only |
+| `segmentation_volumes.py` | Yes | Yes | 16 tests |
+| `splits.py` | Separate concern | Deferred | Split balance checks are a distinct analysis; not part of the EDA fairness audit |
+
 ### `src/eda/segmentation_volumes.py`
 
 The existing code produces violin plots for volumes, voxel counts, and component
@@ -205,16 +261,38 @@ via `report.log_stat()` and collected into a summary table saved as CSV.
 - `n_components_vertebral_body`
 - `n_components_disc`
 
+**BH-FDR family:** 12 Mann-Whitney p-values + 4 Kruskal-Wallis p-values = 16 omnibus
+p-values. Applied at the end of `run()`.
+
 ### `src/eda/crosscuts.py`
 
-The existing code produces heatmaps showing counts for demographic × scanner
-crosstabs. Each heatmap gets a chi-squared test:
+The existing code produces both violin plots (continuous age split by categorical
+grouping) and heatmaps (categorical × categorical counts). All plots get a test.
+
+**Violin plots — continuous age by grouping variable:**
+
+| Existing plot | Grouping variable | Test type |
+|---|---|---|
+| `age_by_sex` | Sex (2 groups) | Mann-Whitney U |
+| `age_by_race` | Race (White vs Black) | Mann-Whitney U |
+| `age_by_manufacturer` | Manufacturer (2 groups) | Mann-Whitney U |
+| `age_by_field_strength` | Field strength (2 groups) | Mann-Whitney U |
+
+Note on `age_by_race`: the plot renders all race categories, but several groups
+have very small n (AIAN: n=9, NHOPI: n=1). For the statistical test, filter to
+White vs Black only — consistent with `segmentation_volumes.py` and sufficient
+sample sizes for reliable inference.
+
+**Heatmaps — categorical independence:**
 
 | Existing plot | Contingency table | Test |
 |---|---|---|
 | `race_by_manufacturer` | Race × Manufacturer | Chi-squared + Cramér's V |
 | `race_by_field_strength` | Race × Field Strength | Chi-squared + Cramér's V |
 | `sex_by_race` | Sex × Race | Chi-squared + Cramér's V |
+
+**BH-FDR family:** 4 Mann-Whitney p-values + 3 chi-squared p-values = 7 omnibus
+p-values. Applied at the end of `run()`.
 
 ---
 
