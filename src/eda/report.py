@@ -15,13 +15,18 @@ from src.utils.settings import settings
 
 
 class EDAReport:
-    """Output sink for EDA analyses. Saves figures, tables, and stats."""
+    """Output sink for EDA analyses. Saves figures, tables, and stats.
 
-    def __init__(self, name: str) -> None:
+    Pass ``report_type="probe"`` to land under ``outputs/probe/{name}/...``
+    instead of the default ``outputs/eda/{name}/...``.
+    """
+
+    def __init__(self, name: str, *, report_type: str = "eda") -> None:
         self._name = name
-        self._root = settings.OUTPUT_DIR / "eda"
+        self._report_type = report_type
+        self._root = settings.OUTPUT_DIR / report_type
         self._stats: dict[str, Any] = {}
-        self._logger = get_logger(f"eda.{name}")
+        self._logger = get_logger(f"{report_type}.{name}")
         self._run_dir: Path | None = None
 
     def __enter__(self) -> EDAReport:
