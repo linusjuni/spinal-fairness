@@ -132,6 +132,7 @@ def run(encoder_name: str = "mri_core") -> None:
                     "n_pcs": r["n_pcs"],
                     "mean": round(r["mean"], 4),
                     "ci95": round(r["ci95"], 4),
+                    "ci95_naive": round(r["ci95_naive"], 4),
                 }
                 for r in probe_results
             ]

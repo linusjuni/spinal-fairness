@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import numpy as np
 import polars as pl
+from scipy import stats as sps
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.metrics import balanced_accuracy_score, roc_auc_score
@@ -95,15 +96,28 @@ def linear_probe(
         scores.append(float(score))
 
     mean = float(np.mean(scores))
-    std = float(np.std(scores, ddof=1))
-    ci95 = float(1.96 * std / np.sqrt(k_folds))
+    var_hat = float(np.var(scores, ddof=1))
+
+    # Nadeau-Bengio (2003, "Inference for the Generalization Error") corrected
+    # variance for k-fold CV. The naive var_hat / k underestimates variance of
+    # the CV mean because training folds overlap — NB inflates by (1/k + 1/(k-1))
+    # over naive. For k=5 this makes the SE ~1.5x wider. CI is a Student-t with
+    # k-1 dof. This is the right quantity when you want a CI around the CV mean
+    # itself. See methodology.md; the field default (Glocker, Gichoya) is
+    # instead a bootstrap on a held-out test set — inapplicable here since we
+    # CV over the full cohort.
+    t_crit = float(sps.t.ppf(0.975, df=k_folds - 1))
+    se_naive = float(np.sqrt(var_hat / k_folds))
+    se_nb = float(np.sqrt((1.0 / k_folds + 1.0 / (k_folds - 1)) * var_hat))
+    ci95_naive = t_crit * se_naive
+    ci95_nb = t_crit * se_nb
 
     logger.info(
         "Linear probe",
         attribute=attribute,
         metric=metric_name,
         mean=f"{mean:.3f}",
-        ci95=f"+/-{ci95:.3f}",
+        ci95_nb=f"+/-{ci95_nb:.3f}",
         n=int(len(y)),
         n_classes=n_classes,
     )
@@ -116,6 +130,7 @@ def linear_probe(
         "class_counts": [int(c) for c in counts],
         "n_pcs": effective_n_pcs,
         "mean": mean,
-        "ci95": ci95,
+        "ci95": ci95_nb,
+        "ci95_naive": ci95_naive,
         "per_fold": scores,
     }
