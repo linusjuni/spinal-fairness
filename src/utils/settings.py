@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     nnUNet_preprocessed: Path = Field(default=Path("/work3/s225224/nnunet/preprocessed"))
     nnUNet_results: Path = Field(default=Path("/work3/s225224/nnunet/results"))
 
+    # Paths — pretrained encoder weights (MedicalNet, RadImageNet, etc.)
+    MODELS_DIR: Path = Path("/work3/s225224/models")
+
     @property
     def raw_dir(self) -> Path:
         return self.DATA_DIR / "raw"
