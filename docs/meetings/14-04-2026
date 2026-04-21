@@ -1,0 +1,53 @@
+# Meeting Notes — 14 April 2026
+
+**Attendees:** Linus, Aditya  
+
+---
+
+## Infrastructure
+
+- Explore access to **titans.compute.dtu.dk** as an additional compute resource.
+
+---
+
+## Experiments
+
+**Baseline fairness audit**
+- Train on the full dataset (Silver + Gold labels combined), evaluate on the full test set.
+- Stratify performance (Dice, HD95) by sex, race, age, and scanner manufacturer.
+- The Gold/Silver label distinction is still pending from the dataset authors — this experiment proceeds regardless.
+
+**Class-conditional training**
+- Condition the segmentation model on demographic attributes (sex, age group) during training as a potential bias-mitigation strategy.
+
+**Confident learning for label noise**
+- Apply [Confident Learning / cleanlab](https://github.com/cleanlab/cleanlab) (Northcutt et al.) to characterize label noise across demographic groups. This may help identify which cases are likely Silver-standard even before the author list arrives.
+
+---
+
+## Statistical Testing
+
+- Add **one-sample t-test** alongside Mann-Whitney U for each two-group comparison.
+- Add **one-way ANOVA** alongside Kruskal-Wallis for each multi-group comparison.
+- Rationale: reporting both parametric and non-parametric tests is standard in medical imaging papers and allows readers to assess sensitivity to distributional assumptions.
+
+---
+
+## EDA / Anatomy
+
+- Generate plots of vertebral body and disc morphology (volume, height) stratified by age to visualise structural changes (growth/shrinkage) across the lifespan.
+- Search literature on when and why annotators fail to segment vertebral bodies or discs — relevant to understanding the shapes, for example when VB have weird structures (fx. in older patients)
+
+---
+
+## Representation Analysis & Debiasing (Aditya's suggestion)
+
+The core idea: investigate whether demographic information is latently encoded in the MRI images themselves, and if so, apply debiasing before training a segmentation decoder.
+
+1. **Encode images** — pass MRI volumes through a pretrained encoder (e.g., a medical imaging foundation model or ResNet).
+2. **Visualise latent space** — apply PCA (or UMAP) and check whether demographic groups (male/female, age bins) cluster separately.
+3. **Interpret** — if groups separate, the images themselves carry demographic signal, which a segmentation model can exploit.
+4. **Debias representations** — apply MMD loss or one of Aasa's domain-adaptation techniques to learn a representation where demographic groups are indistinguishable.
+5. **Train decoder on fair representations** — segmentation head trained on the debiased embedding should produce fairer outputs.
+
+This pipeline goes beyond measuring fairness and towards actively correcting it.

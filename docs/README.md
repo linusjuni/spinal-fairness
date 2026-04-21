@@ -14,3 +14,15 @@
 | [02 — Dataset Preparation](nnunet/02_dataset_preparation.md) | nnU-Net format, naming, dataset.json, demographic splits |
 | [03 — Training](nnunet/03_training.md) | Preprocessing, job scripts, custom trainer, submitting jobs |
 | [04 — Inference & Evaluation](nnunet/04_inference.md) | Model selection, prediction, postprocessing, metrics, fairness analysis |
+
+## Demographic Probing of Medical Image Encoders
+
+Diagnostic pipeline that checks whether demographic signal is latently
+encoded in MRI features — precursor to any debiasing work.
+
+| Document | Contents |
+|---|---|
+| [Encoder Recommendations](demographic-probing-of-medical-image-encoders/encoder-recommendations.md) | MedicalNet / RadImageNet / SAM-Med3D survey, tradeoffs, gotchas |
+| [Papers](demographic-probing-of-medical-image-encoders/papers.md) | Gichoya, Glocker, FairMedFM, supervisor prior work |
+| [Methodology](demographic-probing-of-medical-image-encoders/methodology.md) | Preprocessing, PCA+UMAP, probe AUROC, permutation test, confounds |
+| [Sketch](demographic-probing-of-medical-image-encoders/sketch.md) | Flow diagram, MVP plan, output structure |
