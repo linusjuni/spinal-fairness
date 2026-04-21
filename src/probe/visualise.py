@@ -16,6 +16,7 @@ from src.data.loader import load_metadata
 from src.data.schemas import Col
 from src.eda.report import EDAReport
 from src.probe.extract import load_embeddings
+from src.probe.probe import linear_probe
 from src.utils.logger import get_logger
 from src.utils.settings import settings
 
@@ -69,7 +70,17 @@ def scatter_by_attribute(
 
 
 def run(encoder_name: str = "mri_core") -> None:
-    """Load embeddings, join demographics, PCA(2), scatter by sex/age/race."""
+    """Load embeddings, join demographics, PCA(2) scatters, linear probes.
+
+    The linear probe (PCA(50) -> logistic regression CV) is the primary
+    quantitative metric from methodology.md. The 2D scatter on its own
+    undersells non-linear or higher-PC signal; report both.
+
+    Scanner/manufacturer is included as a sanity attribute: a healthy
+    pipeline should reach high AUROC on scanner since vendors produce
+    distinct intensity fingerprints. If even scanner looks null, the
+    pipeline (slice axis, preprocessing) is suspect.
+    """
     embeddings = load_embeddings(encoder_name)
     metadata = load_metadata()
 
@@ -82,6 +93,7 @@ def run(encoder_name: str = "mri_core") -> None:
             Col.SEX,
             f"{Col.RACE}_group",
             f"{Col.AGE}_group",
+            Col.MANUFACTURER,
         ),
         on=Col.SERIES_SUBMITTER_ID,
         how="inner",
@@ -90,13 +102,41 @@ def run(encoder_name: str = "mri_core") -> None:
     emb_cols = _embedding_columns(df)
     df, explained = pca_2d(df, emb_cols)
 
+    attributes = [
+        str(Col.SEX),
+        f"{Col.RACE}_group",
+        f"{Col.AGE}_group",
+        str(Col.MANUFACTURER),
+    ]
+
     with EDAReport(encoder_name, report_type="probe") as report:
         report.log_stat("encoder", encoder_name)
         report.log_stat("n_samples", df.height)
         report.log_stat("output_dim", len(emb_cols))
         report.log_stat("pca_explained_variance_ratio", explained)
-        for attr in [str(Col.SEX), f"{Col.RACE}_group", f"{Col.AGE}_group"]:
+
+        for attr in attributes:
             scatter_by_attribute(df, attr, report, title_prefix=f"{encoder_name}: ")
+
+        probe_results = [linear_probe(df, emb_cols, attr) for attr in attributes]
+        for res in probe_results:
+            report.log_stat(f"probe_{res['attribute']}", res)
+
+        probe_table = pl.DataFrame(
+            [
+                {
+                    "attribute": r["attribute"],
+                    "metric": r["metric"],
+                    "n": r["n"],
+                    "n_classes": r["n_classes"],
+                    "n_pcs": r["n_pcs"],
+                    "mean": round(r["mean"], 4),
+                    "ci95": round(r["ci95"], 4),
+                }
+                for r in probe_results
+            ]
+        )
+        report.save_table(probe_table, "probe_linear")
 
 
 if __name__ == "__main__":
