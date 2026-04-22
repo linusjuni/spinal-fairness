@@ -134,19 +134,34 @@ with prior EDA.
 | N4 bias-field correction | not done | Low priority (scanner × sex independent); revisit if bias-field artefacts suspected |
 | Clip to [0.5, 99.5] percentile | skipped for MRI-CORE | Incompatible with pretraining norm; applies to other encoders in the lineup |
 
+### Random-init ViT-B null (2026-04-22)
+
+Encoder: random-init ViT-B (768-d, same architecture and input pipeline as
+MRI-CORE — mid-sagittal slice, min-max norm, 3-channel, resize 1024²,
+ImageNet mean/std — Gaussian-initialised weights, no pretraining, fixed seed).
+
+| Attribute | Metric | Mean | ±95% CI (NB) | Per-fold scores |
+|---|---|---|---|---|
+| Sex | AUROC | **0.836** | ±0.039 | 0.831, 0.854, 0.861, 0.827, 0.810 |
+| Age (3-bin) | Balanced accuracy | 0.534 | ±0.083 | 0.534, 0.487, 0.529, 0.512, 0.606 |
+| Race (3-group) | Balanced accuracy | 0.426 | ±0.064 | 0.396, 0.483, 0.402, 0.428, 0.423 |
+| Manufacturer | AUROC | **0.992** | ±0.013 | 0.995, 0.995, 0.980, 0.991, 0.997 |
+
+PCA(2) explained variance: 80.6% (PC1) + 15.6% (PC2) = **96.2% total**.
+
+### Cross-encoder comparison
+
+| Attribute | Metric | MRI-CORE (uncropped) | random_vit_b | Delta |
+|---|---|---|---|---|
+| Sex | AUROC | 0.931 ±0.031 | 0.836 ±0.039 | +0.095 |
+| Age (3-bin) | Balanced accuracy | 0.632 ±0.043 | 0.534 ±0.083 | +0.098 |
+| Race (3-group) | Balanced accuracy | 0.513 ±0.071 | 0.426 ±0.064 | +0.087 |
+| Manufacturer | AUROC | 0.997 ±0.007 | 0.992 ±0.013 | +0.005 |
+
+Random baseline for 3-class balanced accuracy is 0.333.
+
 ## Next steps
 
-- **Random-init ViT-B null** (`random_vit_b`) — same architecture and input
-  pipeline as MRI-CORE, Gaussian-initialised weights with no pretraining. Answers
-  a narrower but cleaner question than any preprocessing ablation: *does the
-  demographic signal require learned features, or would any ViT pick it up from
-  raw pixel statistics?* If random-init gives AUROC ≈ 0.5 on the uncropped inputs,
-  FOV and intensity-histogram artefacts are ruled out as drivers — the signal
-  requires learned weights. It does not separate "learned anatomy" from "learned
-  body-extent" (a pretrained encoder can still represent silhouette shape), so
-  this narrows the confound space rather than closing it, but it is strictly
-  cleaner than input-level ablations because it changes the weights instead of
-  perturbing the input distribution.
 - Run non-Duke encoders (Triad-SwinB, MedicalNet) to confirm sex signal
   generalises beyond MRI-CORE's institutional pretraining.
 - Add UMAP(2) and per-PC K–S tests (Glocker 2023 style).
