@@ -2,11 +2,13 @@ from __future__ import annotations
 
 from ._base import Encoder, EncoderFactory
 from .mri_core import load_mri_core, load_mri_core_cropped
+from .random_vit_b import load_random_vit_b
 
 
 REGISTRY: dict[str, EncoderFactory] = {
     "mri_core": load_mri_core,
     "mri_core_cropped": load_mri_core_cropped,
+    "random_vit_b": load_random_vit_b,
 }
 
 
