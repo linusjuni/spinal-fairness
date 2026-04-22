@@ -107,10 +107,11 @@ def _preprocess(nifti_path: Path) -> torch.Tensor:
 def load_mri_core(device: str = "cuda") -> Encoder:
     if not MRI_CORE_WEIGHTS.exists():
         raise FileNotFoundError(
-            f"MRI-CORE weights not found at {MRI_CORE_WEIGHTS}. Download "
-            f"mri_foundation.pth from the repo README's Google Drive link "
-            f"(https://github.com/mazurowski-lab/mri_foundation) and save it "
-            f"as {MRI_CORE_WEIGHTS.name} under {MRI_CORE_WEIGHTS.parent}/."
+            f"MRI-CORE weights not found at {MRI_CORE_WEIGHTS}. "
+            f"Run `bash jobs/fetch_mri_core.sh` to download them, or grab "
+            f"{MRI_CORE_WEIGHTS.name} from the Google Drive link in the "
+            f"mazurowski-lab/mri_foundation README and place it under "
+            f"{MRI_CORE_WEIGHTS.parent}/."
         )
     logger.info("Loading MRI-CORE", weights=MRI_CORE_WEIGHTS.name)
     vit = _build_vit(MRI_CORE_WEIGHTS)
