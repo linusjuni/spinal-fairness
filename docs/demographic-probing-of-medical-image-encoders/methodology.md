@@ -29,6 +29,27 @@ Forcing isotropy would 8× interpolate the slice axis and invent data.
    for the FOV confound (see "Confounds" below). Report results with and
    without cropping.
 
+### Current implementation status (MRI-CORE MVP)
+
+The per-encoder preprocessing **deviates** from the recipe above when the
+encoder's pretraining mandates a different intensity scheme. MRI-CORE was
+pretrained with per-slice min-max to [0, 1] + ImageNet mean/std; feeding
+clip + z-score inputs to a ViT tuned for that scheme produces wrong
+features. The MRI-CORE pipeline is therefore encoder-specific, not
+project-standard. Other encoders (MedicalNet, TotalSpineSeg, Triad) will
+use clip + z-score per the spec above.
+
+| Step | MRI-CORE MVP | Notes |
+|---|---|---|
+| RAS reorient | done | Required for all encoders |
+| Mid-sagittal slice selection | done | 2D encoder; 3D encoders take the full RAS volume |
+| Per-slice min-max + ImageNet norm | done | Replaces clip + z-score for MRI-CORE only |
+| Grayscale → 3-channel, resize to 1024² | done | SAM input requirement |
+| Foreground crop | **variant available** (`mri_core_cropped`), not yet run | Body-extent ablation |
+| In-plane resample to fixed mm grid | not done | Min-max + resize-to-1024² approximates it; add if cross-scanner resolution variance becomes a concern |
+| N4 bias-field correction | not done | Low priority given scanner × sex is independent (χ² p=0.21); revisit if bias-field artefacts are suspected |
+| Clip to [0.5, 99.5] percentile | skipped for MRI-CORE | Applies to other encoders in the lineup |
+
 ---
 
 ## Feature extraction

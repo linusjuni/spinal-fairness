@@ -64,3 +64,24 @@ def resize_bilinear(t: torch.Tensor, size: int) -> torch.Tensor:
 def imagenet_normalize(t: torch.Tensor) -> torch.Tensor:
     """Subtract ImageNet mean and divide by std. Expects (3, H, W)."""
     return (t - _IMAGENET_MEAN) / _IMAGENET_STD
+
+
+def foreground_crop(slice_2d: np.ndarray, threshold_frac: float = 0.05) -> np.ndarray:
+    """Crop a 2D slice to the bounding box of pixels above the threshold.
+
+    Default threshold is 5% of the slice's max intensity — above the typical
+    Rician noise floor of MRI background, well below tissue intensities. If
+    nothing clears the threshold (pathological / empty slice), the original
+    slice is returned unchanged.
+
+    Rationale: addresses the body-extent confound where fixed-FOV scans still
+    contain variable amounts of air padding around the anatomy. Foreground-
+    cropping + resize normalises the body-to-image ratio across scans.
+    """
+    thresh = float(slice_2d.max()) * threshold_frac
+    mask = slice_2d > thresh
+    if not mask.any():
+        return slice_2d
+    rows = np.where(mask.any(axis=1))[0]
+    cols = np.where(mask.any(axis=0))[0]
+    return slice_2d[rows[0] : rows[-1] + 1, cols[0] : cols[-1] + 1]

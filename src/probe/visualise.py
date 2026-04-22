@@ -69,7 +69,7 @@ def scatter_by_attribute(
         ax.legend(loc="best", fontsize=9)
 
 
-def run(encoder_name: str = "mri_core") -> None:
+def run(encoder_name: str) -> None:
     """Load embeddings, join demographics, PCA(2) scatters, linear probes.
 
     The linear probe (PCA(50) -> logistic regression CV) is the primary
@@ -141,4 +141,8 @@ def run(encoder_name: str = "mri_core") -> None:
 
 
 if __name__ == "__main__":
-    run("mri_core")
+    import sys
+
+    if len(sys.argv) != 2:
+        sys.exit("usage: python -m src.probe.visualise <encoder_name>")
+    run(sys.argv[1])

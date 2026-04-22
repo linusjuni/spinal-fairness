@@ -4,15 +4,22 @@ Loads the released ``mri_foundation.pth`` checkpoint into the vendored SAM
 image encoder, bypasses the (randomly-initialised) neck, and mean-pools
 the last transformer block's output to a 768-d vector.
 
-See docs/demographic-probing-of-medical-image-encoders/methodology.md and
-encoder-recommendations.md for the rationale behind the preprocessing
-choices (per-slice min-max + ImageNet norm matches pretraining).
+Two preprocessing variants are registered:
+    - ``mri_core``         — mid-sagittal slice, no cropping
+    - ``mri_core_cropped`` — mid-sagittal slice, foreground-cropped before resize
+
+The cropped variant tests the body-extent confound: if sex / age AUROC drops
+substantially under cropping, the encoder was reading how much of the image
+is body (vs. air) rather than internal anatomy. See findings.md and
+methodology.md for the rationale and for the other preprocessing choices
+(per-slice min-max + ImageNet norm matches MRI-CORE's pretraining).
 """
 
 from __future__ import annotations
 
 import contextlib
 import io
+from functools import partial
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -20,6 +27,7 @@ import torch
 import torch.nn as nn
 
 from src.probe.preprocessing import (
+    foreground_crop,
     imagenet_normalize,
     load_ras_volume,
     mid_sagittal_slice,
@@ -94,17 +102,23 @@ def _build_vit(checkpoint: Path) -> nn.Module:
     return sam.image_encoder
 
 
-def _preprocess(nifti_path: Path) -> torch.Tensor:
+def _preprocess_base(nifti_path: Path, *, crop: bool) -> torch.Tensor:
     """NIfTI -> (3, 1024, 1024) float tensor, ImageNet-normalised."""
     vol = load_ras_volume(nifti_path)
     slice_2d = mid_sagittal_slice(vol)
+    if crop:
+        slice_2d = foreground_crop(slice_2d)
     slice_2d = min_max_normalize(slice_2d)
     t = to_three_channel_tensor(slice_2d)
     t = resize_bilinear(t, INPUT_SIZE)
     return imagenet_normalize(t)
 
 
-def load_mri_core(device: str = "cuda") -> Encoder:
+_preprocess = partial(_preprocess_base, crop=False)
+_preprocess_cropped = partial(_preprocess_base, crop=True)
+
+
+def _build_encoder(preprocess_fn, device: str, label: str) -> Encoder:
     if not MRI_CORE_WEIGHTS.exists():
         raise FileNotFoundError(
             f"MRI-CORE weights not found at {MRI_CORE_WEIGHTS}. "
@@ -113,10 +127,20 @@ def load_mri_core(device: str = "cuda") -> Encoder:
             f"mazurowski-lab/mri_foundation README and place it under "
             f"{MRI_CORE_WEIGHTS.parent}/."
         )
-    logger.info("Loading MRI-CORE", weights=MRI_CORE_WEIGHTS.name)
+    logger.info(f"Loading MRI-CORE ({label})", weights=MRI_CORE_WEIGHTS.name)
     vit = _build_vit(MRI_CORE_WEIGHTS)
     model = MRICoreEncoder(vit).to(device).eval()
     for p in model.parameters():
         p.requires_grad_(False)
-    logger.success("Loaded MRI-CORE", output_dim=OUTPUT_DIM, device=device)
-    return Encoder(model=model, preprocess=_preprocess, output_dim=OUTPUT_DIM)
+    logger.success(
+        f"Loaded MRI-CORE ({label})", output_dim=OUTPUT_DIM, device=device
+    )
+    return Encoder(model=model, preprocess=preprocess_fn, output_dim=OUTPUT_DIM)
+
+
+def load_mri_core(device: str = "cuda") -> Encoder:
+    return _build_encoder(_preprocess, device, "uncropped")
+
+
+def load_mri_core_cropped(device: str = "cuda") -> Encoder:
+    return _build_encoder(_preprocess_cropped, device, "cropped")

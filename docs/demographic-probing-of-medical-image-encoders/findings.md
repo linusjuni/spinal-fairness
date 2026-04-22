@@ -46,8 +46,49 @@ are scanned on Siemens and GE in essentially equal proportions.
 Race × manufacturer was also not significant (p=0.49, V=0.066), consistent
 with prior EDA.
 
+## Caveats
+
+1. **Body-extent confound not yet ruled out.** The scanner confound is
+   ruled out by chi² + Cramér's V, but a fixed-FOV scan still contains
+   variable amounts of air padding around the anatomy. The encoder could
+   be reading "how much body vs. air fills the image" rather than internal
+   anatomy. A cropped-variant encoder (`mri_core_cropped`) is registered for
+   this ablation — pending run. If sex AUROC drops substantially under
+   foreground-crop + resize, the signal was image-extent; if it stays high,
+   it is internal anatomy or soft-tissue.
+
+2. **Duke institutional pretraining.** MRI-CORE was pretrained on Duke
+   clinical data (2016–2020), the same institution and scanner pool as
+   CSpineSeg. Cervical anatomy was deliberately excluded from pretraining
+   (no data-leakage issue), but the encoder may encode Duke-specific
+   acquisition fingerprints (protocols, vendor mix, post-processing) that
+   incidentally correlate with sex. Cross-encoder comparison with non-Duke
+   encoders (Triad-SwinB, MedicalNet) is the planned disentanglement.
+
+3. **MRI-CORE uses its own normalisation.** The project-standard clip +
+   z-score preprocessing (methodology.md) is deliberately bypassed for
+   MRI-CORE — pretraining expects per-slice min-max + ImageNet mean/std,
+   and feeding differently-normalised inputs breaks the features. Other
+   encoders in the lineup will use different preprocessing.
+
+## Preprocessing — current status
+
+| Step | Status | Notes |
+|---|---|---|
+| RAS reorient | done | `nib.as_closest_canonical` |
+| Mid-sagittal slice | done | `vol[X // 2]` after RAS |
+| Per-slice min-max to [0, 1] | done | Matches MRI-CORE pretraining |
+| Grayscale → 3-channel | done | SAM/DINOv2 expects RGB |
+| Resize to 1024² (bilinear) | done | SAM input size |
+| ImageNet mean/std | done | Matches MRI-CORE pretraining |
+| Foreground crop | **pending** | `mri_core_cropped` variant registered, not yet run |
+| In-plane resample to fixed grid | not done | Min-max + resize approximates it; revisit if anatomy scale becomes a concern |
+| N4 bias-field correction | not done | Low priority (scanner × sex independent); revisit if bias-field artefacts suspected |
+| Clip to [0.5, 99.5] percentile | skipped for MRI-CORE | Incompatible with pretraining norm; applies to other encoders in the lineup |
+
 ## Next steps
 
+- Run the `mri_core_cropped` variant to quantify the body-extent confound.
 - Run non-Duke encoders (Triad-SwinB, MedicalNet) to confirm sex signal
   generalises beyond MRI-CORE's institutional pretraining.
 - Add UMAP(2) and per-PC K–S tests (Glocker 2023 style).
