@@ -20,6 +20,11 @@ TRAINER=nnUNetTrainerWandB
 # -----------------------------------------------------
 
 export UV_ENV_FILE=".env"
+# Limit DA workers + OMP threads to prevent glibc heap corruption (free(): corrupted
+# unsorted chunks) in batchgenerators multiprocessing with large 3D patches.
+# See: https://github.com/MIC-DKFZ/nnUNet/issues/2523
+export OMP_NUM_THREADS=1
+export nnUNet_n_proc_DA=2
 
 mkdir -p jobs/logs
 
