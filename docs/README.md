@@ -26,3 +26,4 @@ encoded in MRI features — precursor to any debiasing work.
 | [Papers](demographic-probing-of-medical-image-encoders/papers.md) | Gichoya, Glocker, FairMedFM, supervisor prior work |
 | [Methodology](demographic-probing-of-medical-image-encoders/methodology.md) | Preprocessing, PCA+UMAP, probe AUROC, permutation test, confounds |
 | [Sketch](demographic-probing-of-medical-image-encoders/sketch.md) | Flow diagram, MVP plan, output structure |
+| [Findings](demographic-probing-of-medical-image-encoders/findings.md) | MRI-CORE MVP probe results (2026-04-21) |
