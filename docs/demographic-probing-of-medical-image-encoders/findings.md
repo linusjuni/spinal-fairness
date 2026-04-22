@@ -115,7 +115,8 @@ with prior EDA.
 
 ## Next steps
 
-- Run the `mri_core_cropped` variant to quantify the body-extent confound.
+- **Body-extent confound**: implement `mri_core_masked` (Otsu pixel masking) and
+  random-init null encoder — see `idea.md`.
 - Run non-Duke encoders (Triad-SwinB, MedicalNet) to confirm sex signal
   generalises beyond MRI-CORE's institutional pretraining.
 - Add UMAP(2) and per-PC K–S tests (Glocker 2023 style).
