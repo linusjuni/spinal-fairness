@@ -65,24 +65,45 @@ with prior EDA.
 
 ## Caveats
 
-1. **Body-extent confound — preliminary evidence against, not yet definitively ruled out.**
-   The cropped variant (`mri_core_cropped`) produced sex AUROC 0.936, essentially
-   unchanged from 0.931 uncropped, which is reassuring. However, visual inspection of
-   the preprocessing preview showed that the bounding-box crop at 5% of max intensity
-   is not very aggressive — many scans already had tight FOV, so only a small border
-   was removed. The crop also does not zero out background pixels within the bounding
-   box; body shape and extent (height, width of anatomy) still vary before the resize
-   to 1024². It is therefore possible that the encoder is still reading body-size
-   information rather than internal anatomy structure.
+1. **Body-extent confound — one sub-variant ruled out, not the confound in general.**
+   "Body extent" is actually three nested sub-confounds: body-to-image *ratio* (how
+   much of the frame is tissue), silhouette *shape* (the body contour itself), and
+   background *intensity/noise* statistics. The cropped variant (`mri_core_cropped`)
+   was a cheap test of the first one only. A bbox crop + resize to 1024² normalises
+   the body-to-air fill ratio — after cropping, every image has tissue filling ~100 %
+   of the frame instead of the variable padding seen in the uncropped cohort.
 
-   Two stronger ablations are planned (see `idea.md`):
-   - **Otsu + `binary_fill_holes` pixel masking** (`mri_core_masked`): zero out all
-     non-tissue pixels per-scan using an adaptive threshold. Removes air inside the
-     bounding box and handles enclosed cavities (trachea). If sex AUROC stays high,
-     the confound is definitively eliminated.
-   - **Random-init null encoder**: same ViT-B architecture, no pretraining. If this
-     gives AUROC ≈ 0.5 on uncropped images, any preprocessing artefact is ruled out
-     as the driver — the signal requires learned weights.
+   Sex AUROC moved +0.005 (0.931 → 0.936). **Reading: body-to-air fill ratio is
+   probably not the driver of the sex signal.**
+
+   Two caveats on that null result, both of which temper how much weight it carries:
+
+   - **The cropped output still contains substantial air.** Visual inspection of
+     `outputs/probe/preprocessing_preview.png` showed cropped network inputs with
+     large black regions around the body silhouette — the image looked nearly
+     identical to the uncropped version. Bbox cropping only removes rows/columns
+     that are *entirely* below the 5 %-of-max threshold, which is a loose
+     constraint: anatomy is non-rectangular (tapering head / neck outline) so a
+     tight bbox still encloses lots of air around curved edges, and any single
+     above-threshold pixel in a row (nose tip, noise spike) keeps the full width
+     of background around it. The fill-ratio normalisation this variant was
+     supposed to deliver barely happened, which weakens the null AUROC result —
+     a near-no-op intervention can't refute the confound it's nominally testing.
+   - **Square resize introduces a new sex-linked stretch artefact.** Resizing
+     rectangular bboxes (e.g. 600×800 vs 700×800) to 1024² square stretches the
+     axes unequally, and aspect ratio of the cropped body silhouette is itself
+     sex-linked (men tend to have wider necks per unit height). The cropped variant
+     may have traded a fill-ratio confound for an anisotropic-stretch one. Aspect-
+     preserving resize (letterbox-pad to 1024²) would be the cleaner input-level
+     ablation if we ever revisit this route.
+
+   Silhouette shape and background intensity/noise are both untouched by bbox
+   cropping, and the silhouette signal is probably the larger concern anyway. Otsu
+   + `binary_fill_holes` pixel masking was considered and dropped: it creates a
+   hard silhouette edge that is out-of-distribution for MRI-CORE (pretrained on raw
+   MRI with air) and does not touch the silhouette-shape signal, so it would
+   introduce new artefacts without resolving the bigger one. The random-init null
+   below is the cleaner next move — see "Next steps".
 
 2. **Duke institutional pretraining.** MRI-CORE was pretrained on Duke
    clinical data (2016–2020), the same institution and scanner pool as
@@ -108,15 +129,24 @@ with prior EDA.
 | Grayscale → 3-channel | done | SAM/DINOv2 expects RGB |
 | Resize to 1024² (bilinear) | done | SAM input size |
 | ImageNet mean/std | done | Matches MRI-CORE pretraining |
-| Foreground crop (bbox @ 5% max) | done | Ran 2026-04-22; no effect on probe AUROCs. Pixel-level masking (Otsu + fill-holes) still pending — see `idea.md` |
+| Foreground crop (bbox @ 5% max) | done | Ran 2026-04-22; no meaningful effect on probe AUROCs. See Caveat 1 — the crop was near-no-op in practice (cropped output still shows substantial air), so this is not a strong refutation of the body-extent confound. |
 | In-plane resample to fixed grid | not done | Min-max + resize approximates it; revisit if anatomy scale becomes a concern |
 | N4 bias-field correction | not done | Low priority (scanner × sex independent); revisit if bias-field artefacts suspected |
 | Clip to [0.5, 99.5] percentile | skipped for MRI-CORE | Incompatible with pretraining norm; applies to other encoders in the lineup |
 
 ## Next steps
 
-- **Body-extent confound**: implement `mri_core_masked` (Otsu pixel masking) and
-  random-init null encoder — see `idea.md`.
+- **Random-init ViT-B null** (`random_vit_b`) — same architecture and input
+  pipeline as MRI-CORE, Gaussian-initialised weights with no pretraining. Answers
+  a narrower but cleaner question than any preprocessing ablation: *does the
+  demographic signal require learned features, or would any ViT pick it up from
+  raw pixel statistics?* If random-init gives AUROC ≈ 0.5 on the uncropped inputs,
+  FOV and intensity-histogram artefacts are ruled out as drivers — the signal
+  requires learned weights. It does not separate "learned anatomy" from "learned
+  body-extent" (a pretrained encoder can still represent silhouette shape), so
+  this narrows the confound space rather than closing it, but it is strictly
+  cleaner than input-level ablations because it changes the weights instead of
+  perturbing the input distribution.
 - Run non-Duke encoders (Triad-SwinB, MedicalNet) to confirm sex signal
   generalises beyond MRI-CORE's institutional pretraining.
 - Add UMAP(2) and per-PC K–S tests (Glocker 2023 style).
