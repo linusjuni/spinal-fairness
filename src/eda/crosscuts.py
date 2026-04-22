@@ -95,6 +95,24 @@ def run(df, report_name: str) -> None:
         report.log_stat("chi2_race_by_manufacturer", res)
         stat_results.append(("race_by_manufacturer", res))
 
+        with report.figure("sex_by_manufacturer", figsize=(6, 3)) as fig:
+            ax = fig.subplots()
+            pivot = (
+                df.group_by(Col.SEX, Col.MANUFACTURER)
+                .len()
+                .pivot(on=Col.MANUFACTURER, index=Col.SEX, values="len")
+                .fill_null(0)
+            )
+            cross_pd = pivot.to_pandas().set_index("sex")
+            sns.heatmap(cross_pd, annot=True, fmt="d", cmap="Blues", ax=ax)
+            ax.set_xlabel("Manufacturer")
+            ax.set_ylabel("Sex")
+            ax.set_title("Sex by Manufacturer (Counts)")
+
+        res = chi2_result(cross_pd)
+        report.log_stat("chi2_sex_by_manufacturer", res)
+        stat_results.append(("sex_by_manufacturer", res))
+
         with report.figure("race_by_field_strength", figsize=(6, 4)) as fig:
             ax = fig.subplots()
             pivot = (
