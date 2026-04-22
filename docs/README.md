@@ -1,10 +1,25 @@
 # Documentation Index
 
-## Statistical Analysis
+## Project Plan
 
 | Document | Contents |
 |---|---|
-| [Statistical Testing](statistical_testing.md) | Test battery for EDA (Mann-Whitney, Kruskal-Wallis, chi-squared), effect sizes, multiple testing correction, and when each technique is/isn't useful |
+| [Project Plan](project-plan/project-plan.md) | Formal course project plan — research goals, infrastructure, methods, risks |
+
+## Exploratory Data Analysis
+
+| Document | Contents |
+|---|---|
+| [Data Distribution](eda/data-distribution.md) | Demographic and scanner counts, cross-demographic confounder analysis, implications for study design |
+| [Segmentation Volumes](eda/segmentation-volumes.md) | Plot-by-plot analysis of segmentation volumes (mm³ vs voxels, by sex/race/age/scanner) |
+| [Comparison: Full vs Train](eda/comparison.md) | Statistical test results (effect sizes, BH-FDR) comparing full cohort and train split |
+
+## Methodology
+
+| Document | Contents |
+|---|---|
+| [Statistical Testing](statistical-testing/statistical-testing.md) | Test battery for EDA (Mann-Whitney, Kruskal-Wallis, chi-squared), effect sizes, multiple testing correction, and when each technique is/isn't useful |
+| [Splits](splits/splits.md) | Sex-balancing decision — split v1/v2/v3 explored, v3 (exam-level 50/50 downsample) adopted |
 
 ## nnU-Net Pipeline
 

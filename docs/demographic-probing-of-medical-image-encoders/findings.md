@@ -108,7 +108,7 @@ with prior EDA.
 | Grayscale → 3-channel | done | SAM/DINOv2 expects RGB |
 | Resize to 1024² (bilinear) | done | SAM input size |
 | ImageNet mean/std | done | Matches MRI-CORE pretraining |
-| Foreground crop | **pending** | `mri_core_cropped` variant registered, not yet run |
+| Foreground crop (bbox @ 5% max) | done | Ran 2026-04-22; no effect on probe AUROCs. Pixel-level masking (Otsu + fill-holes) still pending — see `idea.md` |
 | In-plane resample to fixed grid | not done | Min-max + resize approximates it; revisit if anatomy scale becomes a concern |
 | N4 bias-field correction | not done | Low priority (scanner × sex independent); revisit if bias-field artefacts suspected |
 | Clip to [0.5, 99.5] percentile | skipped for MRI-CORE | Incompatible with pretraining norm; applies to other encoders in the lineup |

@@ -1,0 +1,29 @@
+# Meeting Notes — 11 March 2026
+
+**Attendees:** Linus, Aditya
+
+---
+
+## Splits / Sex Balancing
+
+- ~~Balance the sexes exactly, even if it means dropping exams from patients with multiple scans.~~ ✓ Done — v3 now enforces a 50/50 split at the exam level.
+
+---
+
+## Statistical Testing
+
+- Add formal statistical tests when comparing group means, rather than relying on visual comparison alone.
+
+---
+
+## EDA
+
+- Produce a single well-structured comparison table that consolidates the main EDA findings across groupings.
+- Repeat the EDA on the training split alone, and optionally on the val and test splits, to confirm the full-cohort patterns still hold after splitting.
+- Expand the volumetric analysis into a deeper dive rather than a surface-level summary.
+
+---
+
+## Segmentation Quality
+
+- Aditya will look into libraries for automated segmentation quality checks (e.g., detecting rounded or square-edged masks that suggest machine-generated labels).

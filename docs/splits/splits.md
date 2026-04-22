@@ -57,21 +57,3 @@ Dropped: 80 train / 7 val / 25 female exams (1254 → 1142 exams total).
 | Train | 400 | 400 | 50.0% |
 | Val | 58 | 58 | 50.0% |
 | Test | 113 | 113 | 50.0% |
-
-
-
-
-
-# Notes from meeting
-
-- ~~Actually we should balance EXACTLY. So we might have to drop some exams for the multiple patients.~~ ✓ Done — v3 now balances at exam level.
-
-- we should do statistical tests to compare means
-
-- make a really good table where we compare different things from the eda in a well structured manner
-
-- aditya will find some libraries that can be used to check segmentations (rounded edges, square, etc)
-
-- do the whole eda on the training set only too (potentially also on val and test just to see what it looks like)
-
-- do a much bigger deep dive into the volumentric analysis
