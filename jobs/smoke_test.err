@@ -1,0 +1,102 @@
+Resolved 110 packages in 535ms
+Audited 107 packages in 176ms
+Process Process-1:
+Process Process-3:
+Traceback (most recent call last):
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/batchgenerators/dataloading/nondet_multi_threaded_augmenter.py", line 64, in producer
+    sleep(wait_time)
+    ~~~~~^^^^^^^^^^^
+KeyboardInterrupt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/batchgenerators/dataloading/nondet_multi_threaded_augmenter.py", line 64, in producer
+    sleep(wait_time)
+    ~~~~~^^^^^^^^^^^
+KeyboardInterrupt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/batchgenerators/dataloading/nondet_multi_threaded_augmenter.py", line 67, in producer
+    abort_event.set()
+    ~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/multiprocessing/synchronize.py", line 341, in set
+    def set(self):
+    
+KeyboardInterrupt
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/batchgenerators/dataloading/nondet_multi_threaded_augmenter.py", line 67, in producer
+    abort_event.set()
+    ~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/multiprocessing/synchronize.py", line 345, in set
+    self._cond.notify_all()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/multiprocessing/synchronize.py", line 304, in notify_all
+    self.notify(n=sys.maxsize)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/multiprocessing/synchronize.py", line 285, in notify
+    while self._woken_count.acquire(False):
+          ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/bin/nnUNetv2_train", line 10, in <module>
+    sys.exit(run_training_entry())
+             ~~~~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/run/run_training.py", line 268, in run_training_entry
+    run_training(args.dataset_name_or_id, args.configuration, args.fold, args.tr, args.p, args.pretrained_weights,
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                 args.num_gpus, args.npz, args.c, args.val, args.disable_checkpointing, args.val_best,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                 device=device)
+                 ^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/run/run_training.py", line 209, in run_training
+    nnunet_trainer.run_training()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/nnUNetTrainer/nnUNetTrainer.py", line 1435, in run_training
+    self.on_epoch_end()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/nnUNetTrainer/nnUNetTrainer.py", line 1187, in on_epoch_end
+    self.save_checkpoint(join(self.output_folder, 'checkpoint_best.pth'))
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/nnUNetTrainer/nnUNetTrainer.py", line 1215, in save_checkpoint
+    torch.save(checkpoint, filename)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/serialization.py", line 1004, in save
+    _save(
+    ~~~~~^
+        obj,
+        ^^^^
+    ...<3 lines>...
+        _disable_byteorder_record,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/serialization.py", line 1313, in _save
+    zip_file.write_record(name, storage, num_bytes)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+Exception ignored in atexit callback <function _exit_function at 0x7f992debd760>:
+Traceback (most recent call last):
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/multiprocessing/util.py", line 424, in _exit_function
+    p.join()
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/multiprocessing/process.py", line 149, in join
+    res = self._popen.wait(timeout)
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/multiprocessing/popen_fork.py", line 44, in wait
+    return self.poll(os.WNOHANG if timeout == 0.0 else 0)
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/multiprocessing/popen_fork.py", line 28, in poll
+    pid, sts = os.waitpid(self.pid, flag)
+KeyboardInterrupt: 
