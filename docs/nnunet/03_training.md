@@ -1,6 +1,6 @@
 # 03 — Training
 
-> **Status: Running.** 10 jobs submitted to `gpua100` on 2026-04-13.
+> **Status: Complete (2026-04-30).** All 10 folds have `checkpoint_final.pth`. 3 folds missing `validation/summary.json` due to disk-full crash during WandB cleanup — re-run jobs submitted via `jobs/validate.sh`. See `05_model_selection.md` for next steps.
 
 ## Pipeline Summary
 
