@@ -1,0 +1,67 @@
+Resolved 120 packages in 6ms
+Audited 117 packages in 99ms
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+wandb: Currently logged in as: linusjunidtu (linusjunidtu-danmarks-tekniske-universitet-dtu) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run dndm9h44
+wandb: Tracking run with wandb version 0.25.1
+wandb: Run data is saved locally in /work3/s225224/nnunet/results/Dataset001_CSpineSeg/nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres/fold_4/wandb/run-20260422_022804-dndm9h44
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run visionary-valley-11
+wandb: ⭐️ View project at https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness
+wandb: 🚀 View run at https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness/runs/dndm9h44
+free(): corrupted unsorted chunks
+Exception in thread Thread-2 (results_loop):
+Traceback (most recent call last):
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    ~~~~~~~~^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/batchgenerators/dataloading/nondet_multi_threaded_augmenter.py", line 125, in results_loop
+    raise e
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/batchgenerators/dataloading/nondet_multi_threaded_augmenter.py", line 103, in results_loop
+    raise RuntimeError("One or more background workers are no longer alive. Exiting. Please check the "
+                       "print statements above for the actual error message")
+RuntimeError: One or more background workers are no longer alive. Exiting. Please check the print statements above for the actual error message
+corrupted size vs. prev_size
+free(): corrupted unsorted chunks
+Traceback (most recent call last):
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/bin/nnUNetv2_train", line 10, in <module>
+    sys.exit(run_training_entry())
+             ~~~~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/run/run_training.py", line 268, in run_training_entry
+    run_training(args.dataset_name_or_id, args.configuration, args.fold, args.tr, args.p, args.pretrained_weights,
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                 args.num_gpus, args.npz, args.c, args.val, args.disable_checkpointing, args.val_best,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                 device=device)
+                 ^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/run/run_training.py", line 209, in run_training
+    nnunet_trainer.run_training()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/nnUNetTrainer/nnUNetTrainer.py", line 1425, in run_training
+    train_outputs.append(self.train_step(next(self.dataloader_train)))
+                                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/batchgenerators/dataloading/nondet_multi_threaded_augmenter.py", line 196, in __next__
+    item = self.__get_next_item()
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/batchgenerators/dataloading/nondet_multi_threaded_augmenter.py", line 181, in __get_next_item
+    raise RuntimeError("One or more background workers are no longer alive. Exiting. Please check the "
+                       "print statements above for the actual error message")
+RuntimeError: One or more background workers are no longer alive. Exiting. Please check the print statements above for the actual error message
+Exception in thread Thread-3 (results_loop):
+WARNING:asyncio:socket.send() raised exception.
+WARNING:asyncio:socket.send() raised exception.
+Traceback (most recent call last):
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    ~~~~~~~~^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/batchgenerators/dataloading/nondet_multi_threaded_augmenter.py", line 125, in results_loop
+    raise e
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/batchgenerators/dataloading/nondet_multi_threaded_augmenter.py", line 103, in results_loop
+    raise RuntimeError("One or more background workers are no longer alive. Exiting. Please check the "
+                       "print statements above for the actual error message")
+RuntimeError: One or more background workers are no longer alive. Exiting. Please check the print statements above for the actual error message

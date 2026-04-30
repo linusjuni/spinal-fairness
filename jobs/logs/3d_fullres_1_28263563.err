@@ -1,0 +1,178 @@
+Resolved 120 packages in 664ms
+Audited 117 packages in 179ms
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+wandb: Currently logged in as: linusjunidtu (linusjunidtu-danmarks-tekniske-universitet-dtu) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run ip4erhrj
+wandb: Tracking run with wandb version 0.25.1
+wandb: Run data is saved locally in /work3/s225224/nnunet/results/Dataset001_CSpineSeg/nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres/fold_1/wandb/run-20260424_045801-ip4erhrj
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run twilight-tree-13
+wandb: ⭐️ View project at https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness
+wandb: 🚀 View run at https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness/runs/ip4erhrj
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+wandb: 
+wandb: Run history:
+wandb: dice_per_class_or_region/class_1 ▁▄▅▄▄▄▆▅▇▅▇▅▅▄▆▆▇▆▅▆▆▆▆▇▇▇▇▇█▆▇▇▆▇▆▇▇█▅▆
+wandb: dice_per_class_or_region/class_2 ▁▃▃▅▆▆▅▅▅▆▇▆▅▅▅▆▇▆▅▆▆▆▆▆▅▆▇▇▇▆▇▆▆▇▅▆▆▆█▆
+wandb:                      ema_fg_dice ▁▁▂▄▄▅▅▅▆▆▅▆▅▅▆▆▆▆▆▆▆▆▇▇▇▆▆▆▆▇▆▆▆▆▇██▇▇█
+wandb:                 epoch_duration_s ▁▇▇▇▇▇█▇████▇▇██▇▇█▆█▇▇▇▇▇▇▇▇▇▇▅▃▆▆▆▆▇▇▆
+wandb:             epoch_end_timestamps ▁▂▂▂▂▂▂▂▃▃▄▄▄▄▄▅▅▅▅▅▅▅▆▆▆▆▆▆▆▇▇▇▇▇▇▇████
+wandb:           epoch_start_timestamps ▁▁▁▁▁▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▄▄▄▄▅▅▅▅▅▆▆▆▆▇▇▇▇▇█
+wandb:                              lrs ██▇▇▇▇▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▅▄▄▄▄▄▄▄▄▄▃▃▃▂▂▂▂▁
+wandb:                     mean_fg_dice ▁▂▂▃▃▅▅▆▆▆▄▅▅▄▅▄▆▅▄▆▇▆▄▃▄▆▆▅▅▅▆█▅▄▄▅▆▆██
+wandb:                     train_losses █▆▆▆▅▅▅▅▅▄▅▅▄▄▄▄▄▃▃▃▃▃▃▃▃▃▂▃▃▃▃▃▂▂▂▁▁▂▁▁
+wandb:                       val_losses ▇▅█▅▅▃▅▅▃▅▅▄▄▃▄▄▃▃▅▆▃▄▃▆▄▂▆▂▂▃▁▆▂▄▂▅▃▃▃▄
+wandb: 
+wandb: Run summary:
+wandb:                    current_epoch 999
+wandb: dice_per_class_or_region/class_1 0.93568
+wandb: dice_per_class_or_region/class_2 0.90517
+wandb:                      ema_fg_dice 0.93435
+wandb:                 epoch_duration_s 144.57751
+wandb:             epoch_end_timestamps 1777146644.09275
+wandb:           epoch_start_timestamps 1777146499.51524
+wandb:                              lrs 2e-05
+wandb:                     mean_fg_dice 0.92042
+wandb:                     train_losses -0.95093
+wandb:                               +1 ...
+wandb: 
+wandb: 
+wandb: Run history:
+wandb: dice_per_class_or_region/class_1 ▁▄▅▄▄▄▆▅▇▅▇▅▅▄▆▆▇▆▅▆▆▆▆▇▇▇▇▇█▆▇▇▆▇▆▇▇█▅▆
+wandb: dice_per_class_or_region/class_2 ▁▃▃▅▆▆▅▅▅▆▇▆▅▅▅▆▇▆▅▆▆▆▆▆▅▆▇▇▇▆▇▆▆▇▅▆▆▆█▆
+wandb:                      ema_fg_dice ▁▁▂▄▄▅▅▅▆▆▅▆▅▅▆▆▆▆▆▆▆▆▇▇▇▆▆▆▆▇▆▆▆▆▇██▇▇█
+wandb:                 epoch_duration_s ▁▇▇▇▇▇█▇████▇▇██▇▇█▆█▇▇▇▇▇▇▇▇▇▇▅▃▆▆▆▆▇▇▆
+wandb:             epoch_end_timestamps ▁▂▂▂▂▂▂▂▃▃▄▄▄▄▄▅▅▅▅▅▅▅▆▆▆▆▆▆▆▇▇▇▇▇▇▇████
+wandb:           epoch_start_timestamps ▁▁▁▁▁▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▄▄▄▄▅▅▅▅▅▆▆▆▆▇▇▇▇▇█
+wandb:                              lrs ██▇▇▇▇▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▅▄▄▄▄▄▄▄▄▄▃▃▃▂▂▂▂▁
+wandb:                     mean_fg_dice ▁▂▂▃▃▅▅▆▆▆▄▅▅▄▅▄▆▅▄▆▇▆▄▃▄▆▆▅▅▅▆█▅▄▄▅▆▆██
+wandb:                     train_losses █▆▆▆▅▅▅▅▅▄▅▅▄▄▄▄▄▃▃▃▃▃▃▃▃▃▂▃▃▃▃▃▂▂▂▁▁▂▁▁
+wandb:                       val_losses ▇▅█▅▅▃▅▅▃▅▅▄▄▃▄▄▃▃▅▆▃▄▃▆▄▂▆▂▂▃▁▆▂▄▂▅▃▃▃▄
+wandb: 
+wandb: Run summary:
+wandb:                    current_epoch 999
+wandb: dice_per_class_or_region/class_1 0.93568
+wandb: dice_per_class_or_region/class_2 0.90517
+wandb:                      ema_fg_dice 0.93435
+wandb:                 epoch_duration_s 144.57751
+wandb:             epoch_end_timestamps 1777146644.09275
+wandb:           epoch_start_timestamps 1777146499.51524
+wandb:                              lrs 2e-05
+wandb:                     mean_fg_dice 0.92042
+wandb:                     train_losses -0.95093
+wandb:                               +1 ...
+wandb: 
+Traceback (most recent call last):
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/bin/nnUNetv2_train", line 10, in <module>
+    sys.exit(run_training_entry())
+             ~~~~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/run/run_training.py", line 268, in run_training_entry
+    run_training(args.dataset_name_or_id, args.configuration, args.fold, args.tr, args.p, args.pretrained_weights,
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                 args.num_gpus, args.npz, args.c, args.val, args.disable_checkpointing, args.val_best,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                 device=device)
+                 ^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/run/run_training.py", line 209, in run_training
+    nnunet_trainer.run_training()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/nnUNetTrainer/nnUNetTrainer.py", line 1437, in run_training
+    self.on_train_end()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/nnUNetTrainer/variants/training_length/nnUNetTrainerWandB.py", line 82, in on_train_end
+    wandb.finish()
+    ~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 4102, in finish
+    wandb.run.finish(exit_code=exit_code, quiet=quiet)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 399, in wrapper
+    return func(self, *args, **kwargs)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 444, in wrapper
+    return func(self, *args, **kwargs)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 2279, in finish
+    return self._finish(exit_code)
+           ~~~~~~~~~~~~^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 399, in wrapper
+    return func(self, *args, **kwargs)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 2307, in _finish
+    self._atexit_cleanup(exit_code=exit_code)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 2514, in _atexit_cleanup
+    Run._footer(
+    ~~~~~~~~~~~^
+        sampled_history=self._sampled_history,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        printer=self._printer,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 3819, in _footer
+    Run._footer_history_summary_info(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        history=sampled_history,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        printer=printer,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 3916, in _footer_history_summary_info
+    printer.display(printer.panel(panel))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/printer.py", line 315, in display
+    self._display_fn_mapping(level)(text)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/errors/term.py", line 217, in termlog
+    _log(
+    ~~~~^
+        string,
+        ^^^^^^^
+    ...<3 lines>...
+        silent=not _show_info,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/errors/term.py", line 520, in _log
+    click.echo(string, file=sys.stderr, nl=newline)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/click/utils.py", line 321, in echo
+    file.write(out)  # type: ignore
+    ~~~~~~~~~~^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/console_capture.py", line 184, in write_with_callbacks
+    n = orig_write(s)
+OSError: [Errno 28] No space left on device

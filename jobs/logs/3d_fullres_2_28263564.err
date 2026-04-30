@@ -1,0 +1,123 @@
+Resolved 120 packages in 577ms
+Audited 117 packages in 354ms
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+wandb: Currently logged in as: linusjunidtu (linusjunidtu-danmarks-tekniske-universitet-dtu) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run do6p2air
+wandb: Tracking run with wandb version 0.25.1
+wandb: Run data is saved locally in /work3/s225224/nnunet/results/Dataset001_CSpineSeg/nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres/fold_2/wandb/run-20260424_071338-do6p2air
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run mild-valley-14
+wandb: ⭐️ View project at https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness
+wandb: 🚀 View run at https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness/runs/do6p2air
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+wandb: uploading artifact checkpoint-fold2; updating run metadata
+wandb: uploading artifact checkpoint-fold2
+wandb: uploading artifact checkpoint-fold2; uploading output.log; uploading config.yaml
+wandb: uploading artifact checkpoint-fold2; uploading output.log
+wandb: uploading artifact checkpoint-fold2
+wandb: uploading artifact checkpoint-fold2; uploading history steps 999-999, summary
+wandb: uploading artifact checkpoint-fold2
+wandb: uploading artifact checkpoint-fold2; uploading data
+wandb: uploading artifact checkpoint-fold2
+wandb: 
+wandb: Run history:
+wandb: dice_per_class_or_region/class_1 ▁▆▇▇▇████████████████████████▇██████████
+wandb: dice_per_class_or_region/class_2 ▁▃▃▅▇▃▅▃▇▅▅▃▇▆▅█▆▇▅▅▅▆▇▆▇▆▆▆▅▆▇▆▅▆██▇▅▅▆
+wandb:                      ema_fg_dice ▁▅██████████████████████████████████████
+wandb:                 epoch_duration_s ▄▄▄▆▅▄▄▁▄▅▅▆▄▄▇▄▅▆▇▆▇▇█▅▆▆▅▇▅▄▄▅▅▅▆▆▆▇▅▆
+wandb:             epoch_end_timestamps ▁▁▁▁▁▂▂▂▂▂▂▂▂▃▃▃▃▄▄▄▄▄▄▄▅▅▆▆▆▆▆▆▇▇▇▇████
+wandb:           epoch_start_timestamps ▁▁▁▁▁▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▄▄▅▅▅▅▆▆▆▆▇▇▇▇▇▇███
+wandb:                              lrs ████▇▇▇▇▆▆▆▆▆▅▅▅▅▅▅▄▄▄▄▃▃▃▃▃▃▃▂▂▂▂▂▂▂▁▁▁
+wandb:                     mean_fg_dice ▁▃▂▅▆▄▅▇▅▄▅▆▆▄▅▆█▅▅▇█▅▇▆▇▇▇▆▅█▆▇▅█▇▇▅▅▇▆
+wandb:                     train_losses █▇▆▆▆▅▅▆▅▅▅▅▅▄▄▄▄▄▄▄▄▅▄▄▄▄▃▃▃▃▃▂▃▁▂▁▂▂▁▁
+wandb:                       val_losses █▅▃▄▃▃▃▂▂▄▂▃▃▃▂▂▄▃▂▃▄▅▂▂▁▂▃▃▃▂▂▂▄▂▂▂▃▁▁▂
+wandb: 
+wandb: Run summary:
+wandb:                    current_epoch 999
+wandb: dice_per_class_or_region/class_1 0.95533
+wandb: dice_per_class_or_region/class_2 0.92673
+wandb:                      ema_fg_dice 0.93584
+wandb:                 epoch_duration_s 144.36696
+wandb:             epoch_end_timestamps 1777154543.13388
+wandb:           epoch_start_timestamps 1777154398.76693
+wandb:                              lrs 2e-05
+wandb:                     mean_fg_dice 0.94103
+wandb:                     train_losses -0.94926
+wandb:                               +1 ...
+wandb: 
+wandb: 🚀 View run 3d_fullres_fold2 at: https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness/runs/do6p2air
+wandb: ⭐️ View project at: https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness
+wandb: Synced 5 W&B file(s), 1000 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: /work3/s225224/nnunet/results/Dataset001_CSpineSeg/nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres/fold_2/wandb/run-20260424_071338-do6p2air/logs
+wandb: ERROR Run (do6p2air) is finished. The call to `_summary_update_callback` will be ignored. Please make sure that you are using an active run.
+Traceback (most recent call last):
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/bin/nnUNetv2_train", line 10, in <module>
+    sys.exit(run_training_entry())
+             ~~~~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/run/run_training.py", line 268, in run_training_entry
+    run_training(args.dataset_name_or_id, args.configuration, args.fold, args.tr, args.p, args.pretrained_weights,
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                 args.num_gpus, args.npz, args.c, args.val, args.disable_checkpointing, args.val_best,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                 device=device)
+                 ^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/run/run_training.py", line 213, in run_training
+    nnunet_trainer.perform_actual_validation(export_validation_probabilities)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/nnUNetTrainer/nnUNetTrainer.py", line 1407, in perform_actual_validation
+    self.logger.log_summary(f"final_val/class_{label}_dice", metrics["mean"][label]["Dice"])
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/logging/nnunet_logger.py", line 90, in log_summary
+    logger.log_summary(key, value)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/logging/nnunet_logger.py", line 302, in log_summary
+    self.run.summary[key] = value
+    ~~~~~~~~~~~~~~~~^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_summary.py", line 52, in __setitem__
+    self.update({key: val})
+    ~~~~~~~~~~~^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_summary.py", line 73, in update
+    self._update(record)
+    ~~~~~~~~~~~~^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_summary.py", line 127, in _update
+    self._update_callback(record)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 399, in wrapper
+    return func(self, *args, **kwargs)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 465, in wrapper_fn
+    raise UsageError(message)
+wandb.errors.errors.UsageError: Run (do6p2air) is finished. The call to `_summary_update_callback` will be ignored. Please make sure that you are using an active run.
