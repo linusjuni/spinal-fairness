@@ -1,11 +1,11 @@
 #!/bin/bash
 #BSUB -J cspine_TPLCONFIG_TPLFOLD
-#BSUB -q gpua100
+#BSUB -q gpul40s  # swap to gpua100 (and restore -W 72:00) if using A100s
 #BSUB -gpu "num=1:mode=exclusive_process"
 #BSUB -R "span[hosts=1]"
 #BSUB -R "rusage[mem=8GB]"
 #BSUB -n 4
-#BSUB -W 72:00
+#BSUB -W 48:00
 #BSUB -o jobs/logs/TPLCONFIG_TPLFOLD_%J.out
 #BSUB -e jobs/logs/TPLCONFIG_TPLFOLD_%J.err
 
