@@ -188,9 +188,9 @@ uv run --env-file .env nnUNetv2_evaluate_folder \
 ```
 
 Comparing gold vs silver Dice on the same predictions gives a descriptive sense of label
-quality differences. The clean biased ruler experiment (same model evaluated against both
-reference sets, with no training confound) uses the gold-trained model — see
-`06_gold_silver_training.md`.
+quality differences. The clean biased ruler experiment evaluates Dataset001 against both
+gold labels and Dataset002's predictions (generated silver) on the same 76 gold test
+images — see `06_gold_silver_training.md`.
 
 ### HD95
 

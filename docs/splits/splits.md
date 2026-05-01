@@ -95,5 +95,5 @@ Dropped: 30 Male from train, 3 Female from val, 7 Female from test.
 | Test | 69 | 69 | 50.0% |
 
 Used for Dataset003_CSpineSeg_Silver training. Evaluating this model against the
-gold test set (split_v3_gold) gives the true fairness gap. Evaluating against the
-silver test set reveals the Biased Ruler effect.
+gold test set (split_v3_gold) isolates the effect of silver training labels on
+fairness gaps (bias amplification experiment).
