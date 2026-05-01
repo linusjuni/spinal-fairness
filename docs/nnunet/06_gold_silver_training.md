@@ -2,43 +2,65 @@
 
 > **Status (2026-04-30):** Splits ready. Infrastructure build in progress. Training not yet submitted.
 
-## Context
+## Three Models, Three Roles
 
-The **biased ruler** experiment (Act 3) is already handled in `05_model_selection.md`:
-the Dataset001 mixed-trained model's predictions are evaluated against three reference
-sets (all labels, gold-only, silver-only) to show that the choice of ruler changes the
-observed fairness gap. No additional training is needed for that.
-
-This document covers **bias amplification** (Act 5): does training on silver labels
-*widen* the fairness gap? For this we train two additional models — one on gold labels
-only, one on silver labels only — and compare all three models' fairness gaps when
-evaluated against the same ground truth (gold test labels).
-
-## Overview
-
-| Dataset | Train cases | Labels | Split file | Status |
-|---|---|---|---|---|
-| `Dataset001_CSpineSeg` | 798 (318 gold + 480 silver) | Mixed | `split_v3` | Trained |
-| `Dataset002_CSpineSeg_Gold` | 288 | Expert (gold) | `split_v3_gold` | To build |
-| `Dataset003_CSpineSeg_Silver` | 450 | Auto-generated (silver) | `split_v3_silver` | To build |
+| Dataset | Train cases | Labels | Split file | Role | Status |
+|---|---|---|---|---|---|
+| `Dataset001_CSpineSeg` | 798 (318 gold + 480 silver) | Mixed | `split_v3` | **Global fairness audit** + **biased ruler** (predictions on gold test images serve as generated silver labels) | Trained |
+| `Dataset002_CSpineSeg_Gold` | 288 | Expert (gold) | `split_v3_gold` | **Bias amplification baseline** — gold-trained reference | To build |
+| `Dataset003_CSpineSeg_Silver` | 450 | Auto-generated (silver) | `split_v3_silver` | **Bias amplification** — compare against gold-trained | To build |
 
 All three use sex-balanced cohorts (50/50 M/F in every split).
 
-## Evaluation design
+### Dataset001 — Global fairness audit
 
-All three models are evaluated on the **gold test set** (76 cases from `split_v3_gold`)
-against expert labels. This is the apples-to-apples comparison — same test cases, same
-ground truth, different training labels.
+Dataset001 is the "production-realistic" model: trained on all available labels without
+distinguishing quality. This is what someone would actually deploy. It is evaluated on
+the full test set (226 cases) against all labels, and compared to the published baseline
+(Zhou et al.). The main fairness analysis — demographic performance gaps across race,
+age, sex — uses this model. See `05_model_selection.md`.
 
-| Comparison | What it shows |
-|---|---|
-| Dataset001 (mixed) vs Dataset002 (gold) on gold test | Does including silver labels in training hurt fairness? |
-| Dataset001 (mixed) vs Dataset003 (silver) on gold test | Does training on silver-only amplify the fairness gap? |
-| Dataset002 (gold) vs Dataset003 (silver) on gold test | Clean isolation: gold-trained vs silver-trained, same eval |
+### Dataset001 — Biased ruler experiment
 
-If the silver-trained model shows wider demographic gaps than the gold-trained model
-(cf. Parikh et al. MAMA-MIA: 66% DIR widening), silver labels are not just a biased
-ruler — they actively amplify bias through the training loop.
+In MAMA-MIA, every image had both a gold and a silver label, so the ruler comparison was
+direct. CSpineSeg images have either gold or silver — not both. The adapted approach:
+use Dataset001 (global model, trained on gold + silver) to generate predictions on the
+gold-labeled test images. Those predictions serve as the "generated silver labels."
+
+- Evaluate Dataset001 against **gold labels** → true performance
+- Evaluate Dataset001 against **its own predictions** (generated silver) → observed performance
+
+Any difference in the fairness gap between the two evaluations is the pure ruler effect:
+same model, same images, different reference labels.
+
+### Dataset002 — Bias amplification baseline
+
+Dataset002 is trained on gold (expert) labels only. It serves as the reference for the
+bias amplification experiment: compare its fairness gaps against Dataset003 (silver-trained)
+on the same gold test set. If silver-trained has wider gaps, silver labels amplify bias
+through training.
+
+### Dataset003 — Bias amplification
+
+Dataset003 is trained on silver (auto-generated) labels only. It is compared against
+Dataset002 on the **same gold test set** (76 cases) to isolate whether silver training
+labels widen demographic performance gaps (cf. Parikh et al. MAMA-MIA Experiment 4:
+66% fairness gap widening, DIR dropping below 0.80).
+
+## Evaluation Design
+
+| Experiment | Model | Eval reference | What it shows |
+|---|---|---|---|
+| Global fairness audit | Dataset001 (mixed) | All test labels (226) | How fair is a realistically-trained model? |
+| Biased ruler | Dataset001 (mixed) | Gold labels vs Dataset001's own predictions (generated silver) on gold test images (76) | Does the choice of ruler inflate/deflate the observed fairness gap? |
+| Bias amplification | Dataset002 (gold) vs Dataset003 (silver) | Gold test labels (76) | Does training on silver labels widen demographic gaps? |
+| Mixed vs gold training | Dataset001 (mixed) vs Dataset002 (gold) | Gold test labels (76) | Does including silver labels in training hurt fairness? |
+
+The gold test set (76 cases from `split_v3_gold`) is the apples-to-apples reference for
+all pairwise model comparisons — same test cases, same expert ground truth, different
+training labels. For the biased ruler experiment, Dataset001's predictions on these same
+76 images serve as the generated silver labels (since CSpineSeg images have either gold
+or silver labels, not both — unlike MAMA-MIA).
 
 ---
 
@@ -130,15 +152,24 @@ Or add a `--dataset-id` parameter to `train.sh` and create a `submit_gold_silver
 
 ---
 
-## Step 5 — Evaluate All Three Models on Gold Test Set
+## Step 5 — Evaluate
 
-After training and `find_best_configuration` for each dataset, predict on the **gold
-test set** (76 cases, `split_v3_gold`) for all three models and evaluate against expert
-labels. Compare fairness gaps (§, DPD, DIR) across the three models — if the
-silver-trained model has wider gaps, silver labels amplify bias through training.
+**Biased ruler** (uses Dataset001 only — no training needed):
+- Dataset001 predictions on the 76 gold test images already exist from Step 2.
+- Evaluate those predictions against gold labels → true fairness gap.
+- Use those same predictions AS the "generated silver labels."
+- Evaluate against the generated silver labels → observed fairness gap with biased ruler.
+- The difference between the two gaps is the pure ruler effect.
 
-The biased ruler comparison (same predictions, different rulers) is already covered in
-`05_model_selection.md` using the Dataset001 model and does not need to be repeated here.
+**Bias amplification** (after training Dataset002 + Dataset003):
+1. Predict with Dataset002 (gold) and Dataset003 (silver) on the gold test set (76 cases).
+2. Evaluate both against gold labels. Compare fairness gaps: if Dataset003 has wider gaps,
+   silver labels amplify bias through training.
+
+**Mixed vs gold** — predict with Dataset001 (mixed) on the gold test set. Compare against
+Dataset002 to see whether including silver labels in training hurts fairness.
+
+Compare fairness gaps (DPD, DIR) across all comparisons.
 
 ---
 

@@ -116,8 +116,8 @@ Three reference directories are needed — same predictions are evaluated agains
 | Directory | Cases | Purpose |
 |---|---|---|
 | `labelsTs/` | 226 (all test) | Compare against published baseline (Zhou et al.) |
-| `labelsTs_gold/` | 76 (gold test) | True quality — expert labels only |
-| `labelsTs_silver/` | 138 (silver test) | Biased ruler — auto-generated labels only |
+| `labelsTs_gold/` | 76 (gold test) | Expert labels only — reference for cross-model comparisons |
+| `labelsTs_silver/` | 138 (silver test) | Auto-generated labels only — descriptive comparison |
 
 `labelsTs_gold/` and `labelsTs_silver/` use the case IDs from `split_v3_gold.tsv` and `split_v3_silver.tsv` respectively to select which symlinks to create.
 
@@ -178,7 +178,7 @@ uv run --env-file .env nnUNetv2_evaluate_folder \
     -pfile  ${nnUNet_preprocessed}/Dataset001_CSpineSeg/nnUNetResEncUNetLPlans.json \
     -o      ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp/summary_gold.json
 
-# Silver — biased ruler effect
+# Silver — auto-generated labels only
 uv run --env-file .env nnUNetv2_evaluate_folder \
     ${nnUNet_raw}/Dataset001_CSpineSeg/labelsTs_silver \
     ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp \
@@ -187,7 +187,10 @@ uv run --env-file .env nnUNetv2_evaluate_folder \
     -o      ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp/summary_silver.json
 ```
 
-If gold Dice > silver Dice on the same predictions, silver labels are an optimistic (biased) ruler.
+Comparing gold vs silver Dice on the same predictions gives a descriptive sense of label
+quality differences. The clean biased ruler experiment (same model evaluated against both
+reference sets, with no training confound) uses the gold-trained model — see
+`06_gold_silver_training.md`.
 
 ### HD95
 
@@ -206,4 +209,9 @@ uv run --env-file .env python -m src.fairness.compute_hd95 \
 
 ## Step 6 — Fairness Analysis
 
-Implementation in `src/fairness/` (not yet built). Joins per-case Dice and HD95 metrics with demographics from `split_v3.tsv` via `case_id_mapping.json`. Runs separately for gold and silver reference labels to test whether fairness conclusions change with the ruler. See `docs/nnunet/04_inference.md` for confounder notes and `docs/statistical-testing/` for planned statistical tests.
+Implementation in `src/fairness/` (not yet built). Joins per-case Dice and HD95 metrics
+with demographics from `split_v3.tsv` via `case_id_mapping.json`. This is the global
+fairness audit of the mixed-trained model. The biased ruler and bias amplification
+experiments use Dataset002/003 — see `06_gold_silver_training.md`. See
+`docs/nnunet/04_inference.md` for confounder notes and `docs/statistical-testing/` for
+planned statistical tests.
