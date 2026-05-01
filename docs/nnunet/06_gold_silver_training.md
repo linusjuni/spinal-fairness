@@ -2,19 +2,43 @@
 
 > **Status (2026-04-30):** Splits ready. Infrastructure build in progress. Training not yet submitted.
 
+## Context
+
+The **biased ruler** experiment (Act 3) is already handled in `05_model_selection.md`:
+the Dataset001 mixed-trained model's predictions are evaluated against three reference
+sets (all labels, gold-only, silver-only) to show that the choice of ruler changes the
+observed fairness gap. No additional training is needed for that.
+
+This document covers **bias amplification** (Act 5): does training on silver labels
+*widen* the fairness gap? For this we train two additional models — one on gold labels
+only, one on silver labels only — and compare all three models' fairness gaps when
+evaluated against the same ground truth (gold test labels).
+
 ## Overview
 
-The core fairness experiment compares three models trained on different label sets:
+| Dataset | Train cases | Labels | Split file | Status |
+|---|---|---|---|---|
+| `Dataset001_CSpineSeg` | 800 (318 gold + 480 silver) | Mixed | `split_v3` | Trained |
+| `Dataset002_CSpineSeg_Gold` | 288 | Expert (gold) | `split_v3_gold` | To build |
+| `Dataset003_CSpineSeg_Silver` | 450 | Auto-generated (silver) | `split_v3_silver` | To build |
 
-| Dataset | Cases | Labels | Split file |
-|---|---|---|---|
-| `Dataset001_CSpineSeg` | 800 train (318 gold + 480 silver labels) | Mixed | `split_v3` |
-| `Dataset002_CSpineSeg_Gold` | 288 train | Expert (gold) | `split_v3_gold` |
-| `Dataset003_CSpineSeg_Silver` | 450 train | Auto-generated (silver) | `split_v3_silver` |
+All three use sex-balanced cohorts (50/50 M/F in every split).
 
-All three use sex-balanced cohorts (50/50 M/F in every split). Dataset001 is already trained. Datasets 002 and 003 are to be built.
+## Evaluation design
 
-**Evaluation:** All three models are evaluated on the **gold test set** (76 cases, `split_v3_gold`) against expert labels — this is the ground-truth fairness reference. The silver model is also evaluated against the **silver test set** (138 cases, `split_v3_silver`) to measure the Biased Ruler effect.
+All three models are evaluated on the **gold test set** (76 cases from `split_v3_gold`)
+against expert labels. This is the apples-to-apples comparison — same test cases, same
+ground truth, different training labels.
+
+| Comparison | What it shows |
+|---|---|
+| Dataset001 (mixed) vs Dataset002 (gold) on gold test | Does including silver labels in training hurt fairness? |
+| Dataset001 (mixed) vs Dataset003 (silver) on gold test | Does training on silver-only amplify the fairness gap? |
+| Dataset002 (gold) vs Dataset003 (silver) on gold test | Clean isolation: gold-trained vs silver-trained, same eval |
+
+If the silver-trained model shows wider demographic gaps than the gold-trained model
+(cf. Parikh et al. MAMA-MIA: 66% DIR widening), silver labels are not just a biased
+ruler — they actively amplify bias through the training loop.
 
 ---
 
