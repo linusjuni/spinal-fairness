@@ -130,19 +130,20 @@ Or add a `--dataset-id` parameter to `train.sh` and create a `submit_gold_silver
 
 ---
 
-## Step 5 — Evaluate on Gold Test Set
+## Step 5 — Evaluate All Three Models on Gold Test Set
 
-After training and `find_best_configuration` for each dataset, predict on the gold test
-set (`$nnUNet_raw/Dataset002_CSpineSeg_Gold/imagesTs/`) for all three models and
-evaluate against `labelsTs` (expert labels). This is the apples-to-apples comparison.
+After training and `find_best_configuration` for each dataset, predict on the **gold
+test set** (76 cases, `split_v3_gold`) for all three models and evaluate against expert
+labels. Compare fairness gaps (§, DPD, DIR) across the three models — if the
+silver-trained model has wider gaps, silver labels amplify bias through training.
 
-Also predict the silver model on `Dataset003_CSpineSeg_Silver/imagesTs/` and evaluate
-against silver labels → Biased Ruler analysis.
+The biased ruler comparison (same predictions, different rulers) is already covered in
+`05_model_selection.md` using the Dataset001 model and does not need to be repeated here.
 
 ---
 
 ## Design Notes
 
 - **Why 288 gold vs 450 silver train cases?** Structural property of CSpineSeg — fewer cases were expert-annotated. Acknowledged as a limitation; not a choice. The sex-balance (50/50) and race/age stratification are held constant.
-- **Same config for all three models** — use whatever `find_best_configuration` selects for Dataset001 for consistency. If it picks 2d, train only 2d for 002/003 to save compute.
-- **Gold test set is the reference** — `split_v3_gold` test (76 cases, expert labels) is used for all three models. Silver test set (138 cases) is only used for the Biased Ruler analysis.
+- **Same config for all three models** — use whatever `find_best_configuration` selects for Dataset001 for consistency (ensemble 2d + 3d_fullres). This keeps the architecture constant so differences are attributable to training labels, not model capacity.
+- **Gold test set is the reference** — all three models are evaluated against the same 76 gold test cases with expert labels. This isolates the effect of training labels on fairness.
