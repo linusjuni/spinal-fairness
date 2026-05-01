@@ -1,6 +1,6 @@
 # 05 — Model Selection & Test Evaluation
 
-> **Status (2026-04-30):** Training complete. 3 validation runs pending on gpul40s (jobs 28331042–28331044). Blocked on those before model selection can proceed.
+> **Status (2026-05-01):** All 10 validation folds complete. `find_best_configuration` done — ensemble (2d + 3d_fullres) selected. Predict jobs not yet submitted.
 
 ## Current State
 
@@ -15,16 +15,14 @@ $nnUNet_results/Dataset001_CSpineSeg/
 │   ├── fold_1/  checkpoint_final.pth ✅  validation/summary.json ✅
 │   ├── fold_2/  checkpoint_final.pth ✅  validation/summary.json ✅
 │   ├── fold_3/  checkpoint_final.pth ✅  validation/summary.json ✅
-│   └── fold_4/  checkpoint_final.pth ✅  validation/summary.json ⏳ (job 28331042)
+│   └── fold_4/  checkpoint_final.pth ✅  validation/summary.json ✅
 └── nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres/
     ├── fold_0/  checkpoint_final.pth ✅  validation/summary.json ✅
-    ├── fold_1/  checkpoint_final.pth ✅  validation/summary.json ⏳ (job 28331043)
+    ├── fold_1/  checkpoint_final.pth ✅  validation/summary.json ✅
     ├── fold_2/  checkpoint_final.pth ✅  validation/summary.json ✅
-    ├── fold_3/  checkpoint_final.pth ✅  validation/summary.json ⏳ (job 28331044)
+    ├── fold_3/  checkpoint_final.pth ✅  validation/summary.json ✅
     └── fold_4/  checkpoint_final.pth ✅  validation/summary.json ✅
 ```
-
-3 folds are missing `validation/summary.json` because their jobs crashed at the end with `OSError: No space left on device` during WandB cleanup (training itself completed fine). Re-run jobs submitted 2026-04-30 via `jobs/validate.sh` to `gpul40s`.
 
 ### CV Validation Dice (not test — not comparable to published baseline yet)
 
@@ -34,67 +32,79 @@ $nnUNet_results/Dataset001_CSpineSeg/
 | 2d | 1 | 0.9517 | 0.9220 | 0.9369 |
 | 2d | 2 | 0.9539 | 0.9216 | 0.9377 |
 | 2d | 3 | 0.9571 | 0.9301 | 0.9436 |
-| 2d | 4 | — | — | — |
+| 2d | 4 | 0.9512 | 0.9230 | 0.9371 |
+| **2d mean** | | **0.9551** | **0.9264** | **0.9407** |
 | 3d_fullres | 0 | 0.9586 | 0.9334 | 0.9460 |
-| 3d_fullres | 1 | — | — | — |
+| 3d_fullres | 1 | 0.9485 | 0.9220 | 0.9352 |
 | 3d_fullres | 2 | 0.9509 | 0.9182 | 0.9346 |
-| 3d_fullres | 3 | — | — | — |
+| 3d_fullres | 3 | 0.9536 | 0.9282 | 0.9409 |
 | 3d_fullres | 4 | 0.9491 | 0.9213 | 0.9352 |
+| **3d_fullres mean** | | **0.9521** | **0.9246** | **0.9384** |
 
-2d is consistently slightly ahead of 3d_fullres on available folds. `find_best_configuration` will confirm whether to use 2d alone or an ensemble.
+2d leads 3d_fullres by ~0.002 macro Dice across all folds.
 
 ---
 
-## Step 1 — Find Best Configuration
-
-Once all 10 `summary.json` files exist, run on a **login node** (CPU only, ~5 min):
+## Step 1 — Find Best Configuration (done 2026-05-01)
 
 ```bash
-cd /zhome/77/2/187952/projects/spinal-fairness
-source .env
-uv run nnUNetv2_find_best_configuration 1 -c 2d 3d_fullres
+uv run --env-file .env nnUNetv2_find_best_configuration 1 -c 2d 3d_fullres -p nnUNetResEncUNetLPlans -tr nnUNetTrainerWandB
 ```
 
-This compares mean CV Dice for each config (2d, 3d_fullres) and their ensemble, determines per-config postprocessing rules (e.g. keep-largest-component), and writes the result to:
+**Result: ensemble (2d + 3d_fullres) wins.**
 
-```
-$nnUNet_results/Dataset001_CSpineSeg/inference_instructions.txt
-```
+| Config | CV Macro Dice |
+|---|---|
+| 2d | 0.9407 |
+| 3d_fullres | 0.9384 |
+| **ensemble** | **0.9430** |
 
-Read that file — it contains exact copy-paste commands for the predict and postprocessing steps.
+**Postprocessing determined:**
+- Keep-largest-foreground globally: ✅ applied (0.94298 → 0.94309, tiny gain)
+- Keep-largest per label 1 (vertebral body): ✗ not applied (0.957 → 0.491 — destroys all but one segment)
+- Keep-largest per label 2 (disc): ✗ not applied (0.929 → 0.252 — same reason)
+
+Postprocessing pkl:
+```
+$nnUNet_results/Dataset001_CSpineSeg/ensembles/ensemble___nnUNetTrainerWandB__nnUNetResEncUNetLPlans__2d___nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres___0_1_2_3_4/postprocessing.pkl
+```
 
 ---
 
 ## Step 2 — Predict on Test Set
 
-Submit as a bsub job to `gpul40s` (GPU required, ~1–2 hours for 417 cases). Use the command from `inference_instructions.txt`. General form:
+Two GPU jobs in parallel (~1–2 hours each on L40s for 226 test cases). Use `jobs/predict.sh`:
 
 ```bash
-uv run nnUNetv2_predict \
-    -i $nnUNet_raw/Dataset001_CSpineSeg/imagesTs \
-    -o $nnUNet_results/Dataset001_CSpineSeg/predictions_test \
-    -d 1 \
-    -c <CONFIG> \
-    -f 0 1 2 3 4 \
-    -p nnUNetResEncUNetLPlans \
-    -tr nnUNetTrainerWandB
+sed 's/TPLCONFIG/2d/g'         jobs/predict.sh | bsub
+sed 's/TPLCONFIG/3d_fullres/g' jobs/predict.sh | bsub
 ```
 
-If the best config is an ensemble, `inference_instructions.txt` will give two `nnUNetv2_predict` calls (one per config) plus an ensemble step.
+Each job writes predictions + `.npz` softmax files to:
+- `$nnUNet_results/Dataset001_CSpineSeg/predictions_test_2d/`
+- `$nnUNet_results/Dataset001_CSpineSeg/predictions_test_3d_fullres/`
 
 ---
 
-## Step 3 — Apply Postprocessing
+## Step 3 — Ensemble + Postprocessing
 
-CPU only, fast. Command from `inference_instructions.txt`:
+CPU only, run on login node after both predict jobs finish:
 
 ```bash
-uv run nnUNetv2_apply_postprocessing \
-    -i $nnUNet_results/Dataset001_CSpineSeg/predictions_test \
-    -o $nnUNet_results/Dataset001_CSpineSeg/predictions_test_pp \
-    -pp_pkl_file <PATH_FROM_INSTRUCTIONS> \
-    -plans_json $nnUNet_preprocessed/Dataset001_CSpineSeg/nnUNetResEncUNetLPlans.json \
-    -dataset_json $nnUNet_raw/Dataset001_CSpineSeg/dataset.json
+# Ensemble (average softmax probabilities)
+uv run --env-file .env nnUNetv2_ensemble \
+    -i ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_2d \
+       ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_3d_fullres \
+    -o ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_ensemble \
+    -np 8
+
+# Apply postprocessing (keep-largest-foreground)
+uv run --env-file .env nnUNetv2_apply_postprocessing \
+    -i  ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_ensemble \
+    -o  ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp \
+    -pp_pkl_file ${nnUNet_results}/Dataset001_CSpineSeg/ensembles/ensemble___nnUNetTrainerWandB__nnUNetResEncUNetLPlans__2d___nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres___0_1_2_3_4/postprocessing.pkl \
+    -np 8 \
+    -plans_json ${nnUNet_results}/Dataset001_CSpineSeg/ensembles/ensemble___nnUNetTrainerWandB__nnUNetResEncUNetLPlans__2d___nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres___0_1_2_3_4/plans.json
 ```
 
 ---
