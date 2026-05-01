@@ -30,6 +30,7 @@
 | [03 — Training](nnunet/03_training.md) | Preprocessing, job scripts, custom trainer, submitting jobs |
 | [04 — Inference & Evaluation](nnunet/04_inference.md) | Model selection, prediction, postprocessing, metrics, fairness analysis |
 | [05 — Model Selection & Test Evaluation](nnunet/05_model_selection.md) | Current training status, CV Dice table, step-by-step pipeline from find_best_configuration through test set evaluation |
+| [06 — Gold / Silver Label Experiment](nnunet/06_gold_silver_training.md) | Biased Ruler experiment — Dataset002 (gold) and Dataset003 (silver) build steps, training, and evaluation design |
 
 ## Demographic Probing of Medical Image Encoders
 

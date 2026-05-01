@@ -57,3 +57,43 @@ Dropped: 80 train / 7 val / 25 female exams (1254 → 1142 exams total).
 | Train | 400 | 400 | 50.0% |
 | Val | 58 | 58 | 50.0% |
 | Test | 113 | 113 | 50.0% |
+
+---
+
+## split_v3_gold — Sex-balanced gold-only subset
+
+Filters split_v3 to `annotation_quality == "gold"` (expert-annotated cases), then
+re-applies sex-balancing within each split. Because gold cases skew slightly female
+in train but male in val/test, the generalised balancer drops the majority sex in
+each split independently.
+
+Dropped: 30 Female from train, 3 Male from val, 7 Male from test.
+
+| Split | Female | Male | F% |
+|-------|--------|------|----|
+| Train | 144 | 144 | 50.0% |
+| Val | 22 | 22 | 50.0% |
+| Test | 38 | 38 | 50.0% |
+
+Used for Dataset002_CSpineSeg_Gold training. The test set (76 cases) is the
+ground-truth reference for the gold vs silver label comparison — both models
+should be evaluated against it.
+
+---
+
+## split_v3_silver — Sex-balanced silver-only subset
+
+Filters split_v3 to `annotation_quality == "silver"` (auto-generated labels), then
+re-applies sex-balancing within each split.
+
+Dropped: 30 Male from train, 3 Female from val, 7 Female from test.
+
+| Split | Female | Male | F% |
+|-------|--------|------|----|
+| Train | 225 | 225 | 50.0% |
+| Val | 33 | 33 | 50.0% |
+| Test | 69 | 69 | 50.0% |
+
+Used for Dataset003_CSpineSeg_Silver training. Evaluating this model against the
+gold test set (split_v3_gold) gives the true fairness gap. Evaluating against the
+silver test set reveals the Biased Ruler effect.
