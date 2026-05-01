@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import numpy as np
 import polars as pl
 
 from src.data.schemas import Col
@@ -55,6 +56,38 @@ def apply_splits(df: pl.DataFrame, version: str) -> pl.DataFrame:
         "annotation_quality",
     )
     return df.join(splits, on=Col.SERIES_SUBMITTER_ID, how="left")
+
+
+def balance_split_sex(df: pl.DataFrame, split: str, rng: np.random.Generator) -> set:
+    """Return series_submitter_ids to drop from a split to equalise male/female counts.
+
+    Drops the majority sex down to match the minority sex count. Works in
+    both directions (male-heavy or female-heavy splits).
+    """
+    split_df = df.filter(pl.col("split") == split)
+    male_ids = split_df.filter(pl.col("sex_bin") == "Male")["series_submitter_id"].to_list()
+    female_ids = split_df.filter(pl.col("sex_bin") == "Female")["series_submitter_id"].to_list()
+    n_male, n_female = len(male_ids), len(female_ids)
+
+    if n_male == n_female:
+        logger.info(f"{split} already balanced — no downsampling needed")
+        return set()
+
+    if n_male > n_female:
+        majority_ids, majority_label, minority_count = male_ids, "Male", n_female
+    else:
+        majority_ids, majority_label, minority_count = female_ids, "Female", n_male
+
+    n_drop = len(majority_ids) - minority_count
+    drop_ids = set(rng.choice(majority_ids, size=n_drop, replace=False).tolist())
+    logger.info(
+        f"Dropping {n_drop} {majority_label} exams from {split}",
+        majority_before=len(majority_ids),
+        minority=minority_count,
+        dropping=n_drop,
+        majority_after=minority_count,
+    )
+    return drop_ids
 
 
 # TODO: Run this once we have the list of Gold series_submitter_id values from the Duke authors.
