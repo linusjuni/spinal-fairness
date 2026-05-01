@@ -1,6 +1,6 @@
 # 05 — Model Selection & Test Evaluation
 
-> **Status (2026-05-01):** All 10 validation folds complete. `find_best_configuration` done — ensemble (2d + 3d_fullres) selected. Predict jobs not yet submitted.
+> **Status (2026-05-01):** Predict jobs submitted (28332649, 28332650) to gpul40s — pending in queue. labelsTs directories created.
 
 ## Current State
 
@@ -73,7 +73,7 @@ $nnUNet_results/Dataset001_CSpineSeg/ensembles/ensemble___nnUNetTrainerWandB__nn
 
 ## Step 2 — Predict on Test Set
 
-Two GPU jobs in parallel (~1–2 hours each on L40s for 226 test cases). Use `jobs/predict.sh`:
+Two GPU jobs in parallel (~1–2 hours each on L40s for 228 test cases). Use `jobs/predict.sh`:
 
 ```bash
 sed 's/TPLCONFIG/2d/g'         jobs/predict.sh | bsub

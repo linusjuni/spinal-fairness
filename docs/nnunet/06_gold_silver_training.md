@@ -18,7 +18,7 @@ evaluated against the same ground truth (gold test labels).
 
 | Dataset | Train cases | Labels | Split file | Status |
 |---|---|---|---|---|
-| `Dataset001_CSpineSeg` | 800 (318 gold + 480 silver) | Mixed | `split_v3` | Trained |
+| `Dataset001_CSpineSeg` | 798 (318 gold + 480 silver) | Mixed | `split_v3` | Trained |
 | `Dataset002_CSpineSeg_Gold` | 288 | Expert (gold) | `split_v3_gold` | To build |
 | `Dataset003_CSpineSeg_Silver` | 450 | Auto-generated (silver) | `split_v3_silver` | To build |
 
@@ -83,8 +83,8 @@ $nnUNet_raw/
 CPU only (~10–20 min each). Run on login node:
 
 ```bash
-uv run nnUNetv2_plan_and_preprocess -d 2 --verify_dataset_integrity
-uv run nnUNetv2_plan_and_preprocess -d 3 --verify_dataset_integrity
+uv run --env-file .env nnUNetv2_plan_and_preprocess -d 2 --verify_dataset_integrity
+uv run --env-file .env nnUNetv2_plan_and_preprocess -d 3 --verify_dataset_integrity
 ```
 
 ---
