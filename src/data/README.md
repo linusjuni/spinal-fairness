@@ -76,7 +76,7 @@ flowchart TD
 | Total MRI exams | 1,255 |
 | Unique patients | 1,232 (23 patients have 2+ exams) |
 | Patients with expert annotations (Gold) | 481 (491 exams) |
-| Patients with auto-only annotations (Silver) | ~751 (~764 exams) TODO: UPDATED WHEN WE KNOW EXACTLY |
+| Patients with auto-only annotations (Silver) | 751 (764 exams) |
 | MRI scanner manufacturers | GE Medical Systems (466), Siemens (789) |
 | Field strengths | 1.5T (747 exams), 3.0T (508 exams) |
 | Segmentation labels | 0 = background, 1 = vertebral bodies, 2 = intervertebral discs |
@@ -110,13 +110,24 @@ One outlier scan (`593973-001216`) is a true 3D acquisition with 512 slices at ~
 
 ## Gold vs Silver Labels
 
-> **Status: Pending confirmation from dataset authors.**
+> **Status: Resolved.** The dataset authors provided the list of expert-annotated case IDs.
 
-According to the paper, 481 patients were manually annotated by expert radiologists (Gold Standard),
-and the remaining ~751 patients were labeled automatically by an nnU-Net model (Silver Standard).
+According to the paper, 481 patients (491 exams) were manually annotated by expert radiologists
+(Gold Standard), and the remaining ~751 patients (~764 exams) were labeled automatically by an
+nnU-Net model (Silver Standard).
 
-However, the public MIDRC release marks **all** segmentations as `Retrospective_auto` in the metadata.
-There is currently no way to distinguish Gold from Silver in the released files.
+The public MIDRC release originally marked **all** segmentations as `Retrospective_auto` in the
+metadata, making it impossible to distinguish Gold from Silver in the released files. After
+contacting the dataset authors, we received the list of expert-annotated series IDs. The
+`annotation_quality` column in `split_v3.tsv` now records `"gold"` or `"silver"` for every exam,
+populated via `backfill_annotation_quality()` in `src/data/splits/utils.py`.
 
-We have contacted the authors to request the list of expert-annotated case IDs.
-This distinction is critical for our fairness analysis (comparing label quality across demographics).
+Two derived sub-splits are built from this column:
+
+| Split file | Filter | Sex-balanced | Purpose |
+|---|---|---|---|
+| `split_v3_gold.tsv` | `annotation_quality == "gold"` | Yes (re-balanced per split) | Dataset002 — gold-only training & evaluation reference |
+| `split_v3_silver.tsv` | `annotation_quality == "silver"` | Yes (re-balanced per split) | Dataset003 — silver-only training; Biased Ruler comparison |
+
+See `docs/splits/splits.md` for counts and `docs/nnunet/06_gold_silver_training.md` for the
+experimental design.
