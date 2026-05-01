@@ -194,7 +194,7 @@ fingerprints may correlate with demographics. To disentangle:
 | < 0.60, not above random baseline | No evidence of encoding* |
 
 *No evidence of encoding does not imply downstream fairness
-(cf. Jones et al. arXiv:2305.01397).
+(cf. Petersen et al. arXiv:2305.01397).
 
 ---
 

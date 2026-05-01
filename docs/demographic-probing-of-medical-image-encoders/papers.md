@@ -51,9 +51,9 @@ Benchmarks 20 foundation models across 17 datasets with linear-probe
 sensitive-attribute prediction. Gives concrete numbers to compare against
 when reporting probe AUROCs.
 
-### Jones et al. — temper the interpretation
+### Petersen et al. — temper the interpretation
 **Are demographically invariant models and representations in medical
-imaging fair?** arXiv:2305.01397, 2023.
+imaging fair?** Petersen, Ferrante, Ganz, Feragen. arXiv:2305.01397, 2023.
 
 Demographic invariance is *neither necessary nor sufficient* for fairness.
 Important caveat: finding demographic signal in embeddings does not imply
@@ -117,7 +117,7 @@ From Gichoya 2022 and FairMedFM thresholds:
 | 0.65 – 0.80 | Moderate; check FOV / intensity confounds |
 | < 0.60, not above random-feature baseline | No evidence of encoding* |
 
-*No evidence of encoding ≠ fairness downstream — see Jones et al.
+*No evidence of encoding ≠ fairness downstream — see Petersen et al.
 
 ---
 
