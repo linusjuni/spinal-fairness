@@ -1,0 +1,29 @@
+# Meeting Notes — 11 April 2026
+
+**Attendees:** Linus, Aditya
+
+---
+
+## Splits / Sex Balancing
+
+- ~~Actually we should balance EXACTLY. So we might have to drop some exams for the multiple patients.~~ ✓ Done — v3 now balances at exam level.
+
+---
+
+## Statistical Testing
+
+- We should do statistical tests to compare means.
+
+---
+
+## EDA
+
+- Make a really good table where we compare different things from the EDA in a well-structured manner.
+- Do the whole EDA on the training set only too (potentially also on val and test just to see what it looks like).
+- Do a much bigger deep dive into the volumetric analysis.
+
+---
+
+## Segmentation Quality
+
+- Aditya will find some libraries that can be used to check segmentations (rounded edges, square, etc.).

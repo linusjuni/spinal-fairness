@@ -1,0 +1,55 @@
+# Meeting Notes — 1 May 2026
+
+**Attendees:** Linus, Aditya
+
+---
+
+## Biased Ruler — Methodology Clarification
+
+In MAMA-MIA, every image had both a gold and a silver label, so the biased ruler
+experiment was straightforward: evaluate the same model against both rulers. In
+CSpineSeg, each image has either gold or silver — not both.
+
+**Adapted approach:** Use the global model (Dataset001, trained on gold + silver) to
+generate predictions on the gold-labeled test images. Those predictions serve as the
+"silver labels" for those images. Now both rulers exist for the same set of images:
+
+- Evaluate Dataset001 against **gold labels** → true performance
+- Evaluate Dataset001 against **model-generated predictions** (as silver ruler) → observed performance
+
+Compare the fairness gap between the two. Any difference is the pure ruler effect.
+
+---
+
+## Bias Amplification — Still Needs Gold/Silver Models
+
+Dataset002 (gold-only training) and Dataset003 (silver-only training) are still needed.
+Evaluate both on the gold test set. If silver-trained model shows wider demographic
+gaps than gold-trained, silver labels amplify bias through training.
+
+---
+
+## EDA Split by Annotation Quality
+
+Run the full EDA separately on gold-labeled and silver-labeled cases. Check whether
+anatomy, demographics, or scanner distributions differ systematically between the two
+groups. This characterises the two label populations before the model comparison.
+
+---
+
+## Probing — nnU-Net Encoder
+
+If the fairness audit shows performance disparity, we should see corresponding
+separation when probing the nnU-Net encoder on sex / age / etc. The nnU-Net encoder
+probe tells us what the model learned to exploit during segmentation (vs the
+foundation model probe which tells us what's available in the images).
+
+For the existing MRI-CORE probe results, explicitly address scanner confound
+(sex x manufacturer is not significant: chi2 p=0.21, V=0.035).
+
+---
+
+## Exam / Paper
+
+- Linus to reach out to Aasa regarding exam presentation — preferably late May / early June
+- Paper discussion ongoing — need Act 1 (fairness audit) and Act 2 (biased ruler + bias amplification) results before scoping the full paper
