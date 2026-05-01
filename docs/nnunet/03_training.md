@@ -1,15 +1,15 @@
 # 03 — Training
 
-> **Status: Complete (2026-04-30).** All 10 folds have `checkpoint_final.pth`. 3 folds missing `validation/summary.json` due to disk-full crash during WandB cleanup — re-run jobs submitted via `jobs/validate.sh`. See `05_model_selection.md` for next steps.
+> **Status: Complete (2026-04-30).** All 10 folds trained and validated. See `05_model_selection.md` for model selection and test-set evaluation.
 
 ## Pipeline Summary
 
 ```
 plan_and_preprocess   ✅  done (nnUNetPlannerResEncL)
 write_splits          ✅  done (splits_final.json, 914 cases, 5-fold stratified by race x age x sex)
-train 10 jobs         ⏳  running — 5 folds x 2d + 3d_fullres, job IDs 28200038–28200047
-find_best_config      ⬜  after all 10 jobs finish
-predict + evaluate    ⬜  after model selection
+train 10 jobs         ✅  done — 5 folds x 2d + 3d_fullres
+find_best_config      ✅  done — ensemble (2d + 3d_fullres) selected
+predict + evaluate    ⏳  predict jobs running
 ```
 
 ## Configurations
