@@ -223,20 +223,9 @@ The 14 cases present in `labelsTs` but absent from both `labelsTs_gold` and `lab
 
 ## Step 6 — Fairness Analysis
 
-Implementation in `src/fairness/` — built. Job 28383994 submitted to `hpc` (24 workers, 2h wall time) to run Dice + HD95 evaluation and full fairness analysis on Dataset001 test set. Output will land in `outputs/fairness/fairness/<timestamp>/`. See `src/fairness/README.md` for commands.
-
-```bash
-# Global fairness audit (run via jobs/fairness_evaluate.sh)
-uv run -m src.fairness.evaluate \
-    --predictions ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp \
-    --references  ${nnUNet_raw}/Dataset001_CSpineSeg/labelsTs \
-    --mapping     ${nnUNet_raw}/Dataset001_CSpineSeg/case_id_mapping.json \
-    --output      outputs/eval_global.csv \
-    --metrics dice hd95 \
-    --workers 24
-
-uv run -m src.fairness.analyze \
-    --evaluation-csvs outputs/eval_global.csv \
-    --ruler-labels    global \
-    --mapping         ${nnUNet_raw}/Dataset001_CSpineSeg/case_id_mapping.json
-```
+Implementation in `src/fairness/` (not yet built). Joins per-case Dice and HD95 metrics
+with demographics from `split_v3.tsv` via `case_id_mapping.json`. This is the global
+fairness audit of the mixed-trained model. The biased ruler and bias amplification
+experiments use Dataset002/003 — see `06_gold_silver_training.md`. See
+`docs/nnunet/04_inference.md` for confounder notes and `docs/statistical-testing/` for
+planned statistical tests.

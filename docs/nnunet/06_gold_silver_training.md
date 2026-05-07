@@ -1,14 +1,14 @@
 # 06 — Gold / Silver Label Experiment
 
-> **Status (2026-05-07):** All three models training. Dataset002 submitted to `gpul40s` (10 jobs, 48h), Dataset003 submitted to `gpua100` (10 jobs, 72h). Job IDs: Dataset002 28383704–28383713, Dataset003 28383780–28383789.
+> **Status (2026-04-30):** Splits ready. Infrastructure build in progress. Training not yet submitted.
 
 ## Three Models, Three Roles
 
 | Dataset | Train cases | Labels | Split file | Role | Status |
 |---|---|---|---|---|---|
 | `Dataset001_CSpineSeg` | 798 (318 gold + 480 silver) | Mixed | `split_v3` | **Global fairness audit** | Trained |
-| `Dataset002_CSpineSeg_Gold` | 332 (train+val) | Expert (gold) | `split_v3_gold` | **Bias amplification baseline** + **biased ruler** (predictions on gold test images serve as generated silver labels) | Training (gpul40s) |
-| `Dataset003_CSpineSeg_Silver` | 450 | Auto-generated (silver) | `split_v3_silver` | **Bias amplification** — compare against gold-trained | Training (gpua100) |
+| `Dataset002_CSpineSeg_Gold` | 288 | Expert (gold) | `split_v3_gold` | **Bias amplification baseline** + **biased ruler** (predictions on gold test images serve as generated silver labels) | To build |
+| `Dataset003_CSpineSeg_Silver` | 450 | Auto-generated (silver) | `split_v3_silver` | **Bias amplification** — compare against gold-trained | To build |
 
 All three use sex-balanced cohorts (50/50 M/F in every split).
 

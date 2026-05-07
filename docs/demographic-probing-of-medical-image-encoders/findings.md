@@ -176,6 +176,15 @@ with prior EDA.
 
 ## Next steps
 
+- **nnU-Net encoder probe (implemented, awaiting GPU run).** The CSpineSeg
+  nnU-Net encoder (Dataset001, 3d_fullres, fold 0) is registered in the
+  probe pipeline as `nnunet`. It extracts GAP'd bottleneck features
+  (~512-d, from `features_per_stage[-1]`) using the already-preprocessed
+  `.npz` files from `$nnUNet_preprocessed`. Covers train+val cases (~916).
+  Run with `uv run -m src.probe.pipeline nnunet` on a GPU node. This tells
+  us whether the segmentation model internalized demographic signal beyond
+  what's in the input images (MRI-CORE probe) — the difference between
+  "available in the data" and "exploited by the model."
 - **Aspect-preserving letterbox resize.** Redo the crop ablation with a
   letterbox-pad to 1024² instead of a square stretch, so rectangular bboxes
   don't pick up an anisotropic-stretch confound. Run the variant on both
