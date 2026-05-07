@@ -14,6 +14,7 @@ Usage:
 from __future__ import annotations
 
 import json
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 import nibabel as nib
@@ -120,6 +121,18 @@ def evaluate_case(
     return result
 
 
+def _evaluate_case_args(args: tuple) -> dict | None:
+    """Wrapper for ProcessPoolExecutor (top-level function for pickling)."""
+    pred_path, ref_path, case_id, series_submitter_id, metrics = args
+    return evaluate_case(
+        Path(pred_path),
+        Path(ref_path),
+        case_id,
+        series_submitter_id,
+        metrics=metrics,
+    )
+
+
 def evaluate_folder(
     pred_dir: Path,
     ref_dir: Path,
@@ -127,6 +140,7 @@ def evaluate_folder(
     output_path: Path | None = None,
     metrics: set[str] | None = None,
     split: str = "test",
+    workers: int = 1,
 ) -> pl.DataFrame:
     """Evaluate all matching prediction/reference pairs in the directories.
 
@@ -142,10 +156,10 @@ def evaluate_folder(
         raise ValueError(msg)
 
     filtered = [e for e in mapping if e["split"] == split]
-    logger.info("Evaluating", split=split, cases=len(filtered), metrics=sorted(metrics))
+    logger.info("Evaluating", split=split, cases=len(filtered), metrics=sorted(metrics), workers=workers)
 
-    results: list[dict] = []
-    for i, entry in enumerate(filtered):
+    work_items: list[tuple] = []
+    for entry in filtered:
         case_id = entry["case_id"]
         pred_path = pred_dir / f"{case_id}.nii.gz"
         ref_path = ref_dir / f"{case_id}.nii.gz"
@@ -157,17 +171,16 @@ def evaluate_folder(
             logger.warning("Missing reference", case_id=case_id)
             continue
 
-        result = evaluate_case(
-            pred_path,
-            ref_path,
-            case_id,
-            entry["series_submitter_id"],
-            metrics=metrics,
-        )
-        results.append(result)
+        work_items.append((
+            str(pred_path), str(ref_path), case_id,
+            entry["series_submitter_id"], metrics,
+        ))
 
-        if (i + 1) % 50 == 0:
-            logger.info(f"Progress: {i + 1}/{len(filtered)}")
+    if workers > 1:
+        with ProcessPoolExecutor(max_workers=workers) as pool:
+            results = list(pool.map(_evaluate_case_args, work_items))
+    else:
+        results = [_evaluate_case_args(item) for item in work_items]
 
     df = pl.DataFrame(results)
     logger.success("Evaluation complete", cases=df.height)
@@ -198,6 +211,12 @@ if __name__ == "__main__":
         choices=sorted(VALID_METRICS),
         help="Metrics to compute (default: dice only)",
     )
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=1,
+        help="Parallel workers for evaluation (default: 1)",
+    )
     args = parser.parse_args()
 
     mapping_data = json.loads(args.mapping.read_text())
@@ -208,4 +227,5 @@ if __name__ == "__main__":
         output_path=args.output,
         metrics=set(args.metrics),
         split=args.split,
+        workers=args.workers,
     )

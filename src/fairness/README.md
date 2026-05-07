@@ -48,7 +48,7 @@ uv run -m src.fairness.analyze \
 
 ### Biased ruler analysis (gold labels vs generated silver)
 
-CSpineSeg images have either gold or silver labels, not both (unlike MAMA-MIA). The adapted approach: Dataset001's predictions on the gold test images serve as "generated silver labels." Both rulers then exist for the same 76 images.
+CSpineSeg images have either gold or silver labels, not both (unlike MAMA-MIA). The adapted approach: use Dataset002 (gold-trained) to generate predictions on the 76 gold test images — those serve as "generated silver labels." We then evaluate Dataset001 against both rulers on the same images.
 
 ```bash
 # Ruler 1: evaluate Dataset001 against gold labels → true performance
@@ -58,13 +58,10 @@ uv run -m src.fairness.evaluate \
     --mapping     ${nnUNet_raw}/Dataset001_CSpineSeg/case_id_mapping.json \
     --output      outputs/eval_ruler_gold.csv
 
-# Ruler 2: evaluate Dataset001 against its own predictions (as generated silver)
-# Here --predictions and --references are the SAME directory — the model's
-# output IS the silver ruler, so Dice=1.0 everywhere. Instead, evaluate the
-# gold-trained model (Dataset002) against Dataset001 predictions as reference:
+# Ruler 2: evaluate Dataset001 against Dataset002's predictions (generated silver)
 uv run -m src.fairness.evaluate \
     --predictions ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp \
-    --references  ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp \
+    --references  ${nnUNet_results}/Dataset002_CSpineSeg_Gold/predictions_test_pp \
     --mapping     ${nnUNet_raw}/Dataset001_CSpineSeg/case_id_mapping.json \
     --output      outputs/eval_ruler_silver.csv
 
@@ -75,17 +72,18 @@ uv run -m src.fairness.analyze \
     --mapping         ${nnUNet_raw}/Dataset001_CSpineSeg/case_id_mapping.json
 ```
 
-Any difference in the fairness gap between the two evaluations is the pure ruler effect: same model, same images, different reference labels.
+Any difference in the fairness gap between the two evaluations is the pure ruler effect: same model, same images, different reference labels. Dataset001 and Dataset002 are independently trained, so Dice != 1.
 
 ### Include HD95 (slower)
 
 ```bash
 uv run -m src.fairness.evaluate \
     --predictions ... --references ... --mapping ... --output ... \
-    --metrics dice hd95
+    --metrics dice hd95 \
+    --workers 24
 ```
 
-HD95 uses `surface-distance` and is significantly slower (~10x). Dice is the default.
+HD95 uses `surface-distance` and is significantly slower (~10x). Dice is the default. Use `--workers N` to parallelize across cases (each case is independent).
 
 ### Bias amplification (Dataset002 vs Dataset003)
 
@@ -165,7 +163,7 @@ The analyzer applies 7 grouping strategies: sex (binary), race white-vs-black, r
 
 In MAMA-MIA, every image had both a gold and a silver label, so the ruler comparison was direct. CSpineSeg images have either gold or silver — not both. Evaluating against `labelsTs_gold/` vs `labelsTs_silver/` would compare different images (76 gold vs 138 silver), not different rulers on the same images.
 
-The adapted approach: use Dataset001's predictions on the 76 gold test images as "generated silver labels." Now both rulers exist for the same images — gold expert labels and model-generated labels. Any difference in the observed fairness gap is the pure ruler effect: same model, same images, different reference. This follows the methodology clarified with Aditya (meeting 2026-05-01).
+The adapted approach: use Dataset002 (gold-trained) to generate predictions on the 76 gold test images as "generated silver labels." Now both rulers exist for the same images — gold expert labels and model-generated labels. We evaluate Dataset001 against both rulers; any difference in the observed fairness gap is the pure ruler effect: same model, same images, different reference. This follows the methodology clarified with Aditya (meeting 2026-05-01).
 
 ### Why three models?
 

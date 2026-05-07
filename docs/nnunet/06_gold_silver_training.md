@@ -80,23 +80,17 @@ or silver labels, not both — unlike MAMA-MIA).
 
 ---
 
-## Step 1 — Extend `prepare_dataset.py`
+## Step 1 — Prepare Dataset (done 2026-05-07)
 
-Currently `src/nnunet/__init__.py` hardcodes:
-```python
-DATASET_ID = 1
-DATASET_NAME = "Dataset001_CSpineSeg"
-SPLIT_VERSION = "split_v3"
-```
-
-These need to become parameters. Modify `prepare_dataset.py` to accept `--dataset-id` and `--annotation-quality` CLI arguments, then run:
+`src/nnunet/__init__.py` has a `DATASETS` registry mapping dataset ID to name and split
+version. Both `prepare_dataset.py` and `write_splits.py` accept `--dataset-id`:
 
 ```bash
 # Gold dataset
-uv run -m src.nnunet.prepare_dataset --dataset-id 2 --annotation-quality gold
+uv run -m src.nnunet.prepare_dataset --dataset-id 2
 
 # Silver dataset
-uv run -m src.nnunet.prepare_dataset --dataset-id 3 --annotation-quality silver
+uv run -m src.nnunet.prepare_dataset --dataset-id 3
 ```
 
 This creates:
@@ -129,11 +123,11 @@ uv run --env-file .env nnUNetv2_plan_and_preprocess -d 3 --verify_dataset_integr
 
 ## Step 3 — Write CV Splits
 
-Same stratified 5-fold logic as `write_splits.py` but using the new split files:
+Same stratified 5-fold logic as `write_splits.py`, split version is derived from `--dataset-id`:
 
 ```bash
-uv run -m src.nnunet.write_splits --dataset-id 2 --split-version split_v3_gold
-uv run -m src.nnunet.write_splits --dataset-id 3 --split-version split_v3_silver
+uv run -m src.nnunet.write_splits --dataset-id 2
+uv run -m src.nnunet.write_splits --dataset-id 3
 ```
 
 Writes `splits_final.json` to each preprocessed dataset directory.
