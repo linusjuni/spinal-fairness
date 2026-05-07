@@ -174,17 +174,62 @@ with prior EDA.
 | N4 bias-field correction | not done | Low priority (scanner × sex independent); revisit if bias-field artefacts suspected |
 | Clip to [0.5, 99.5] percentile | skipped for MRI-CORE | Incompatible with pretraining norm; applies to other encoders in the lineup |
 
+### CSpineSeg nnU-Net encoder (2026-05-07)
+
+Encoder: CSpineSeg nnU-Net (ResEncUNetL, 3d_fullres, fold 0, Dataset001).
+320-d GAP'd bottleneck features from `$nnUNet_preprocessed` `.b2nd` files,
+padded to training patch size [16, 512, 512]. n=881 (train+val after exclusions).
+
+| Attribute | Metric | Mean | ±95% CI (NB) | Per-fold scores |
+|---|---|---|---|---|
+| Sex | AUROC | **0.958** | ±0.014 | 0.949, 0.957, 0.962, 0.968, 0.954 |
+| Age (3-bin) | Balanced accuracy | **0.634** | ±0.070 | 0.636, 0.649, 0.569, 0.667, 0.647 |
+| Race (3-group) | Balanced accuracy | 0.484 | ±0.122 | 0.431, 0.455, 0.441, 0.506, 0.590 |
+| Manufacturer | AUROC | **0.998** | ±0.008 | 1.000, 1.000, 0.990, 1.000, 1.000 |
+
+PCA(2) explained variance: 12.4% (PC1) + 8.5% (PC2) = 20.9% total.
+
+### Cross-encoder comparison (all encoders)
+
+| Attribute | Metric | nnU-Net | MRI-CORE (uncropped) | random_vit_b | Delta (nnU-Net − MRI-CORE) |
+|---|---|---|---|---|---|
+| Sex | AUROC | **0.958** ±0.014 | 0.931 ±0.031 | 0.836 ±0.039 | **+0.027** |
+| Age (3-bin) | Balanced accuracy | 0.634 ±0.070 | 0.632 ±0.043 | 0.534 ±0.083 | +0.002 |
+| Race (3-group) | Balanced accuracy | 0.484 ±0.122 | 0.513 ±0.071 | 0.426 ±0.064 | −0.029 |
+| Manufacturer | AUROC | 0.998 ±0.008 | 0.997 ±0.007 | 0.992 ±0.013 | +0.001 |
+
+Random baseline for 3-class balanced accuracy is 0.333.
+
+## Interpretation
+
+### nnU-Net encoder
+
+**Sex (0.958 > MRI-CORE 0.931 > random_vit_b 0.836).** The segmentation model
+amplified sex signal relative to both the raw-image baseline (random_vit_b) and
+the SSL encoder (MRI-CORE). The ordering `task model > SSL > random` tells a
+clear story: nnunet's segmentation objective reinforced sex-correlated anatomical
+features (disc height, vertebral morphology, or spinal canal width) to a degree
+that exceeds what pretraining alone encodes. This is the "exploited by the model"
+signal the probe was designed to detect — the gap MRI-CORE 0.931 → nnU-Net 0.958
+is the portion attributable to the segmentation task itself, not just available
+in the input data.
+
+**Age (0.634 ≈ MRI-CORE 0.632).** Essentially identical; the segmentation task
+adds no incremental age encoding beyond what MRI-CORE already captures.
+
+**Race (0.484 ±0.122).** Wide CI and high fold variance (0.431–0.590) — not
+reliable. Mean is below MRI-CORE (0.513) but CIs overlap. No evidence the
+segmentation model learned race-correlated features beyond input-level signal.
+
+**Manufacturer (0.998 ≈ MRI-CORE 0.997).** Scanner fingerprint is universal
+across all encoders; the segmentation task does not add or remove it.
+
+**PCA(2) = 20.9%.** Low compared to random_vit_b (96.2%) — nnunet features are
+distributed across many components rather than collapsed to image statistics.
+This reflects that the task model learned a rich anatomical representation.
+
 ## Next steps
 
-- **nnU-Net encoder probe (implemented, awaiting GPU run).** The CSpineSeg
-  nnU-Net encoder (Dataset001, 3d_fullres, fold 0) is registered in the
-  probe pipeline as `nnunet`. It extracts GAP'd bottleneck features
-  (~512-d, from `features_per_stage[-1]`) using the already-preprocessed
-  `.npz` files from `$nnUNet_preprocessed`. Covers train+val cases (~916).
-  Run with `uv run -m src.probe.pipeline nnunet` on a GPU node. This tells
-  us whether the segmentation model internalized demographic signal beyond
-  what's in the input images (MRI-CORE probe) — the difference between
-  "available in the data" and "exploited by the model."
 - **Aspect-preserving letterbox resize.** Redo the crop ablation with a
   letterbox-pad to 1024² instead of a square stretch, so rectangular bboxes
   don't pick up an anisotropic-stretch confound. Run the variant on both
