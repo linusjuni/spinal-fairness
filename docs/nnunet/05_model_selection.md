@@ -1,6 +1,6 @@
 # 05 — Model Selection & Test Evaluation
 
-> **Status (2026-05-01):** Predict jobs submitted (28332649, 28332650) to gpul40s — pending in queue. labelsTs directories created.
+> **Status (2026-05-01):** Complete through Step 5. Eval CSVs written to `predictions_test_pp/`.
 
 ## Current State
 
@@ -23,6 +23,32 @@ $nnUNet_results/Dataset001_CSpineSeg/
     ├── fold_3/  checkpoint_final.pth ✅  validation/summary.json ✅
     └── fold_4/  checkpoint_final.pth ✅  validation/summary.json ✅
 ```
+
+### Test Set Dice (done 2026-05-01)
+
+Ensemble predictions after postprocessing (`predictions_test_pp/`), evaluated against three reference sets.
+
+| Reference set | N | VB Dice | Disc Dice | Macro |
+|---|---|---|---|---|
+| all (mixed labels) | 228 | 0.9594 | 0.9353 | 0.9473 |
+| gold (expert labels) | 76 | 0.9216 | 0.8721 | 0.8969 |
+| silver (auto labels) | 138 | 0.9810 | 0.9723 | 0.9766 |
+
+**Comparison with Zhou et al. baseline** (trained on 391 gold, tested on 100 gold, standard nnU-Net ensemble):
+
+| | VB | Disc | Macro |
+|---|---|---|---|
+| Zhou et al. ensemble | 0.929±0.048 | 0.904±0.045 | 0.916±0.012 |
+| **Ours (gold ref)** | **0.922** | **0.872** | **0.897** |
+| Ours (all ref) | 0.959 | 0.935 | 0.947 |
+
+The apples-to-apples comparison is gold vs gold: we are ~2 points below their ensemble despite using a larger architecture (ResEncUNetL) and more total training data (798 vs 391 cases). The "all" number (0.947) exceeds theirs but is inflated by silver labels, which the model scores very high against.
+
+The gold/silver gap (0.897 vs 0.977 macro) is the first observable signal of the biased ruler effect: the same predictions score ~8 points higher when measured against auto-generated labels than expert labels. The disc label shows the largest spread (0.872 gold vs 0.972 silver), consistent with auto-labelers struggling most at disc boundaries.
+
+Macro Dice distribution on all 228 cases: p5=0.853, p25=0.920, p50=0.975, p75=0.982, p95=0.987, min=0.483.
+
+---
 
 ### CV Validation Dice (not test — not comparable to published baseline yet)
 
@@ -71,9 +97,9 @@ $nnUNet_results/Dataset001_CSpineSeg/ensembles/ensemble___nnUNetTrainerWandB__nn
 
 ---
 
-## Step 2 — Predict on Test Set
+## Step 2 — Predict on Test Set (done 2026-05-01)
 
-Two GPU jobs in parallel (~1–2 hours each on L40s for 228 test cases). Use `jobs/predict.sh`:
+Two GPU jobs in parallel on `gpul40s`. Jobs 28332649 (2d, ~1h2m) and 28332650 (3d_fullres, ~48min) both completed successfully. Each predicted all 417 cases (228 test + 189 that were in the source folder but not the test split — nnUNet predicts everything in `imagesTs/`).
 
 ```bash
 sed 's/TPLCONFIG/2d/g'         jobs/predict.sh | bsub
@@ -86,26 +112,17 @@ Each job writes predictions + `.npz` softmax files to:
 
 ---
 
-## Step 3 — Ensemble + Postprocessing
+## Step 3 — Ensemble + Postprocessing (done 2026-05-01)
 
-CPU only, run on login node after both predict jobs finish:
+CPU only, run on login node. Requires `source .env` first so `$nnUNet_results` is available to bash before `uv run` expands it.
 
 ```bash
-# Ensemble (average softmax probabilities)
-uv run --env-file .env nnUNetv2_ensemble \
-    -i ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_2d \
-       ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_3d_fullres \
-    -o ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_ensemble \
-    -np 8
-
-# Apply postprocessing (keep-largest-foreground)
-uv run --env-file .env nnUNetv2_apply_postprocessing \
-    -i  ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_ensemble \
-    -o  ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp \
-    -pp_pkl_file ${nnUNet_results}/Dataset001_CSpineSeg/ensembles/ensemble___nnUNetTrainerWandB__nnUNetResEncUNetLPlans__2d___nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres___0_1_2_3_4/postprocessing.pkl \
-    -np 8 \
-    -plans_json ${nnUNet_results}/Dataset001_CSpineSeg/ensembles/ensemble___nnUNetTrainerWandB__nnUNetResEncUNetLPlans__2d___nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres___0_1_2_3_4/plans.json
+source .env
+uv run nnUNetv2_ensemble -i ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_2d ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_3d_fullres -o ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_ensemble -np 8
+uv run nnUNetv2_apply_postprocessing -i ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_ensemble -o ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp -pp_pkl_file ${nnUNet_results}/Dataset001_CSpineSeg/ensembles/ensemble___nnUNetTrainerWandB__nnUNetResEncUNetLPlans__2d___nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres___0_1_2_3_4/postprocessing.pkl -np 8 -plans_json ${nnUNet_results}/Dataset001_CSpineSeg/ensembles/ensemble___nnUNetTrainerWandB__nnUNetResEncUNetLPlans__2d___nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres___0_1_2_3_4/plans.json
 ```
+
+Output: `$nnUNet_results/Dataset001_CSpineSeg/predictions_test_pp/` (final `.nii.gz` segmentations).
 
 ---
 
@@ -158,33 +175,15 @@ EOF
 
 ---
 
-## Step 5 — Evaluate on Test Set
+## Step 5 — Evaluate on Test Set (done 2026-05-01)
 
-CPU only. Run three evaluations against the same `predictions_test_pp/`:
+CPU only. Uses `src.fairness.evaluate` (not `nnUNetv2_evaluate_folder`) because it outputs per-case CSVs that feed directly into `src.fairness.analyze`, and computes both Dice and HD95 in one pass. HD95 is deferred for now.
 
 ```bash
-# Mixed — comparison with published baseline (Zhou et al.: VB 0.929, disc 0.904, macro 0.916)
-uv run --env-file .env nnUNetv2_evaluate_folder \
-    ${nnUNet_raw}/Dataset001_CSpineSeg/labelsTs \
-    ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp \
-    -djfile ${nnUNet_raw}/Dataset001_CSpineSeg/dataset.json \
-    -pfile  ${nnUNet_preprocessed}/Dataset001_CSpineSeg/nnUNetResEncUNetLPlans.json
-
-# Gold — true quality against expert labels
-uv run --env-file .env nnUNetv2_evaluate_folder \
-    ${nnUNet_raw}/Dataset001_CSpineSeg/labelsTs_gold \
-    ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp \
-    -djfile ${nnUNet_raw}/Dataset001_CSpineSeg/dataset.json \
-    -pfile  ${nnUNet_preprocessed}/Dataset001_CSpineSeg/nnUNetResEncUNetLPlans.json \
-    -o      ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp/summary_gold.json
-
-# Silver — auto-generated labels only
-uv run --env-file .env nnUNetv2_evaluate_folder \
-    ${nnUNet_raw}/Dataset001_CSpineSeg/labelsTs_silver \
-    ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp \
-    -djfile ${nnUNet_raw}/Dataset001_CSpineSeg/dataset.json \
-    -pfile  ${nnUNet_preprocessed}/Dataset001_CSpineSeg/nnUNetResEncUNetLPlans.json \
-    -o      ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp/summary_silver.json
+source .env
+uv run -m src.fairness.evaluate --predictions ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp --references ${nnUNet_raw}/Dataset001_CSpineSeg/labelsTs --mapping ${nnUNet_raw}/Dataset001_CSpineSeg/case_id_mapping.json --output ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp/eval_all.csv
+uv run -m src.fairness.evaluate --predictions ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp --references ${nnUNet_raw}/Dataset001_CSpineSeg/labelsTs_gold --mapping ${nnUNet_raw}/Dataset001_CSpineSeg/case_id_mapping.json --output ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp/eval_gold.csv
+uv run -m src.fairness.evaluate --predictions ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp --references ${nnUNet_raw}/Dataset001_CSpineSeg/labelsTs_silver --mapping ${nnUNet_raw}/Dataset001_CSpineSeg/case_id_mapping.json --output ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp/eval_silver.csv
 ```
 
 Comparing gold vs silver Dice on the same predictions gives a descriptive sense of label
@@ -192,18 +191,34 @@ quality differences. The clean biased ruler experiment evaluates Dataset001 agai
 gold labels and Dataset002's predictions (generated silver) on the same 76 gold test
 images — see `06_gold_silver_training.md`.
 
-### HD95
+### Results
 
-`nnUNetv2_evaluate_folder` only computes Dice and IoU. HD95 must be computed separately using the `surface-distance` package. Run for all three reference sets to match the metrics used in Aditya et al. (HD95 and Dice can show different bias patterns).
+| Reference set | Cases evaluated | Purpose |
+|---|---|---|
+| `labelsTs` (all) | 228 | Comparison with Zhou et al. baseline |
+| `labelsTs_gold` | 76 | Expert-label quality |
+| `labelsTs_silver` | 138 | Auto-label quality |
 
-```bash
-uv run --env-file .env python -m src.fairness.compute_hd95 \
-    --predictions ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp \
-    --references  ${nnUNet_raw}/Dataset001_CSpineSeg/labelsTs \
-    --output      ${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp/hd95.csv
+### Expected warnings
+
+The gold and silver runs emit `[WARNING] Missing reference case_id=...` for most of the 228 cases — this is expected. `case_id_mapping.json` lists all 228 v3 test cases, but `labelsTs_gold` and `labelsTs_silver` only contain the subset belonging to each quality tier. The evaluator skips missing references and counts only the ones present.
+
+Case accounting:
+
+```
+v3 test total:         228
+v3_gold test:           76   (missing from gold eval = 152)
+v3_silver test:        138   (missing from silver eval = 90)
+in neither subset:      14   (sex-rebalancing dropped these from both gold and silver splits;
+                              they still have labels in labelsTs and appear in eval_all.csv)
+
+76 + 138 + 14 = 228  ✓
 ```
 
-(Script `src/fairness/compute_hd95.py` not yet written — to be implemented before fairness analysis.)
+The 14 cases present in `labelsTs` but absent from both `labelsTs_gold` and `labelsTs_silver`:
+`cspine_000057`, `cspine_000134`, `cspine_000314`, `cspine_000364`, `cspine_000384`,
+`cspine_000435`, `cspine_000459`, `cspine_000495`, `cspine_000524`, `cspine_000659`,
+`cspine_000886`, `cspine_000980`, `cspine_001033`, `cspine_001088`.
 
 ---
 

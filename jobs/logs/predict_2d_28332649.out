@@ -1,0 +1,2191 @@
+Installed custom trainer to /zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/nnUNetTrainer/variants/training_length/nnUNetTrainerWandB.py
+=== Predicting: dataset=1 config=2d ===
+
+#######################################################################
+Please cite the following paper when using nnU-Net:
+Isensee, F., Jaeger, P. F., Kohl, S. A., Petersen, J., & Maier-Hein, K. H. (2021). nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation. Nature methods, 18(2), 203-211.
+#######################################################################
+
+There are 417 cases in the source folder
+I am processing 0 out of 1 (max process ID is 0, we start counting with 0!)
+There are 417 cases that I would like to predict
+
+Predicting cspine_000006:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000006
+
+Predicting cspine_000011:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000011
+
+Predicting cspine_000019:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000019
+
+Predicting cspine_000021:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000021
+
+Predicting cspine_000024:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000024
+
+Predicting cspine_000029:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000029
+
+Predicting cspine_000032:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000032
+
+Predicting cspine_000033:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000033
+
+Predicting cspine_000034:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000034
+
+Predicting cspine_000036:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000036
+
+Predicting cspine_000038:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000038
+
+Predicting cspine_000040:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000040
+
+Predicting cspine_000041:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000041
+
+Predicting cspine_000045:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000045
+
+Predicting cspine_000047:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000047
+
+Predicting cspine_000049:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000049
+
+Predicting cspine_000050:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000050
+
+Predicting cspine_000054:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000054
+
+Predicting cspine_000055:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000055
+
+Predicting cspine_000056:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000056
+
+Predicting cspine_000057:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000057
+
+Predicting cspine_000062:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000062
+
+Predicting cspine_000070:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000070
+
+Predicting cspine_000073:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000073
+
+Predicting cspine_000074:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000074
+
+Predicting cspine_000080:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000080
+
+Predicting cspine_000081_s0:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000081_s0
+
+Predicting cspine_000081_s1:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000081_s1
+
+Predicting cspine_000083:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000083
+
+Predicting cspine_000086:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000086
+
+Predicting cspine_000089:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000089
+
+Predicting cspine_000091:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000091
+
+Predicting cspine_000092:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000092
+
+Predicting cspine_000094:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000094
+
+Predicting cspine_000095:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000095
+
+Predicting cspine_000099:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000099
+
+Predicting cspine_000101:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000101
+
+Predicting cspine_000103:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000103
+
+Predicting cspine_000106:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000106
+
+Predicting cspine_000110:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000110
+
+Predicting cspine_000112:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000112
+
+Predicting cspine_000115:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000115
+
+Predicting cspine_000116:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000116
+
+Predicting cspine_000117:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000117
+
+Predicting cspine_000118:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000118
+
+Predicting cspine_000120:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000120
+
+Predicting cspine_000121:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000121
+
+Predicting cspine_000123:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000123
+
+Predicting cspine_000127:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000127
+
+Predicting cspine_000131:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000131
+
+Predicting cspine_000134:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000134
+
+Predicting cspine_000137:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000137
+
+Predicting cspine_000139:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000139
+
+Predicting cspine_000143:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000143
+
+Predicting cspine_000151:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000151
+
+Predicting cspine_000153:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000153
+
+Predicting cspine_000155:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000155
+
+Predicting cspine_000156:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000156
+
+Predicting cspine_000157:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000157
+
+Predicting cspine_000159:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000159
+
+Predicting cspine_000160:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000160
+
+Predicting cspine_000162:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000162
+
+Predicting cspine_000168:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000168
+
+Predicting cspine_000172:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000172
+
+Predicting cspine_000177:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000177
+
+Predicting cspine_000178:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000178
+
+Predicting cspine_000179:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000179
+
+Predicting cspine_000181:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000181
+
+Predicting cspine_000183:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000183
+
+Predicting cspine_000184:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000184
+
+Predicting cspine_000193:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000193
+
+Predicting cspine_000194:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000194
+
+Predicting cspine_000198:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000198
+
+Predicting cspine_000200:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000200
+
+Predicting cspine_000201:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000201
+
+Predicting cspine_000205:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000205
+
+Predicting cspine_000206:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000206
+
+Predicting cspine_000209:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000209
+
+Predicting cspine_000214:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000214
+
+Predicting cspine_000215:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000215
+
+Predicting cspine_000217:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000217
+
+Predicting cspine_000223:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000223
+
+Predicting cspine_000224:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000224
+
+Predicting cspine_000227:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000227
+
+Predicting cspine_000229:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000229
+
+Predicting cspine_000233:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000233
+
+Predicting cspine_000239:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000239
+
+Predicting cspine_000242:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000242
+
+Predicting cspine_000248:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000248
+
+Predicting cspine_000251:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000251
+
+Predicting cspine_000253:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000253
+
+Predicting cspine_000257:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000257
+
+Predicting cspine_000266:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000266
+
+Predicting cspine_000270:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000270
+
+Predicting cspine_000275:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000275
+
+Predicting cspine_000280:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000280
+
+Predicting cspine_000281:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000281
+
+Predicting cspine_000282:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000282
+
+Predicting cspine_000286:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000286
+
+Predicting cspine_000289:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000289
+
+Predicting cspine_000295:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000295
+
+Predicting cspine_000301:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000301
+
+Predicting cspine_000306:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000306
+
+Predicting cspine_000310:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000310
+
+Predicting cspine_000314:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000314
+
+Predicting cspine_000316:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000316
+
+Predicting cspine_000318:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000318
+
+Predicting cspine_000321:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000321
+
+Predicting cspine_000331:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000331
+
+Predicting cspine_000334:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000334
+
+Predicting cspine_000338:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000338
+
+Predicting cspine_000339:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000339
+
+Predicting cspine_000341:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000341
+
+Predicting cspine_000346:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000346
+
+Predicting cspine_000351:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000351
+
+Predicting cspine_000352:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000352
+
+Predicting cspine_000354:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000354
+
+Predicting cspine_000358:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000358
+
+Predicting cspine_000364:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000364
+
+Predicting cspine_000366:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000366
+
+Predicting cspine_000371:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000371
+
+Predicting cspine_000372:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000372
+
+Predicting cspine_000378:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000378
+
+Predicting cspine_000379:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000379
+
+Predicting cspine_000382:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000382
+
+Predicting cspine_000383:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000383
+
+Predicting cspine_000384:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000384
+
+Predicting cspine_000388:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000388
+
+Predicting cspine_000390:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000390
+
+Predicting cspine_000395:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000395
+
+Predicting cspine_000397:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000397
+
+Predicting cspine_000405:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000405
+
+Predicting cspine_000406:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000406
+
+Predicting cspine_000419:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000419
+
+Predicting cspine_000423:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000423
+
+Predicting cspine_000424:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000424
+
+Predicting cspine_000427:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000427
+
+Predicting cspine_000428:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000428
+
+Predicting cspine_000430:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000430
+
+Predicting cspine_000431:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000431
+
+Predicting cspine_000435:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000435
+
+Predicting cspine_000437:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000437
+
+Predicting cspine_000441:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000441
+
+Predicting cspine_000442:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000442
+
+Predicting cspine_000445:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000445
+
+Predicting cspine_000446:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000446
+
+Predicting cspine_000447:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000447
+
+Predicting cspine_000455:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000455
+
+Predicting cspine_000458:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000458
+
+Predicting cspine_000459:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000459
+
+Predicting cspine_000462:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000462
+
+Predicting cspine_000464:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000464
+
+Predicting cspine_000467:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000467
+
+Predicting cspine_000472:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000472
+
+Predicting cspine_000478:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000478
+
+Predicting cspine_000485:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000485
+
+Predicting cspine_000486:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000486
+
+Predicting cspine_000487:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000487
+
+Predicting cspine_000488:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000488
+
+Predicting cspine_000492:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000492
+
+Predicting cspine_000495:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000495
+
+Predicting cspine_000498:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000498
+
+Predicting cspine_000499:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000499
+
+Predicting cspine_000503:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000503
+
+Predicting cspine_000505:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000505
+
+Predicting cspine_000512:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000512
+
+Predicting cspine_000514:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000514
+
+Predicting cspine_000516:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000516
+
+Predicting cspine_000518:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000518
+
+Predicting cspine_000520:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000520
+
+Predicting cspine_000522:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000522
+
+Predicting cspine_000523:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000523
+
+Predicting cspine_000524:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000524
+
+Predicting cspine_000526:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000526
+
+Predicting cspine_000533:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000533
+
+Predicting cspine_000534:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000534
+
+Predicting cspine_000537:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000537
+
+Predicting cspine_000539:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000539
+
+Predicting cspine_000543:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000543
+
+Predicting cspine_000556:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000556
+
+Predicting cspine_000563:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000563
+
+Predicting cspine_000571:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000571
+
+Predicting cspine_000572:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000572
+
+Predicting cspine_000578:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000578
+
+Predicting cspine_000581:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000581
+
+Predicting cspine_000585:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000585
+
+Predicting cspine_000588:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000588
+
+Predicting cspine_000589:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000589
+
+Predicting cspine_000596:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000596
+
+Predicting cspine_000597:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000597
+
+Predicting cspine_000598:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000598
+
+Predicting cspine_000602:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000602
+
+Predicting cspine_000603:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000603
+
+Predicting cspine_000606:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000606
+
+Predicting cspine_000607:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000607
+
+Predicting cspine_000608:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000608
+
+Predicting cspine_000611:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000611
+
+Predicting cspine_000613:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000613
+
+Predicting cspine_000617:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000617
+
+Predicting cspine_000620:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000620
+
+Predicting cspine_000628:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000628
+
+Predicting cspine_000629:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000629
+
+Predicting cspine_000634:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000634
+
+Predicting cspine_000637:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000637
+
+Predicting cspine_000639:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000639
+
+Predicting cspine_000640:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000640
+
+Predicting cspine_000646:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000646
+
+Predicting cspine_000649:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000649
+
+Predicting cspine_000650:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000650
+
+Predicting cspine_000652:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000652
+
+Predicting cspine_000654:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000654
+
+Predicting cspine_000656:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000656
+
+Predicting cspine_000659:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000659
+
+Predicting cspine_000660:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000660
+
+Predicting cspine_000664:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000664
+
+Predicting cspine_000668_s0:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000668_s0
+
+Predicting cspine_000668_s1:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000668_s1
+
+Predicting cspine_000668_s2:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000668_s2
+
+Predicting cspine_000673:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000673
+
+Predicting cspine_000675:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000675
+
+Predicting cspine_000676:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000676
+
+Predicting cspine_000678:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000678
+
+Predicting cspine_000679:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000679
+
+Predicting cspine_000680:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000680
+
+Predicting cspine_000682:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000682
+
+Predicting cspine_000684:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000684
+
+Predicting cspine_000686:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000686
+
+Predicting cspine_000688:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000688
+
+Predicting cspine_000693:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000693
+
+Predicting cspine_000695:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000695
+
+Predicting cspine_000697:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000697
+
+Predicting cspine_000699:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000699
+
+Predicting cspine_000703:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000703
+
+Predicting cspine_000711:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000711
+
+Predicting cspine_000713:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000713
+
+Predicting cspine_000718:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000718
+
+Predicting cspine_000721:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000721
+
+Predicting cspine_000722:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000722
+
+Predicting cspine_000723:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000723
+
+Predicting cspine_000724:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000724
+
+Predicting cspine_000725:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000725
+
+Predicting cspine_000729:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000729
+
+Predicting cspine_000737:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000737
+
+Predicting cspine_000738:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000738
+
+Predicting cspine_000743:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000743
+
+Predicting cspine_000744:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000744
+
+Predicting cspine_000746:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000746
+
+Predicting cspine_000747:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000747
+
+Predicting cspine_000748:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000748
+
+Predicting cspine_000751:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000751
+
+Predicting cspine_000752:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000752
+
+Predicting cspine_000758:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000758
+
+Predicting cspine_000760:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000760
+
+Predicting cspine_000775:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000775
+
+Predicting cspine_000781:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000781
+
+Predicting cspine_000782:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000782
+
+Predicting cspine_000788:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000788
+
+Predicting cspine_000789:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000789
+
+Predicting cspine_000793:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000793
+
+Predicting cspine_000800:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000800
+
+Predicting cspine_000802:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000802
+
+Predicting cspine_000804:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000804
+
+Predicting cspine_000805:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000805
+
+Predicting cspine_000814:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000814
+
+Predicting cspine_000816:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000816
+
+Predicting cspine_000820:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000820
+
+Predicting cspine_000823:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000823
+
+Predicting cspine_000824:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000824
+
+Predicting cspine_000826:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000826
+
+Predicting cspine_000828:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000828
+
+Predicting cspine_000829:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000829
+
+Predicting cspine_000831:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000831
+
+Predicting cspine_000838:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000838
+
+Predicting cspine_000839:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000839
+
+Predicting cspine_000841:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000841
+
+Predicting cspine_000846:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000846
+
+Predicting cspine_000848:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000848
+
+Predicting cspine_000850:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000850
+
+Predicting cspine_000851:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000851
+
+Predicting cspine_000854:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000854
+
+Predicting cspine_000855:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000855
+
+Predicting cspine_000860:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000860
+
+Predicting cspine_000864:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000864
+
+Predicting cspine_000865:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000865
+
+Predicting cspine_000867:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000867
+
+Predicting cspine_000869:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000869
+
+Predicting cspine_000871:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000871
+
+Predicting cspine_000872:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000872
+
+Predicting cspine_000874:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000874
+
+Predicting cspine_000877:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000877
+
+Predicting cspine_000878:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000878
+
+Predicting cspine_000879:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000879
+
+Predicting cspine_000883:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000883
+
+Predicting cspine_000884:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000884
+
+Predicting cspine_000885:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000885
+
+Predicting cspine_000886:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000886
+
+Predicting cspine_000888:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000888
+
+Predicting cspine_000891:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000891
+
+Predicting cspine_000893:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000893
+
+Predicting cspine_000898:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000898
+
+Predicting cspine_000905:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000905
+
+Predicting cspine_000906:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000906
+
+Predicting cspine_000909:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000909
+
+Predicting cspine_000911:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000911
+
+Predicting cspine_000914:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000914
+
+Predicting cspine_000915:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000915
+
+Predicting cspine_000920:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000920
+
+Predicting cspine_000921:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000921
+
+Predicting cspine_000922:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000922
+
+Predicting cspine_000924:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000924
+
+Predicting cspine_000926:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000926
+
+Predicting cspine_000927:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000927
+
+Predicting cspine_000928:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000928
+
+Predicting cspine_000930:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000930
+
+Predicting cspine_000933:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000933
+
+Predicting cspine_000934:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000934
+
+Predicting cspine_000938:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000938
+
+Predicting cspine_000939:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000939
+
+Predicting cspine_000940:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000940
+
+Predicting cspine_000942:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000942
+
+Predicting cspine_000943:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000943
+
+Predicting cspine_000952:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000952
+
+Predicting cspine_000953:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000953
+
+Predicting cspine_000955:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000955
+
+Predicting cspine_000958:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000958
+
+Predicting cspine_000960:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000960
+
+Predicting cspine_000968:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000968
+
+Predicting cspine_000969:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000969
+
+Predicting cspine_000970:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000970
+
+Predicting cspine_000973:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000973
+
+Predicting cspine_000974_s0:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000974_s0
+
+Predicting cspine_000974_s1:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000974_s1
+
+Predicting cspine_000976:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000976
+
+Predicting cspine_000980:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000980
+
+Predicting cspine_000981:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000981
+
+Predicting cspine_000984:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000984
+
+Predicting cspine_000987:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000987
+
+Predicting cspine_000990:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000990
+
+Predicting cspine_000992:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000992
+
+Predicting cspine_000993:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000993
+
+Predicting cspine_000995:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000995
+
+Predicting cspine_000997:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000997
+
+Predicting cspine_000998:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000998
+
+Predicting cspine_000999:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_000999
+
+Predicting cspine_001007:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001007
+
+Predicting cspine_001008:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001008
+
+Predicting cspine_001011:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001011
+
+Predicting cspine_001013:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001013
+
+Predicting cspine_001017:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001017
+
+Predicting cspine_001020:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001020
+
+Predicting cspine_001022:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001022
+
+Predicting cspine_001023:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001023
+
+Predicting cspine_001026:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001026
+
+Predicting cspine_001027:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001027
+
+Predicting cspine_001028:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001028
+
+Predicting cspine_001031:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001031
+
+Predicting cspine_001032:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001032
+
+Predicting cspine_001033:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001033
+
+Predicting cspine_001036:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001036
+
+Predicting cspine_001037:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001037
+
+Predicting cspine_001045:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001045
+
+Predicting cspine_001046:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001046
+
+Predicting cspine_001048:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001048
+
+Predicting cspine_001052:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001052
+
+Predicting cspine_001054:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001054
+
+Predicting cspine_001056:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001056
+
+Predicting cspine_001062:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001062
+
+Predicting cspine_001063:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001063
+
+Predicting cspine_001068:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001068
+
+Predicting cspine_001070:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001070
+
+Predicting cspine_001075:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001075
+
+Predicting cspine_001084:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001084
+
+Predicting cspine_001088:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001088
+
+Predicting cspine_001091:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001091
+
+Predicting cspine_001095:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001095
+
+Predicting cspine_001096:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001096
+
+Predicting cspine_001101:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001101
+
+Predicting cspine_001103:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001103
+
+Predicting cspine_001108:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001108
+
+Predicting cspine_001116:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001116
+
+Predicting cspine_001117:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001117
+
+Predicting cspine_001118:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001118
+
+Predicting cspine_001119:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001119
+
+Predicting cspine_001125:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001125
+
+Predicting cspine_001126:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001126
+
+Predicting cspine_001135:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001135
+
+Predicting cspine_001137:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001137
+
+Predicting cspine_001138:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001138
+
+Predicting cspine_001140:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001140
+
+Predicting cspine_001142:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001142
+
+Predicting cspine_001143:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001143
+
+Predicting cspine_001145:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001145
+
+Predicting cspine_001148:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001148
+
+Predicting cspine_001149:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001149
+
+Predicting cspine_001152:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001152
+
+Predicting cspine_001153:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001153
+
+Predicting cspine_001154:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001154
+
+Predicting cspine_001158:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001158
+
+Predicting cspine_001159:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001159
+
+Predicting cspine_001166:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001166
+
+Predicting cspine_001170:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001170
+
+Predicting cspine_001174:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001174
+
+Predicting cspine_001185:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001185
+
+Predicting cspine_001190:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001190
+
+Predicting cspine_001194:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001194
+
+Predicting cspine_001195:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001195
+
+Predicting cspine_001197:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001197
+
+Predicting cspine_001202:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001202
+
+Predicting cspine_001205:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001205
+
+Predicting cspine_001207:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001207
+
+Predicting cspine_001214:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001214
+
+Predicting cspine_001215:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001215
+
+Predicting cspine_001222:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001222
+
+Predicting cspine_001224:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001224
+
+Predicting cspine_001230:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001230
+
+Predicting cspine_001232_s0:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001232_s0
+
+Predicting cspine_001232_s1:
+perform_everything_on_device: True
+sending off prediction to background worker for resampling and export
+done with cspine_001232_s1
+=== Prediction complete: config=2d output=/work3/s225224/nnunet/results/Dataset001_CSpineSeg/predictions_test_2d ===
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@hpc.dtu.dk>
+Subject: Job 28332649: <cspine_predict_2d> in cluster <dcc> Done
+
+Job <cspine_predict_2d> was submitted from host <n-62-30-5> by user <s225224> in cluster <dcc> at Fri May  1 10:52:17 2026
+Job was executed on host(s) <4*n-62-13-17>, in queue <gpul40s>, as user <s225224> in cluster <dcc> at Fri May  1 11:51:16 2026
+</zhome/77/2/187952> was used as the home directory.
+</zhome/77/2/187952/projects/spinal-fairness> was used as the working directory.
+Started at Fri May  1 11:51:16 2026
+Terminated at Fri May  1 12:53:50 2026
+Results reported at Fri May  1 12:53:50 2026
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -J cspine_predict_2d
+#BSUB -q gpul40s
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=8GB]"
+#BSUB -n 4
+#BSUB -W 04:00
+#BSUB -o jobs/logs/predict_2d_%J.out
+#BSUB -e jobs/logs/predict_2d_%J.err
+
+set -euo pipefail
+
+# ---------- Config (replaced at submission) ----------
+DATASET_ID=1
+CONFIG=2d
+PLANS=nnUNetResEncUNetLPlans
+TRAINER=nnUNetTrainerWandB
+# -----------------------------------------------------
+
+export UV_ENV_FILE=".env"
+export OMP_NUM_THREADS=1
+
+mkdir -p jobs/logs
+
+uv sync
+
+# Install custom trainer so predict can load the checkpoint correctly.
+TRAINER_SRC="src/nnunet/trainer.py"
+TRAINER_DST="$(uv run python -c "import nnunetv2; print(nnunetv2.__path__[0])")/training/nnUNetTrainer/variants/training_length/nnUNetTrainerWandB.py"
+cp "${TRAINER_SRC}" "${TRAINER_DST}"
+echo "Installed custom trainer to ${TRAINER_DST}"
+
+source .env
+
+OUTPUT_DIR="${nnUNet_results}/Dataset00${DATASET_ID}_CSpineSeg/predictions_test_${CONFIG}"
+
+echo "=== Predicting: dataset=${DATASET_ID} config=${CONFIG} ==="
+
+uv run nnUNetv2_predict \
+    -d Dataset00${DATASET_ID}_CSpineSeg \
+    -i "${nnUNet_raw}/Dataset00${DATASET_ID}_CSpineSeg/imagesTs" \
+    -o "${OUTPUT_DIR}" \
+    -f 0 1 2 3 4 \
+    -tr ${TRAINER} \
+    -c ${CONFIG} \
+    -p ${PLANS} \
+    --save_probabilities
+
+echo "=== Prediction complete: config=${CONFIG} output=${OUTPUT_DIR} ==="
+
+(... more ...)
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   7314.00 sec.
+    Max Memory :                                 9206 MB
+    Average Memory :                             8494.11 MB
+    Total Requested Memory :                     32768.00 MB
+    Delta Memory :                               23562.00 MB
+    Max Swap :                                   -
+    Max Processes :                              13
+    Max Threads :                                111
+    Run time :                                   3754 sec.
+    Turnaround time :                            7293 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <jobs/logs/predict_2d_28332649.err> for stderr output of this job.
+

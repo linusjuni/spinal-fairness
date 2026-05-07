@@ -171,7 +171,7 @@ def ols_regression(
     y = pdf[score_col]
     X_parts = []
     for cov in covariates:
-        if pdf[cov].dtype == object or pdf[cov].dtype.name == "category":
+        if not __import__("pandas").api.types.is_numeric_dtype(pdf[cov]):
             dummies = pdf[[cov]].astype(str)
             dummies = __import__("pandas").get_dummies(dummies, drop_first=True, dtype=float)
             X_parts.append(dummies)
