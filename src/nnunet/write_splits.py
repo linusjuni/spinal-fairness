@@ -1,15 +1,15 @@
 """
 Create a demographically stratified splits_final.json for nnU-Net 5-fold CV.
 
-Reads split_v3.tsv and case_id_mapping.json, then creates 5 folds where each
+Reads the split TSV and case_id_mapping.json, then creates 5 folds where each
 fold preserves race_bin x age_bin x sex_bin proportions. The output is written
-to $nnUNet_preprocessed/Dataset001_CSpineSeg/splits_final.json.
+to $nnUNet_preprocessed/<DatasetNNN>/splits_final.json.
 
 Must be run AFTER nnUNetv2_plan_and_preprocess (which creates the preprocessed
 directory) and BEFORE nnUNetv2_train.
 
 Usage:
-    uv run -m src.nnunet.write_splits
+    uv run -m src.nnunet.write_splits [--dataset-id 2]
 """
 
 from __future__ import annotations
@@ -22,7 +22,7 @@ from sklearn.model_selection import StratifiedKFold
 
 from src.data.schemas import Col
 from src.data.splits import load_splits
-from src.nnunet import DATASET_NAME, SPLIT_VERSION
+from src.nnunet import DATASETS
 from src.utils.logger import get_logger
 from src.utils.settings import settings
 
@@ -31,17 +31,24 @@ logger = get_logger(__name__)
 N_FOLDS = 5
 
 
-def create_nnunet_splits() -> list[dict[str, list[str]]]:
+def create_nnunet_splits(dataset_id: int = 1) -> list[dict[str, list[str]]]:
     """Create 5-fold stratified splits for nnU-Net.
 
-    Only train+val cases from split_v3 go into imagesTr/ and thus into the
-    nnU-Net folds. Test cases are in imagesTs/ and never appear here.
+    Only train+val cases go into imagesTr/ and thus into the nnU-Net folds.
+    Test cases are in imagesTs/ and never appear here.
+
+    Args:
+        dataset_id: Dataset ID (1=mixed, 2=gold, 3=silver).
 
     Returns:
         List of 5 dicts, each with 'train' and 'val' keys mapping to lists
         of nnU-Net case identifier strings.
     """
-    dataset_dir = settings.nnUNet_raw / DATASET_NAME
+    config = DATASETS[dataset_id]
+    dataset_name = config["name"]
+    split_version = config["split"]
+
+    dataset_dir = settings.nnUNet_raw / dataset_name
 
     # Load case_id_mapping.json (written by prepare_dataset)
     mapping_path = dataset_dir / "case_id_mapping.json"
@@ -52,8 +59,7 @@ def create_nnunet_splits() -> list[dict[str, list[str]]]:
         )
     mapping = json.loads(mapping_path.read_text())
 
-    # Load split_v3 for stratification columns
-    splits = load_splits(SPLIT_VERSION)
+    splits = load_splits(split_version)
 
     # Filter to train+val only (what's in imagesTr/)
     train_val_sids = {
@@ -107,17 +113,19 @@ def create_nnunet_splits() -> list[dict[str, list[str]]]:
     return folds
 
 
-def write_splits() -> None:
+def write_splits(dataset_id: int = 1) -> None:
     """Create and write splits_final.json to the nnU-Net preprocessed directory."""
-    preprocessed_dir = settings.nnUNet_preprocessed / DATASET_NAME
+    config = DATASETS[dataset_id]
+    dataset_name = config["name"]
+    preprocessed_dir = settings.nnUNet_preprocessed / dataset_name
 
     if not preprocessed_dir.exists():
         raise FileNotFoundError(
             f"Preprocessed directory not found: {preprocessed_dir}. "
-            "Run `nnUNetv2_plan_and_preprocess -d 1 --verify_dataset_integrity` first."
+            f"Run `nnUNetv2_plan_and_preprocess -d {dataset_id} --verify_dataset_integrity` first."
         )
 
-    folds = create_nnunet_splits()
+    folds = create_nnunet_splits(dataset_id)
 
     splits_path = preprocessed_dir / "splits_final.json"
     splits_path.write_text(json.dumps(folds, indent=2))
@@ -125,4 +133,15 @@ def write_splits() -> None:
 
 
 if __name__ == "__main__":
-    write_splits()
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Write stratified nnU-Net CV splits")
+    parser.add_argument(
+        "--dataset-id",
+        type=int,
+        default=1,
+        choices=list(DATASETS),
+        help="Dataset ID: 1=mixed, 2=gold, 3=silver (default: 1)",
+    )
+    args = parser.parse_args()
+    write_splits(args.dataset_id)

@@ -23,7 +23,7 @@ import polars as pl
 
 from src.data.schemas import Col
 from src.data.splits import load_splits
-from src.nnunet import DATASET_NAME, SPLIT_VERSION
+from src.nnunet import DATASETS
 from src.utils.logger import get_logger
 from src.utils.settings import settings
 
@@ -89,16 +89,21 @@ def _link_or_copy(src: Path, dst: Path, *, copy: bool) -> None:
         dst.symlink_to(src.resolve())
 
 
-def prepare_dataset(*, copy: bool = False) -> Path:
-    """Build Dataset001_CSpineSeg under $nnUNet_raw.
+def prepare_dataset(*, dataset_id: int = 1, copy: bool = False) -> Path:
+    """Build an nnU-Net dataset directory under $nnUNet_raw.
 
     Args:
+        dataset_id: Dataset ID (1=mixed, 2=gold, 3=silver).
         copy: If True, copy files instead of symlinking.
 
     Returns:
         Path to the created dataset directory.
     """
-    dataset_dir = settings.nnUNet_raw / DATASET_NAME
+    config = DATASETS[dataset_id]
+    dataset_name = config["name"]
+    split_version = config["split"]
+
+    dataset_dir = settings.nnUNet_raw / dataset_name
     images_tr = dataset_dir / "imagesTr"
     labels_tr = dataset_dir / "labelsTr"
     images_ts = dataset_dir / "imagesTs"
@@ -107,8 +112,8 @@ def prepare_dataset(*, copy: bool = False) -> Path:
         d.mkdir(parents=True, exist_ok=True)
 
     # Load split assignments
-    splits = load_splits(SPLIT_VERSION)
-    logger.info("Loaded splits", version=SPLIT_VERSION, rows=splits.height)
+    splits = load_splits(split_version)
+    logger.info("Loaded splits", version=split_version, rows=splits.height)
 
     train_val = splits.filter(pl.col("split").is_in(["train", "val"]))
     test = splits.filter(pl.col("split") == "test")
@@ -206,7 +211,7 @@ def prepare_dataset(*, copy: bool = False) -> Path:
     # Summary
     logger.success(
         "Dataset prepared",
-        dataset=DATASET_NAME,
+        dataset=dataset_name,
         train_val=n_tr,
         test=n_ts,
         mode="copy" if copy else "symlink",
@@ -219,9 +224,16 @@ def prepare_dataset(*, copy: bool = False) -> Path:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Prepare nnU-Net dataset from CSpineSeg")
     parser.add_argument(
+        "--dataset-id",
+        type=int,
+        default=1,
+        choices=list(DATASETS),
+        help="Dataset ID: 1=mixed, 2=gold, 3=silver (default: 1)",
+    )
+    parser.add_argument(
         "--copy",
         action="store_true",
         help="Copy files instead of creating symlinks (uses ~5 GB extra disk space)",
     )
     args = parser.parse_args()
-    prepare_dataset(copy=args.copy)
+    prepare_dataset(dataset_id=args.dataset_id, copy=args.copy)
