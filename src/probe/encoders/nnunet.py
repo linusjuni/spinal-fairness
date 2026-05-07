@@ -2,7 +2,7 @@
 
 Loads a trained nnU-Net (ResEncUNet, 3d_fullres, fold 0) and extracts
 global-average-pooled bottleneck features. Preprocessing loads the
-already-preprocessed .npz files from $nnUNet_preprocessed so the features
+already-preprocessed .b2nd files from $nnUNet_preprocessed so the features
 match exactly what the model saw during training.
 
 Usage:
@@ -14,6 +14,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import blosc2
 import numpy as np
 import torch
 import torch.nn as nn
@@ -49,10 +50,6 @@ def _checkpoint_path() -> Path:
     )
 
 
-def _preprocessed_dir() -> Path:
-    return settings.nnUNet_preprocessed / DATASET_NAME / f"{PLANS_NAME}_{CONFIG}"
-
-
 def _case_id_mapping() -> dict[str, str]:
     """Return filename -> case_id mapping from Dataset001's case_id_mapping.json."""
     mapping_path = settings.nnUNet_raw / DATASET_NAME / "case_id_mapping.json"
@@ -73,9 +70,14 @@ class NNUNetBottleneckEncoder(nn.Module):
         return bottleneck.mean(dim=tuple(range(2, bottleneck.ndim)))
 
 
-def _build_preprocess(filename_to_case_id: dict[str, str]) -> callable:
-    """Build a preprocess function that loads .npz files by NIfTI filename."""
-    npz_dir = _preprocessed_dir()
+def _build_preprocess(
+    filename_to_case_id: dict[str, str], b2nd_dir: Path, patch_size: list[int]
+) -> callable:
+    """Build a preprocess function that loads .b2nd files by NIfTI filename.
+
+    Pads the loaded volume to `patch_size` (the training patch size from the plans)
+    so spatial dims are divisible by the network's cumulative strides.
+    """
 
     def preprocess(nifti_path: Path) -> torch.Tensor:
         filename = nifti_path.name
@@ -83,11 +85,16 @@ def _build_preprocess(filename_to_case_id: dict[str, str]) -> callable:
         if case_id is None:
             raise FileNotFoundError(f"No case_id mapping for {filename}")
 
-        npz_path = npz_dir / f"{case_id}.npz"
-        if not npz_path.exists():
-            raise FileNotFoundError(f"Preprocessed .npz not found: {npz_path}")
+        b2nd_path = b2nd_dir / f"{case_id}.b2nd"
+        if not b2nd_path.exists():
+            raise FileNotFoundError(f"Preprocessed .b2nd not found: {b2nd_path}")
 
-        data = np.load(npz_path)["data"]
+        data = np.array(blosc2.open(b2nd_path)[:])  # (C, D, H, W)
+        pads = [
+            (0, max(0, patch_size[i] - data.shape[i + 1]))
+            for i in range(len(patch_size))
+        ]
+        data = np.pad(data, [(0, 0)] + pads, mode="constant")
         return torch.from_numpy(data).float()
 
     return preprocess
@@ -136,8 +143,12 @@ def load_nnunet(device: str = "cuda") -> Encoder:
     for p in model.parameters():
         p.requires_grad_(False)
 
+    b2nd_dir = (
+        settings.nnUNet_preprocessed / DATASET_NAME / config_manager.data_identifier
+    )
+    patch_size = config_manager.patch_size
     filename_to_case_id = _case_id_mapping()
-    preprocess = _build_preprocess(filename_to_case_id)
+    preprocess = _build_preprocess(filename_to_case_id, b2nd_dir, patch_size)
 
     logger.success("Loaded nnU-Net encoder", output_dim=output_dim, device=device)
     return Encoder(model=model, preprocess=preprocess, output_dim=output_dim)

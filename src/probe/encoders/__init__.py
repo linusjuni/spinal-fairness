@@ -3,6 +3,7 @@ from __future__ import annotations
 from ._base import Encoder, EncoderFactory
 from .mri_core import load_mri_core, load_mri_core_cropped
 from .nnunet import load_nnunet
+from .random_nnunet import load_random_nnunet
 from .random_vit_b import load_random_vit_b
 
 
@@ -11,6 +12,7 @@ REGISTRY: dict[str, EncoderFactory] = {
     "mri_core_cropped": load_mri_core_cropped,
     "random_vit_b": load_random_vit_b,
     "nnunet": load_nnunet,
+    "random_nnunet": load_random_nnunet,
 }
 
 
