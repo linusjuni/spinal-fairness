@@ -162,10 +162,24 @@ Or add a `--dataset-id` parameter to `train.sh` and create a `submit_gold_silver
 
 ---
 
-## Step 5 — Evaluate
+## Step 5 — Predict, Ensemble, Postprocess
 
-**Biased ruler** (requires Dataset002 to be trained first):
-- Generate Dataset002 predictions on the 76 gold test images.
+After training completes, generate predictions and postprocess them. Scripts resolve
+dataset names from the `DATASETS` registry in `src/nnunet/__init__.py`.
+
+```bash
+# GPU: submit predict jobs (2d + 3d_fullres)
+bash jobs/submit_predict.sh 2
+
+# CPU (after predict jobs finish): find_best_config → ensemble → postprocess
+bash jobs/ensemble_and_postprocess.sh 2
+```
+
+Output: `$nnUNet_results/Dataset002_CSpineSeg_Gold/predictions_test_pp/`
+
+## Step 6 — Evaluate
+
+**Biased ruler** (requires Dataset002 predictions):
 - Evaluate Dataset001 predictions against gold labels → true fairness gap.
 - Evaluate Dataset001 predictions against Dataset002's predictions (generated silver) → observed fairness gap with biased ruler.
 - The difference between the two gaps is the pure ruler effect.

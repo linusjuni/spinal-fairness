@@ -33,13 +33,14 @@ echo "Installed custom trainer to ${TRAINER_DST}"
 
 source .env
 
-OUTPUT_DIR="${nnUNet_results}/Dataset00${DATASET_ID}_CSpineSeg/predictions_test_${CONFIG}"
+DATASET_NAME=$(uv run python -c "from src.nnunet import DATASETS; print(DATASETS[${DATASET_ID}]['name'])")
+OUTPUT_DIR="${nnUNet_results}/${DATASET_NAME}/predictions_test_${CONFIG}"
 
-echo "=== Predicting: dataset=${DATASET_ID} config=${CONFIG} ==="
+echo "=== Predicting: dataset=${DATASET_ID} (${DATASET_NAME}) config=${CONFIG} ==="
 
 uv run nnUNetv2_predict \
-    -d Dataset00${DATASET_ID}_CSpineSeg \
-    -i "${nnUNet_raw}/Dataset00${DATASET_ID}_CSpineSeg/imagesTs" \
+    -d ${DATASET_NAME} \
+    -i "${nnUNet_raw}/${DATASET_NAME}/imagesTs" \
     -o "${OUTPUT_DIR}" \
     -f 0 1 2 3 4 \
     -tr ${TRAINER} \

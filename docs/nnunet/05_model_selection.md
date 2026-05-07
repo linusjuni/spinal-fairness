@@ -102,8 +102,7 @@ $nnUNet_results/Dataset001_CSpineSeg/ensembles/ensemble___nnUNetTrainerWandB__nn
 Two GPU jobs in parallel on `gpul40s`. Jobs 28332649 (2d, ~1h2m) and 28332650 (3d_fullres, ~48min) both completed successfully. Each predicted all 417 cases (228 test + 189 that were in the source folder but not the test split — nnUNet predicts everything in `imagesTs/`).
 
 ```bash
-sed 's/TPLCONFIG/2d/g'         jobs/predict.sh | bsub
-sed 's/TPLCONFIG/3d_fullres/g' jobs/predict.sh | bsub
+bash jobs/submit_predict.sh 1   # or: sed 's/TPLCONFIG/2d/g' jobs/predict.sh | bsub
 ```
 
 Each job writes predictions + `.npz` softmax files to:
