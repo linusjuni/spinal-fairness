@@ -54,6 +54,7 @@ logger = get_logger("fairness.analyze")
 
 DICE_COLS = ["dice_vb", "dice_disc", "dice_macro"]
 HD95_COLS = ["hd95_vb", "hd95_disc", "hd95_macro"]
+NDSC_COLS = ["ndsc_vb", "ndsc_disc", "ndsc_macro"]
 
 Grouping = tuple[str, GroupingSpec | None, str, str]
 
@@ -78,6 +79,10 @@ def _add_derived_columns(df: pl.DataFrame) -> pl.DataFrame:
         df = df.with_columns(
             ((pl.col("hd95_vb") + pl.col("hd95_disc")) / 2.0).alias("hd95_macro")
         )
+    if "ndsc_vb" in df.columns:
+        df = df.with_columns(
+            ((pl.col("ndsc_vb") + pl.col("ndsc_disc")) / 2.0).alias("ndsc_macro")
+        )
     return df
 
 
@@ -86,6 +91,8 @@ def _detect_score_cols(df: pl.DataFrame) -> list[str]:
     cols = list(DICE_COLS)
     if "hd95_vb" in df.columns:
         cols.extend(HD95_COLS)
+    if "ndsc_vb" in df.columns:
+        cols.extend(NDSC_COLS)
     return cols
 
 

@@ -26,7 +26,7 @@ from src.utils.logger import get_logger
 
 logger = get_logger("fairness.evaluate")
 
-VALID_METRICS = {"dice", "hd95"}
+VALID_METRICS = {"dice", "hd95", "ndsc"}
 
 
 def dice_coefficient(pred: np.ndarray, ref: np.ndarray, label: int) -> float:
@@ -81,6 +81,58 @@ def hausdorff_95(
     return float(compute_robust_hausdorff(distances, 95.0))
 
 
+def _segmentation_counts(
+    pred: np.ndarray, ref: np.ndarray, label: int
+) -> dict[str, int]:
+    """TP, FP, FN counts for a single label (used by nDSC)."""
+    pred_mask = pred == label
+    ref_mask = ref == label
+    tp = int((pred_mask & ref_mask).sum())
+    fp = int((pred_mask & ~ref_mask).sum())
+    fn = int((~pred_mask & ref_mask).sum())
+    return {"tp": tp, "fp": fp, "fn": fn, "ref_vol": int(ref_mask.sum())}
+
+
+def _compute_ndsc(df: pl.DataFrame) -> pl.DataFrame:
+    """Compute nDSC from intermediate counts (Raina et al. 2023).
+
+    Two-pass: first derives effective_load per label from the dataset,
+    then computes nDSC per case. Drops intermediate columns.
+    """
+    for label_name in LABELS.values():
+        tp = f"_tp_{label_name}"
+        fp = f"_fp_{label_name}"
+        fn = f"_fn_{label_name}"
+        rv = f"_ref_vol_{label_name}"
+        tv = "_total_voxels"
+
+        effective_load = float(
+            df.select((pl.col(rv).cast(pl.Float64) / pl.col(tv)).mean()).item()
+        )
+        logger.info("nDSC effective_load", label=label_name, r=f"{effective_load:.6f}")
+
+        non_ref = pl.col(tv).cast(pl.Float64) - pl.col(rv)
+        kappa = (1.0 - effective_load) * pl.col(rv) / (effective_load * non_ref)
+
+        ndsc_expr = (
+            2.0 * pl.col(tp)
+            / (kappa * pl.col(fp) + 2.0 * pl.col(tp) + pl.col(fn))
+        )
+
+        ndsc_expr = (
+            pl.when((pl.col(tp) == 0) & (pl.col(rv) == 0))
+            .then(float("nan"))
+            .when((pl.col(tp) == 0) | (pl.col(rv) == 0))
+            .then(0.0)
+            .otherwise(ndsc_expr)
+        )
+
+        df = df.with_columns(ndsc_expr.alias(f"ndsc_{label_name}"))
+
+    df = df.drop([c for c in df.columns if c.startswith("_")])
+    return df
+
+
 def evaluate_case(
     pred_path: Path,
     ref_path: Path,
@@ -108,6 +160,9 @@ def evaluate_case(
         "series_submitter_id": series_submitter_id,
     }
 
+    if "ndsc" in metrics:
+        result["_total_voxels"] = int(ref_data.size)
+
     for label_int, label_name in LABELS.items():
         if "dice" in metrics:
             result[f"dice_{label_name}"] = dice_coefficient(pred_data, ref_data, label_int)
@@ -117,6 +172,13 @@ def evaluate_case(
             result[f"hd95_{label_name}"] = hausdorff_95(
                 pred_data, ref_data, label_int, tuple(float(s) for s in spacing)
             )
+
+        if "ndsc" in metrics:
+            counts = _segmentation_counts(pred_data, ref_data, label_int)
+            result[f"_tp_{label_name}"] = counts["tp"]
+            result[f"_fp_{label_name}"] = counts["fp"]
+            result[f"_fn_{label_name}"] = counts["fn"]
+            result[f"_ref_vol_{label_name}"] = counts["ref_vol"]
 
     return result
 
@@ -183,6 +245,10 @@ def evaluate_folder(
         results = [_evaluate_case_args(item) for item in work_items]
 
     df = pl.DataFrame(results)
+
+    if "ndsc" in metrics:
+        df = _compute_ndsc(df)
+
     logger.success("Evaluation complete", cases=df.height)
 
     if output_path is not None:

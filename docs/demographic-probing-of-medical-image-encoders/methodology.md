@@ -61,7 +61,8 @@ encoder. The lineup is three primaries (anatomy match, institution+SSL,
 
 | Encoder | Role | Layer | Pool | Output |
 |---|---|---|---|---|
-| **CSpineSeg nnU-Net** (ours) | task model audit | encoder bottleneck (strip decoder) | GAP | ~512-d (from plans `features_per_stage[-1]`) |
+| **CSpineSeg nnU-Net** (ours) | task model audit | encoder bottleneck (strip decoder) | GAP | 320-d (from plans `features_per_stage[-1]`) |
+| Random-init CSpineSeg nnU-Net | task model null | same as above (no checkpoint) | GAP | 320-d |
 | **TotalSpineSeg** (nnU-Net) | primary: anatomy match | encoder bottleneck (strip decoder) | `adaptive_avg_pool3d((1,1,1))` | ~320-d (nnU-Net default) |
 | **MRI-CORE** ViT-B (SAM-init DINOv2) | primary: institution + SSL / MVP | CLS token | mean across slices (or mid-sagittal only) | 768-d |
 | **Triad Swin-B (MAE)** | primary: 3D SSL scale | SwinUNETR-B bottleneck | `adaptive_avg_pool3d((1,1,1))` | 768-d |
