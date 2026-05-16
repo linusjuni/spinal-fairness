@@ -1,0 +1,50 @@
+Resolved 122 packages in 847ms
+Audited 119 packages in 206ms
+Traceback (most recent call last):
+  File "/zhome/77/2/187952/projects/spinal-fairness/src/fairness/evaluate.py", line 243, in evaluate_folder
+    results = list(pool.map(_evaluate_case_args, work_items))
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/concurrent/futures/process.py", line 617, in _chain_from_iterable_of_lists
+    for element in iterable:
+                   ^^^^^^^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ~~~~~~~~~~^^^^^^^^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/concurrent/futures/_base.py", line 451, in result
+    self._condition.wait(timeout)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/threading.py", line 359, in wait
+    waiter.acquire()
+    ~~~~~~~~~~~~~~^^
+KeyboardInterrupt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/zhome/77/2/187952/projects/spinal-fairness/src/fairness/evaluate.py", line 289, in <module>
+    evaluate_folder(
+    ~~~~~~~~~~~~~~~^
+        pred_dir=args.predictions,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+        workers=args.workers,
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/zhome/77/2/187952/projects/spinal-fairness/src/fairness/evaluate.py", line 242, in evaluate_folder
+    with ProcessPoolExecutor(max_workers=workers) as pool:
+         ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/concurrent/futures/_base.py", line 647, in __exit__
+    self.shutdown(wait=True)
+    ~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/concurrent/futures/process.py", line 851, in shutdown
+    self._executor_manager_thread.join()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/threading.py", line 1094, in join
+    self._handle.join(timeout)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyboardInterrupt

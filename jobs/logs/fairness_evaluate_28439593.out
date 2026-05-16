@@ -1,0 +1,84 @@
+=== Evaluate: Dice + HD95 + nDSC, 24 workers ===
+[[97mINFO[0m] [[96mfairness.evaluate[0m] Evaluating [90msplit=test[0m [90mcases=228[0m [90mmetrics=['dice', 'hd95', 'ndsc'][0m [90mworkers=24[0m
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@hpc.dtu.dk>
+Subject: Job 28439593: <fairness_evaluate> in cluster <dcc> Exited
+
+Job <fairness_evaluate> was submitted from host <hpclogin1> by user <s225224> in cluster <dcc> at Sat May 16 12:47:34 2026
+Job was executed on host(s) <24*n-62-21-58>, in queue <hpc>, as user <s225224> in cluster <dcc> at Sat May 16 12:47:35 2026
+</zhome/77/2/187952> was used as the home directory.
+</zhome/77/2/187952/projects/spinal-fairness> was used as the working directory.
+Started at Sat May 16 12:47:35 2026
+Terminated at Sat May 16 12:48:06 2026
+Results reported at Sat May 16 12:48:06 2026
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -J fairness_evaluate
+#BSUB -q hpc
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=16GB]"
+#BSUB -n 24
+#BSUB -W 02:00
+#BSUB -o jobs/logs/fairness_evaluate_%J.out
+#BSUB -e jobs/logs/fairness_evaluate_%J.err
+
+set -euo pipefail
+
+export UV_ENV_FILE=".env"
+
+mkdir -p jobs/logs outputs
+
+uv sync
+
+source .env
+
+echo "=== Evaluate: Dice + HD95 + nDSC, 24 workers ==="
+
+uv run -m src.fairness.evaluate \
+    --predictions "${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp" \
+    --references  "${nnUNet_raw}/Dataset001_CSpineSeg/labelsTs" \
+    --mapping     "${nnUNet_raw}/Dataset001_CSpineSeg/case_id_mapping.json" \
+    --output      outputs/eval_global.csv \
+    --metrics dice hd95 ndsc \
+    --workers 24
+
+echo "=== Analyze ==="
+
+uv run -m src.fairness.analyze \
+    --evaluation-csvs outputs/eval_global.csv \
+    --ruler-labels    global \
+    --mapping         "${nnUNet_raw}/Dataset001_CSpineSeg/case_id_mapping.json"
+
+echo "=== Done ==="
+
+------------------------------------------------------------
+
+TERM_OWNER: job killed by owner.
+Exited with exit code 130.
+
+Resource usage summary:
+
+    CPU time :                                   33.42 sec.
+    Max Memory :                                 1491 MB
+    Average Memory :                             1008.67 MB
+    Total Requested Memory :                     393216.00 MB
+    Delta Memory :                               391725.00 MB
+    Max Swap :                                   -
+    Max Processes :                              29
+    Max Threads :                                34
+    Run time :                                   31 sec.
+    Turnaround time :                            32 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <jobs/logs/fairness_evaluate_28439593.err> for stderr output of this job.
+
