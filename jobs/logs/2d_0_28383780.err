@@ -1,0 +1,73 @@
+Resolved 122 packages in 805ms
+Audited 119 packages in 136ms
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+wandb: Currently logged in as: linusjunidtu (linusjunidtu-danmarks-tekniske-universitet-dtu) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+Traceback (most recent call last):
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/bin/nnUNetv2_train", line 10, in <module>
+    sys.exit(run_training_entry())
+             ~~~~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/run/run_training.py", line 268, in run_training_entry
+    run_training(args.dataset_name_or_id, args.configuration, args.fold, args.tr, args.p, args.pretrained_weights,
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                 args.num_gpus, args.npz, args.c, args.val, args.disable_checkpointing, args.val_best,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                 device=device)
+                 ^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/run/run_training.py", line 194, in run_training
+    nnunet_trainer = get_trainer_from_args(dataset_name_or_id, configuration, fold, trainer_class_name,
+                                           plans_identifier, continue_training, device=device)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/run/run_training.py", line 67, in get_trainer_from_args
+    nnunet_trainer = nnunet_trainer(plans=plans, configuration=configuration, fold=fold,
+                                    dataset_json=dataset_json, device=device)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/nnUNetTrainer/variants/training_length/nnUNetTrainerWandB.py", line 34, in __init__
+    super().__init__(plans, configuration, fold, dataset_json, device)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/nnUNetTrainer/nnUNetTrainer.py", line 181, in __init__
+    self.logger = MetaLogger(self.output_folder, continue_training)
+                  ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/logging/nnunet_logger.py", line 47, in __init__
+    self.loggers.append(WandbLogger(output_folder, resume))
+                        ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/logging/nnunet_logger.py", line 270, in __init__
+    self.run = wandb.init(project=self.project, dir=str(self.output_folder), id=wandb_id, mode=self.mode, resume=_resume)
+               ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_init.py", line 1595, in init
+    get_sentry().reraise(e)
+    ~~~~~~~~~~~~~~~~~~~~^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/analytics/sentry.py", line 190, in reraise
+    raise exc.with_traceback(tb)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_init.py", line 1578, in init
+    run = wi.init(run_settings, run_config, run_printer)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_init.py", line 894, in init
+    service = self._wl.ensure_service()
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_setup.py", line 387, in ensure_service
+    self._connection = service_connection.connect_to_service(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._asyncer,
+        ^^^^^^^^^^^^^^
+        self.settings,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/service/service_connection.py", line 51, in connect_to_service
+    return _start_and_connect_service(asyncer, settings)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/service/service_connection.py", line 64, in _start_and_connect_service
+    proc = service_process.start(settings)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/service/service_process.py", line 35, in start
+    get_sentry().reraise(e)
+    ~~~~~~~~~~~~~~~~~~~~^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/analytics/sentry.py", line 190, in reraise
+    raise exc.with_traceback(tb)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/service/service_process.py", line 33, in start
+    return _launch_server(settings)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/service/service_process.py", line 105, in _launch_server
+    token = service_port_file.poll_for_token(
+        port_file,
+        proc,
+        timeout=settings.x_service_wait,
+    )
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/service/service_port_file.py", line 63, in poll_for_token
+    raise ServicePollForTokenError(
+        f"Failed to read port info after {timeout} seconds.",
+    )
+wandb.sdk.lib.service.service_port_file.ServicePollForTokenError: Failed to read port info after 30.0 seconds.

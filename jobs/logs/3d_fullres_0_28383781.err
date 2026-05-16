@@ -1,0 +1,173 @@
+Resolved 122 packages in 2ms
+Audited 119 packages in 80ms
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+wandb: Currently logged in as: linusjunidtu (linusjunidtu-danmarks-tekniske-universitet-dtu) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run pa2pn334
+wandb: Tracking run with wandb version 0.25.1
+wandb: Run data is saved locally in /work3/s225224/nnunet/results/Dataset003_CSpineSeg_Silver/nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres/fold_0/wandb/run-20260507_135056-pa2pn334
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run whole-pine-21
+wandb: ⭐️ View project at https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness
+wandb: 🚀 View run at https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness/runs/pa2pn334
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+wandb: uploading artifact checkpoint-fold0; uploading data
+wandb: uploading artifact checkpoint-fold0; uploading data
+wandb: ERROR Problem finishing run
+Traceback (most recent call last):
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/bin/nnUNetv2_train", line 10, in <module>
+    sys.exit(run_training_entry())
+             ~~~~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/run/run_training.py", line 268, in run_training_entry
+    run_training(args.dataset_name_or_id, args.configuration, args.fold, args.tr, args.p, args.pretrained_weights,
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                 args.num_gpus, args.npz, args.c, args.val, args.disable_checkpointing, args.val_best,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                 device=device)
+                 ^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/run/run_training.py", line 209, in run_training
+    nnunet_trainer.run_training()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/nnUNetTrainer/nnUNetTrainer.py", line 1437, in run_training
+    self.on_train_end()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/nnUNetTrainer/variants/training_length/nnUNetTrainerWandB.py", line 82, in on_train_end
+    wandb.finish()
+    ~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 4102, in finish
+    wandb.run.finish(exit_code=exit_code, quiet=quiet)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 399, in wrapper
+    return func(self, *args, **kwargs)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 444, in wrapper
+    return func(self, *args, **kwargs)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 2279, in finish
+    return self._finish(exit_code)
+           ~~~~~~~~~~~~^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 399, in wrapper
+    return func(self, *args, **kwargs)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 2307, in _finish
+    self._atexit_cleanup(exit_code=exit_code)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 2501, in _atexit_cleanup
+    self._on_finish()
+    ~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 2725, in _on_finish
+    wait_with_progress(
+    ~~~~~~~~~~~~~~~~~~^
+        exit_handle,
+        ^^^^^^^^^^^^
+    ...<5 lines>...
+        ),
+        ^^
+    )
+    ^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/mailbox/wait_with_progress.py", line 24, in wait_with_progress
+    return wait_all_with_progress(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        [handle],
+        ^^^^^^^^^
+        timeout=timeout,
+        ^^^^^^^^^^^^^^^^
+        display_progress=display_progress,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )[0]
+    ^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/mailbox/wait_with_progress.py", line 78, in wait_all_with_progress
+    return asyncer.run(progress_loop_with_timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/asyncio_manager.py", line 137, in run
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/asyncio_manager.py", line 220, in _wrap
+    return await fn()
+           ^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/mailbox/wait_with_progress.py", line 66, in progress_loop_with_timeout
+    async with asyncio_compat.cancel_on_exit(display_progress()):
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/contextlib.py", line 221, in __aexit__
+    await anext(self.gen)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/asyncio_compat.py", line 258, in cancel_on_exit
+    async with open_task_group(race=True) as group:
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/contextlib.py", line 221, in __aexit__
+    await anext(self.gen)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/asyncio_compat.py", line 241, in open_task_group
+    await task_group._wait_all(race=race, timeout=exit_timeout)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/asyncio_compat.py", line 181, in _wait_all
+    raise exc
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/progress.py", line 65, in loop_printing_operation_stats
+    async with asyncio_compat.open_task_group() as task_group:
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13/contextlib.py", line 221, in __aexit__
+    await anext(self.gen)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/asyncio_compat.py", line 241, in open_task_group
+    await task_group._wait_all(race=race, timeout=exit_timeout)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/asyncio_compat.py", line 181, in _wait_all
+    raise exc
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/progress.py", line 45, in loop_update_screen
+    progress.update(stats)
+    ~~~~~~~~~~~~~~~^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/progress.py", line 122, in update
+    self._printer.display(line)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/printer.py", line 315, in display
+    self._display_fn_mapping(level)(text)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/errors/term.py", line 217, in termlog
+    _log(
+    ~~~~^
+        string,
+        ^^^^^^^
+    ...<3 lines>...
+        silent=not _show_info,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/errors/term.py", line 520, in _log
+    click.echo(string, file=sys.stderr, nl=newline)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/click/utils.py", line 321, in echo
+    file.write(out)  # type: ignore
+    ~~~~~~~~~~^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/lib/console_capture.py", line 184, in write_with_callbacks
+    n = orig_write(s)
+OSError: [Errno 28] No space left on device

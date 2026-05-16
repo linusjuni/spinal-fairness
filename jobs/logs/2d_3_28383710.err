@@ -1,0 +1,11 @@
+Resolved 122 packages in 3ms
+Audited 119 packages in 89ms
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+wandb: Currently logged in as: linusjunidtu (linusjunidtu-danmarks-tekniske-universitet-dtu) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run 8r15pv7x
+wandb: Tracking run with wandb version 0.25.1
+wandb: Run data is saved locally in /work3/s225224/nnunet/results/Dataset002_CSpineSeg_Gold/nnUNetTrainerWandB__nnUNetResEncUNetLPlans__2d/fold_3/wandb/run-20260516_020958-8r15pv7x
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run dandy-gorge-32
+wandb: ⭐️ View project at https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness
+wandb: 🚀 View run at https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness/runs/8r15pv7x

@@ -90,10 +90,19 @@ def _build_preprocess(
             raise FileNotFoundError(f"Preprocessed .b2nd not found: {b2nd_path}")
 
         data = np.array(blosc2.open(b2nd_path)[:])  # (C, D, H, W)
-        pads = [
-            (0, max(0, patch_size[i] - data.shape[i + 1]))
-            for i in range(len(patch_size))
-        ]
+        # Crop then pad to exactly patch_size so all spatial dims are valid.
+        # Volumes smaller than patch_size are padded; larger ones are
+        # centre-cropped first (matches nnunet's sliding-window behaviour).
+        slices = [slice(None)]
+        for i, ps in enumerate(patch_size):
+            size = data.shape[i + 1]
+            if size > ps:
+                start = (size - ps) // 2
+                slices.append(slice(start, start + ps))
+            else:
+                slices.append(slice(None))
+        data = data[tuple(slices)]
+        pads = [(0, max(0, patch_size[i] - data.shape[i + 1])) for i in range(len(patch_size))]
         data = np.pad(data, [(0, 0)] + pads, mode="constant")
         return torch.from_numpy(data).float()
 

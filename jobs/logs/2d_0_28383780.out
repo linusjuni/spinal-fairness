@@ -1,0 +1,95 @@
+Installed custom trainer to /zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/nnUNetTrainer/variants/training_length/nnUNetTrainerWandB.py
+=== Training: dataset=3 config=2d fold=0 plans=nnUNetResEncUNetLPlans trainer=nnUNetTrainerWandB ===
+Using device: cuda:0
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@hpc.dtu.dk>
+Subject: Job 28383780: <cspine_2d_0> in cluster <dcc> Exited
+
+Job <cspine_2d_0> was submitted from host <n-62-12-19> by user <s225224> in cluster <dcc> at Thu May  7 10:35:00 2026
+Job was executed on host(s) <4*n-62-18-8>, in queue <gpua100>, as user <s225224> in cluster <dcc> at Thu May  7 12:20:29 2026
+</zhome/77/2/187952> was used as the home directory.
+</zhome/77/2/187952/projects/spinal-fairness> was used as the working directory.
+Started at Thu May  7 12:20:29 2026
+Terminated at Thu May  7 12:23:45 2026
+Results reported at Thu May  7 12:23:45 2026
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -J cspine_2d_0
+#BSUB -q gpua100
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=8GB]"
+#BSUB -n 4
+#BSUB -W 72:00
+#BSUB -o jobs/logs/2d_0_%J.out
+#BSUB -e jobs/logs/2d_0_%J.err
+
+set -euo pipefail
+
+# ---------- Config (replaced by submit.sh) ----------
+DATASET_ID=3
+CONFIG=2d
+FOLD=0
+PLANS=nnUNetResEncUNetLPlans
+TRAINER=nnUNetTrainerWandB
+# -----------------------------------------------------
+
+export UV_ENV_FILE=".env"
+# Limit DA workers + OMP threads to prevent glibc heap corruption (free(): corrupted
+# unsorted chunks) in batchgenerators multiprocessing with large 3D patches.
+# See: https://github.com/MIC-DKFZ/nnUNet/issues/2523
+export OMP_NUM_THREADS=1
+export nnUNet_n_proc_DA=2
+
+mkdir -p jobs/logs
+
+uv sync
+
+# Install the custom trainer into nnunetv2's package tree so trainer discovery finds it.
+TRAINER_SRC="src/nnunet/trainer.py"
+TRAINER_DST="$(uv run python -c "import nnunetv2; print(nnunetv2.__path__[0])")/training/nnUNetTrainer/variants/training_length/nnUNetTrainerWandB.py"
+cp "${TRAINER_SRC}" "${TRAINER_DST}"
+echo "Installed custom trainer to ${TRAINER_DST}"
+
+echo "=== Training: dataset=${DATASET_ID} config=${CONFIG} fold=${FOLD} plans=${PLANS} trainer=${TRAINER} ==="
+
+uv run nnUNetv2_train \
+    ${DATASET_ID} \
+    ${CONFIG} \
+    ${FOLD} \
+    --npz \
+    -p ${PLANS} \
+    -tr ${TRAINER}
+
+echo "=== Training complete: config=${CONFIG} fold=${FOLD} ==="
+
+------------------------------------------------------------
+
+Exited with exit code 1.
+
+Resource usage summary:
+
+    CPU time :                                   23.00 sec.
+    Max Memory :                                 627 MB
+    Average Memory :                             440.00 MB
+    Total Requested Memory :                     32768.00 MB
+    Delta Memory :                               32141.00 MB
+    Max Swap :                                   -
+    Max Processes :                              6
+    Max Threads :                                21
+    Run time :                                   196 sec.
+    Turnaround time :                            6525 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <jobs/logs/2d_0_28383780.err> for stderr output of this job.
+

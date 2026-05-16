@@ -1,0 +1,111 @@
+Installed custom trainer to /zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/nnUNetTrainer/variants/training_length/nnUNetTrainerWandB.py
+=== Training: dataset=3 config=3d_fullres fold=1 plans=nnUNetResEncUNetLPlans trainer=nnUNetTrainerWandB ===
+Using device: cuda:0
+
+#######################################################################
+Please cite the following paper when using nnU-Net:
+Isensee, F., Jaeger, P. F., Kohl, S. A., Petersen, J., & Maier-Hein, K. H. (2021). nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation. Nature methods, 18(2), 203-211.
+#######################################################################
+
+2026-05-11 05:59:11.975456: Using torch.compile...
+2026-05-11 05:59:23.129115: do_dummy_2d_data_aug: True
+2026-05-11 05:59:23.193207: Using splits from existing split file: /work3/s225224/nnunet/preprocessed/Dataset003_CSpineSeg_Silver/splits_final.json
+2026-05-11 05:59:23.207392: The split file contains 5 splits.
+2026-05-11 05:59:23.210495: Desired fold for training: 1
+2026-05-11 05:59:23.219193: This split has 413 training and 103 validation cases.
+using pin_memory on device 0
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mstill-jazz-25[0m at: [34mhttps://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness/runs/l0zljewl[0m
+[1;34mwandb[0m: Find logs at: [1;35m../../../../../../work3/s225224/nnunet/results/Dataset003_CSpineSeg_Silver/nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres/fold_1/wandb/run-20260511_055904-l0zljewl/logs[0m
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@hpc.dtu.dk>
+Subject: Job 28383783: <cspine_3d_fullres_1> in cluster <dcc> Exited
+
+Job <cspine_3d_fullres_1> was submitted from host <n-62-12-19> by user <s225224> in cluster <dcc> at Thu May  7 10:35:01 2026
+Job was executed on host(s) <4*n-62-18-8>, in queue <gpua100>, as user <s225224> in cluster <dcc> at Mon May 11 05:53:29 2026
+</zhome/77/2/187952> was used as the home directory.
+</zhome/77/2/187952/projects/spinal-fairness> was used as the working directory.
+Started at Mon May 11 05:53:29 2026
+Terminated at Mon May 11 05:59:32 2026
+Results reported at Mon May 11 05:59:32 2026
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -J cspine_3d_fullres_1
+#BSUB -q gpua100
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=8GB]"
+#BSUB -n 4
+#BSUB -W 72:00
+#BSUB -o jobs/logs/3d_fullres_1_%J.out
+#BSUB -e jobs/logs/3d_fullres_1_%J.err
+
+set -euo pipefail
+
+# ---------- Config (replaced by submit.sh) ----------
+DATASET_ID=3
+CONFIG=3d_fullres
+FOLD=1
+PLANS=nnUNetResEncUNetLPlans
+TRAINER=nnUNetTrainerWandB
+# -----------------------------------------------------
+
+export UV_ENV_FILE=".env"
+# Limit DA workers + OMP threads to prevent glibc heap corruption (free(): corrupted
+# unsorted chunks) in batchgenerators multiprocessing with large 3D patches.
+# See: https://github.com/MIC-DKFZ/nnUNet/issues/2523
+export OMP_NUM_THREADS=1
+export nnUNet_n_proc_DA=2
+
+mkdir -p jobs/logs
+
+uv sync
+
+# Install the custom trainer into nnunetv2's package tree so trainer discovery finds it.
+TRAINER_SRC="src/nnunet/trainer.py"
+TRAINER_DST="$(uv run python -c "import nnunetv2; print(nnunetv2.__path__[0])")/training/nnUNetTrainer/variants/training_length/nnUNetTrainerWandB.py"
+cp "${TRAINER_SRC}" "${TRAINER_DST}"
+echo "Installed custom trainer to ${TRAINER_DST}"
+
+echo "=== Training: dataset=${DATASET_ID} config=${CONFIG} fold=${FOLD} plans=${PLANS} trainer=${TRAINER} ==="
+
+uv run nnUNetv2_train \
+    ${DATASET_ID} \
+    ${CONFIG} \
+    ${FOLD} \
+    --npz \
+    -p ${PLANS} \
+    -tr ${TRAINER}
+
+echo "=== Training complete: config=${CONFIG} fold=${FOLD} ==="
+
+------------------------------------------------------------
+
+Exited with exit code 1.
+
+Resource usage summary:
+
+    CPU time :                                   118.00 sec.
+    Max Memory :                                 618 MB
+    Average Memory :                             301.20 MB
+    Total Requested Memory :                     32768.00 MB
+    Delta Memory :                               32150.00 MB
+    Max Swap :                                   -
+    Max Processes :                              5
+    Max Threads :                                14
+    Run time :                                   363 sec.
+    Turnaround time :                            329071 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <jobs/logs/3d_fullres_1_28383783.err> for stderr output of this job.
+

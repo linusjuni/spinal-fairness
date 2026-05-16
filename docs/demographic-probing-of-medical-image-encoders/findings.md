@@ -178,25 +178,40 @@ with prior EDA.
 
 Encoder: CSpineSeg nnU-Net (ResEncUNetL, 3d_fullres, fold 0, Dataset001).
 320-d GAP'd bottleneck features from `$nnUNet_preprocessed` `.b2nd` files,
-padded to training patch size [16, 512, 512]. n=881 (train+val after exclusions).
+centre-cropped then padded to training patch size [16, 512, 512]. n=1085
+(train+val after exclusions; test cases have no .b2nd files).
 
 | Attribute | Metric | Mean | ±95% CI (NB) | Per-fold scores |
 |---|---|---|---|---|
-| Sex | AUROC | **0.958** | ±0.014 | 0.949, 0.957, 0.962, 0.968, 0.954 |
-| Age (3-bin) | Balanced accuracy | **0.634** | ±0.070 | 0.636, 0.649, 0.569, 0.667, 0.647 |
-| Race (3-group) | Balanced accuracy | 0.484 | ±0.122 | 0.431, 0.455, 0.441, 0.506, 0.590 |
-| Manufacturer | AUROC | **0.998** | ±0.008 | 1.000, 1.000, 0.990, 1.000, 1.000 |
+| Sex | AUROC | **0.957** | ±0.030 | 0.968, 0.971, 0.958, 0.930, 0.959 |
+| Age (3-bin) | Balanced accuracy | **0.642** | ±0.023 | 0.636, 0.627, 0.644, 0.640, 0.661 |
+| Race (3-group) | Balanced accuracy | 0.491 | ±0.104 | 0.414, 0.517, 0.518, 0.455, 0.552 |
+| Manufacturer | AUROC | **0.997** | ±0.004 | 0.994, 1.000, 0.997, 0.996, 0.998 |
 
-PCA(2) explained variance: 12.4% (PC1) + 8.5% (PC2) = 20.9% total.
+PCA(2) explained variance: 11.9% (PC1) + 8.6% (PC2) = 20.5% total.
+
+### Random-init nnU-Net null (2026-05-07)
+
+Encoder: same ResEncUNetL architecture and `.b2nd` preprocessing as nnunet,
+no trained weights — trunc_normal_(std=0.02) init, seed=42. n=1085.
+
+| Attribute | Metric | Mean | ±95% CI (NB) | Per-fold scores |
+|---|---|---|---|---|
+| Sex | AUROC | **0.771** | ±0.066 | 0.818, 0.759, 0.794, 0.758, 0.727 |
+| Age (3-bin) | Balanced accuracy | 0.476 | ±0.055 | 0.501, 0.428, 0.476, 0.476, 0.498 |
+| Race (3-group) | Balanced accuracy | 0.373 | ±0.052 | 0.390, 0.390, 0.328, 0.394, 0.361 |
+| Manufacturer | AUROC | **0.983** | ±0.012 | 0.979, 0.981, 0.990, 0.976, 0.990 |
+
+PCA(2) explained variance: 25.2% (PC1) + 9.8% (PC2) = 35.0% total.
 
 ### Cross-encoder comparison (all encoders)
 
-| Attribute | Metric | nnU-Net | MRI-CORE (uncropped) | random_vit_b | Delta (nnU-Net − MRI-CORE) |
+| Attribute | Metric | nnU-Net | random_nnunet | MRI-CORE | random_vit_b |
 |---|---|---|---|---|---|
-| Sex | AUROC | **0.958** ±0.014 | 0.931 ±0.031 | 0.836 ±0.039 | **+0.027** |
-| Age (3-bin) | Balanced accuracy | 0.634 ±0.070 | 0.632 ±0.043 | 0.534 ±0.083 | +0.002 |
-| Race (3-group) | Balanced accuracy | 0.484 ±0.122 | 0.513 ±0.071 | 0.426 ±0.064 | −0.029 |
-| Manufacturer | AUROC | 0.998 ±0.008 | 0.997 ±0.007 | 0.992 ±0.013 | +0.001 |
+| Sex | AUROC | **0.957** ±0.030 | 0.771 ±0.066 | 0.931 ±0.031 | 0.836 ±0.039 |
+| Age (3-bin) | Balanced accuracy | **0.642** ±0.023 | 0.476 ±0.055 | 0.632 ±0.043 | 0.534 ±0.083 |
+| Race (3-group) | Balanced accuracy | 0.491 ±0.104 | 0.373 ±0.052 | 0.513 ±0.071 | 0.426 ±0.064 |
+| Manufacturer | AUROC | **0.997** ±0.004 | 0.983 ±0.012 | 0.997 ±0.007 | 0.992 ±0.013 |
 
 Random baseline for 3-class balanced accuracy is 0.333.
 
@@ -204,29 +219,42 @@ Random baseline for 3-class balanced accuracy is 0.333.
 
 ### nnU-Net encoder
 
-**Sex (0.958 > MRI-CORE 0.931 > random_vit_b 0.836).** The segmentation model
-amplified sex signal relative to both the raw-image baseline (random_vit_b) and
-the SSL encoder (MRI-CORE). The ordering `task model > SSL > random` tells a
-clear story: nnunet's segmentation objective reinforced sex-correlated anatomical
-features (disc height, vertebral morphology, or spinal canal width) to a degree
-that exceeds what pretraining alone encodes. This is the "exploited by the model"
-signal the probe was designed to detect — the gap MRI-CORE 0.931 → nnU-Net 0.958
-is the portion attributable to the segmentation task itself, not just available
-in the input data.
+**Sex: full chain random_nnunet (0.771) < random_vit_b (0.836) < MRI-CORE (0.931) < nnU-Net (0.957).**
 
-**Age (0.634 ≈ MRI-CORE 0.632).** Essentially identical; the segmentation task
-adds no incremental age encoding beyond what MRI-CORE already captures.
+random_nnunet sits *below* random_vit_b. The z-score preprocessing strips global
+intensity statistics (body-extent family, background noise) that the random 2D ViT
+reads from raw pixels — so the nnunet-preprocessed inputs are a cleaner null than
+MRI-CORE's min-max normalised slices. The segmentation task then contributes
+**+0.186 AUROC** (0.957 − 0.771) on top of that stripped baseline — nearly twice
+the pretraining contribution in MRI-CORE (+0.095 = 0.931 − 0.836). The nnU-Net
+segmentation objective has strongly reinforced sex-correlated anatomical features
+(vertebral morphology, disc height, spinal canal geometry).
 
-**Race (0.484 ±0.122).** Wide CI and high fold variance (0.431–0.590) — not
-reliable. Mean is below MRI-CORE (0.513) but CIs overlap. No evidence the
-segmentation model learned race-correlated features beyond input-level signal.
+**Age (0.642 vs null 0.476, +0.166).** The task also amplifies age signal
+substantially above the null (+0.166 vs MRI-CORE's +0.098 above its null).
 
-**Manufacturer (0.998 ≈ MRI-CORE 0.997).** Scanner fingerprint is universal
-across all encoders; the segmentation task does not add or remove it.
+**Race (0.491 ±0.104).** Wide CI, high fold variance (0.414–0.552) — unreliable.
+No evidence of meaningful race encoding above the null (0.373).
 
-**PCA(2) = 20.9%.** Low compared to random_vit_b (96.2%) — nnunet features are
-distributed across many components rather than collapsed to image statistics.
-This reflects that the task model learned a rich anatomical representation.
+**Manufacturer (0.997 ≈ null 0.983).** Scanner fingerprint is present in both;
+the training adds only a marginal +0.014. Universal across all encoders as expected.
+
+**PCA(2) = 20.5% (trained) vs 35.0% (random).** Trained features are more
+distributed — richer representation — whereas random 3D features, though still
+more spread than random 2D (96.2%), already capture more structure than a 2D random ViT.
+
+## Scanner confound check (nnU-Net probe cohort)
+
+n=1085 (train+val, sex-balanced split_v3). Contingency:
+
+| | GE | Siemens |
+|---|---|---|
+| Female | 213 | 322 |
+| Male | 190 | 360 |
+
+χ²=3.002, p=0.083, Cramér's V=0.053 — **not significant** at α=0.05. Males are
+marginally more often on Siemens (65.5% vs 60.2%), consistent with the full-cohort
+EDA (p=0.210, V=0.035). The manufacturer confound does not explain the sex AUROC.
 
 ## Next steps
 

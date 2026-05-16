@@ -1,0 +1,122 @@
+Resolved 122 packages in 2ms
+Audited 119 packages in 94ms
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+wandb: Currently logged in as: linusjunidtu (linusjunidtu-danmarks-tekniske-universitet-dtu) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run i8uvu61f
+wandb: Tracking run with wandb version 0.25.1
+wandb: Run data is saved locally in /work3/s225224/nnunet/results/Dataset002_CSpineSeg_Gold/nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres/fold_0/wandb/run-20260507_215254-i8uvu61f
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run kind-energy-22
+wandb: ⭐️ View project at https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness
+wandb: 🚀 View run at https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness/runs/i8uvu61f
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/torch/_inductor/lowering.py:7836: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+wandb: uploading artifact checkpoint-fold0; updating run metadata
+wandb: uploading artifact checkpoint-fold0
+wandb: uploading artifact checkpoint-fold0; uploading output.log; uploading config.yaml
+wandb: uploading artifact checkpoint-fold0
+wandb: uploading artifact checkpoint-fold0; uploading history steps 999-999, summary
+wandb: uploading artifact checkpoint-fold0
+wandb: uploading artifact checkpoint-fold0; uploading data
+wandb: uploading artifact checkpoint-fold0
+wandb: 
+wandb: Run history:
+wandb: dice_per_class_or_region/class_1 ▁▆▅▄▆▇▆▇▅▆▇▆▆▅▆▇█▇▇█▆▄▇▆▆▄▇▆▇▅▅██▃▆▇▅▇▅▆
+wandb: dice_per_class_or_region/class_2 ▄▇▆▄▂▅▂▄▆▆▃▅▁▅▅▅▂▆▆▅▃▃▁▆▅▄▄▅▄▃▂▆▄▆▅▄▄█▇▅
+wandb:                      ema_fg_dice ▄██▅▆▇▇█▇▇▄▅▇▇▅▆█▅▇▅▅▅▃▇▇▅▁▇▆▆▅▅▆▄▆▅▅▆▇█
+wandb:                 epoch_duration_s ▂█▅▇▆▄▄▄▆▇▆▅▄▅▅▄▄▆▄▄▄▄▃▃▃▂▃▃▂▃▃▃▁▂▃▃▂▂▅▆
+wandb:             epoch_end_timestamps ▁▂▂▂▂▂▂▂▂▂▃▃▄▄▄▄▄▄▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇███████
+wandb:           epoch_start_timestamps ▁▁▁▁▂▂▂▂▂▂▃▃▃▃▃▃▃▃▄▄▅▅▅▅▅▅▅▆▆▆▆▆▆▇▇▇▇▇██
+wandb:                              lrs █████▇▇▇▇▇▆▆▆▆▆▆▆▅▅▅▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▁
+wandb:                     mean_fg_dice ▂▃▅▇▄▄█▄▆█▆▇▄▃▃▁▆▃▅▄▇▆▇██▇▇▃▅▃▃▆▆▅▄▄▃▆▅▆
+wandb:                     train_losses █▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁
+wandb:                       val_losses ▄▂▃▃▁▆▄▂▂▂▂█▁▄▇▃▆▃▃▄▁▂▃▃▆▄▃▂▅▃▃▅▇▅▇▂▅▆▄▇
+wandb: 
+wandb: Run summary:
+wandb:                    current_epoch 999
+wandb: dice_per_class_or_region/class_1 0.91001
+wandb: dice_per_class_or_region/class_2 0.83621
+wandb:                      ema_fg_dice 0.86793
+wandb:                 epoch_duration_s 144.42206
+wandb:             epoch_end_timestamps 1778329661.70118
+wandb:           epoch_start_timestamps 1778329517.27912
+wandb:                              lrs 2e-05
+wandb:                     mean_fg_dice 0.87311
+wandb:                     train_losses -0.95663
+wandb:                               +1 ...
+wandb: 
+wandb: 🚀 View run 3d_fullres_fold0 at: https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness/runs/i8uvu61f
+wandb: ⭐️ View project at: https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness
+wandb: Synced 5 W&B file(s), 1000 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: /work3/s225224/nnunet/results/Dataset002_CSpineSeg_Gold/nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres/fold_0/wandb/run-20260507_215254-i8uvu61f/logs
+wandb: ERROR Run (i8uvu61f) is finished. The call to `_summary_update_callback` will be ignored. Please make sure that you are using an active run.
+Traceback (most recent call last):
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/bin/nnUNetv2_train", line 10, in <module>
+    sys.exit(run_training_entry())
+             ~~~~~~~~~~~~~~~~~~^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/run/run_training.py", line 268, in run_training_entry
+    run_training(args.dataset_name_or_id, args.configuration, args.fold, args.tr, args.p, args.pretrained_weights,
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                 args.num_gpus, args.npz, args.c, args.val, args.disable_checkpointing, args.val_best,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                 device=device)
+                 ^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/run/run_training.py", line 213, in run_training
+    nnunet_trainer.perform_actual_validation(export_validation_probabilities)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/nnUNetTrainer/nnUNetTrainer.py", line 1407, in perform_actual_validation
+    self.logger.log_summary(f"final_val/class_{label}_dice", metrics["mean"][label]["Dice"])
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/logging/nnunet_logger.py", line 90, in log_summary
+    logger.log_summary(key, value)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/logging/nnunet_logger.py", line 302, in log_summary
+    self.run.summary[key] = value
+    ~~~~~~~~~~~~~~~~^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_summary.py", line 52, in __setitem__
+    self.update({key: val})
+    ~~~~~~~~~~~^^^^^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_summary.py", line 73, in update
+    self._update(record)
+    ~~~~~~~~~~~~^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_summary.py", line 127, in _update
+    self._update_callback(record)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 399, in wrapper
+    return func(self, *args, **kwargs)
+  File "/zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/wandb/sdk/wandb_run.py", line 465, in wrapper_fn
+    raise UsageError(message)
+wandb.errors.errors.UsageError: Run (i8uvu61f) is finished. The call to `_summary_update_callback` will be ignored. Please make sure that you are using an active run.
