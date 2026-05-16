@@ -18,14 +18,14 @@ uv sync
 
 source .env
 
-echo "=== Evaluate: Dice + HD95, 24 workers ==="
+echo "=== Evaluate: Dice + HD95 + nDSC, 24 workers ==="
 
 uv run -m src.fairness.evaluate \
     --predictions "${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp" \
     --references  "${nnUNet_raw}/Dataset001_CSpineSeg/labelsTs" \
     --mapping     "${nnUNet_raw}/Dataset001_CSpineSeg/case_id_mapping.json" \
     --output      outputs/eval_global.csv \
-    --metrics dice hd95 \
+    --metrics dice hd95 ndsc \
     --workers 24
 
 echo "=== Analyze ==="
