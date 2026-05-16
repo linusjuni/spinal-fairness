@@ -1,0 +1,258 @@
+{
+  "n_high_component_outliers": 13,
+  "mann_whitney_vol_by_sex_volume_mm3_vertebral_body": {
+    "test": "mann_whitney",
+    "U": 33832.0,
+    "p": 6.93485785396739e-45,
+    "r_rb": 0.5749775441109038,
+    "median_a": 46769.33841256751,
+    "median_b": 58102.61563264903,
+    "n_a": 399,
+    "n_b": 399
+  },
+  "mann_whitney_vol_by_race_volume_mm3_vertebral_body": {
+    "test": "mann_whitney",
+    "U": 73809.5,
+    "p": 1.536234424318836e-11,
+    "r_rb": -0.3148570410617262,
+    "median_a": 53776.383992117764,
+    "median_b": 47639.673052653205,
+    "n_a": 515,
+    "n_b": 218
+  },
+  "kruskal_vol_by_age_volume_mm3_vertebral_body": {
+    "test": "kruskal_wallis",
+    "H": 95.11479966548457,
+    "p": 2.218623858531708e-21,
+    "epsilon_sq": 0.11712553417042085,
+    "posthoc": [
+      {
+        "pair": "<40 vs 40-60",
+        "p": 0.056391968505794025
+      },
+      {
+        "pair": "<40 vs 60+",
+        "p": 4.0010455803985976e-17
+      },
+      {
+        "pair": "40-60 vs 60+",
+        "p": 7.359368903231125e-14
+      }
+    ],
+    "medians": {
+      "<40": 46857.70628297326,
+      "40-60": 49549.80974582984,
+      "60+": 56410.482778640464
+    },
+    "ns": {
+      "<40": 152,
+      "40-60": 307,
+      "60+": 339
+    }
+  },
+  "mann_whitney_vol_by_sex_volume_mm3_disc": {
+    "test": "mann_whitney",
+    "U": 34188.0,
+    "p": 3.2310607191647104e-44,
+    "r_rb": 0.570505210394407,
+    "median_a": 10743.963424117304,
+    "median_b": 13151.694353349565,
+    "n_a": 399,
+    "n_b": 399
+  },
+  "mann_whitney_vol_by_race_volume_mm3_disc": {
+    "test": "mann_whitney",
+    "U": 57384.5,
+    "p": 0.6336319984499563,
+    "r_rb": -0.022258840295715787,
+    "median_a": 12004.255830517706,
+    "median_b": 11710.015896116196,
+    "n_a": 515,
+    "n_b": 218
+  },
+  "kruskal_vol_by_age_volume_mm3_disc": {
+    "test": "kruskal_wallis",
+    "H": 5.793664732805114,
+    "p": 0.05519778979741781,
+    "epsilon_sq": 0.004771905324283163,
+    "posthoc": [],
+    "medians": {
+      "<40": 11525.358569715969,
+      "40-60": 11839.67041892372,
+      "60+": 12097.450144150873
+    },
+    "ns": {
+      "<40": 152,
+      "40-60": 307,
+      "60+": 339
+    }
+  },
+  "mann_whitney_voxels_by_manufacturer_n_voxels_vertebral_body": {
+    "test": "mann_whitney",
+    "U": 106391.5,
+    "p": 3.353039152106501e-22,
+    "r_rb": -0.4065507667900581,
+    "median_a": 70643.5,
+    "median_b": 33616.0,
+    "n_a": 310,
+    "n_b": 488
+  },
+  "mann_whitney_voxels_by_manufacturer_n_voxels_disc": {
+    "test": "mann_whitney",
+    "U": 106472.5,
+    "p": 2.6108355481604625e-22,
+    "r_rb": -0.4076216287678478,
+    "median_a": 16240.5,
+    "median_b": 7159.0,
+    "n_a": 310,
+    "n_b": 488
+  },
+  "mann_whitney_vol_mm3_by_manufacturer_volume_mm3_vertebral_body": {
+    "test": "mann_whitney",
+    "U": 63952.0,
+    "p": 0.0002309167680494702,
+    "r_rb": 0.1545214172395558,
+    "median_a": 50807.30970761778,
+    "median_b": 53154.28650147212,
+    "n_a": 310,
+    "n_b": 488
+  },
+  "mann_whitney_vol_mm3_by_manufacturer_volume_mm3_disc": {
+    "test": "mann_whitney",
+    "U": 70869.0,
+    "p": 0.13281099745107539,
+    "r_rb": 0.06307509254362775,
+    "median_a": 11659.780782538492,
+    "median_b": 11927.836171087576,
+    "n_a": 310,
+    "n_b": 488
+  },
+  "volume_mm3_vertebral_body_by_manufacturer": [
+    {
+      "manufacturer": "GE MEDICAL SYSTEMS",
+      "mean": 51450.1702838638,
+      "std": 12118.510358185245,
+      "median": 50807.30970761778
+    },
+    {
+      "manufacturer": "SIEMENS",
+      "mean": 55450.79538368951,
+      "std": 16354.396808227653,
+      "median": 53154.28650147212
+    }
+  ],
+  "volume_mm3_disc_by_manufacturer": [
+    {
+      "manufacturer": "GE MEDICAL SYSTEMS",
+      "mean": 11889.154365650824,
+      "std": 2742.7469323883624,
+      "median": 11659.780782538492
+    },
+    {
+      "manufacturer": "SIEMENS",
+      "mean": 12442.80132116587,
+      "std": 4021.1714461770757,
+      "median": 11927.836171087576
+    }
+  ],
+  "mann_whitney_comp_by_sex_n_components_vertebral_body": {
+    "test": "mann_whitney",
+    "U": 94764.0,
+    "p": 2.6127264517115847e-06,
+    "r_rb": -0.19049503457892847,
+    "median_a": 8.0,
+    "median_b": 7.0,
+    "n_a": 399,
+    "n_b": 399
+  },
+  "mann_whitney_comp_by_race_n_components_vertebral_body": {
+    "test": "mann_whitney",
+    "U": 40190.5,
+    "p": 8.308998668090356e-10,
+    "r_rb": 0.284038478667498,
+    "median_a": 7.0,
+    "median_b": 9.0,
+    "n_a": 515,
+    "n_b": 218
+  },
+  "kruskal_comp_by_age_n_components_vertebral_body": {
+    "test": "kruskal_wallis",
+    "H": 102.99227881967073,
+    "p": 4.3202692600445657e-23,
+    "epsilon_sq": 0.1270343129807179,
+    "posthoc": [
+      {
+        "pair": "<40 vs 40-60",
+        "p": 5.901847805604289e-05
+      },
+      {
+        "pair": "<40 vs 60+",
+        "p": 1.3998664272350359e-21
+      },
+      {
+        "pair": "40-60 vs 60+",
+        "p": 1.3234062572006457e-10
+      }
+    ],
+    "medians": {
+      "<40": 9.0,
+      "40-60": 8.0,
+      "60+": 7.0
+    },
+    "ns": {
+      "<40": 152,
+      "40-60": 307,
+      "60+": 339
+    }
+  },
+  "mann_whitney_comp_by_sex_n_components_disc": {
+    "test": "mann_whitney",
+    "U": 99399.5,
+    "p": 3.658442632014965e-10,
+    "r_rb": -0.24872959340707657,
+    "median_a": 9.0,
+    "median_b": 9.0,
+    "n_a": 399,
+    "n_b": 399
+  },
+  "mann_whitney_comp_by_race_n_components_disc": {
+    "test": "mann_whitney",
+    "U": 58712.5,
+    "p": 0.31100694495399384,
+    "r_rb": -0.0459160951278168,
+    "median_a": 9.0,
+    "median_b": 9.0,
+    "n_a": 515,
+    "n_b": 218
+  },
+  "kruskal_comp_by_age_n_components_disc": {
+    "test": "kruskal_wallis",
+    "H": 13.417719340076856,
+    "p": 0.0012200545964638158,
+    "epsilon_sq": 0.01436191111959353,
+    "posthoc": [
+      {
+        "pair": "<40 vs 40-60",
+        "p": 0.20400681094342837
+      },
+      {
+        "pair": "<40 vs 60+",
+        "p": 0.0010701439059528002
+      },
+      {
+        "pair": "40-60 vs 60+",
+        "p": 0.10048022155757637
+      }
+    ],
+    "medians": {
+      "<40": 9.0,
+      "40-60": 9.0,
+      "60+": 9.0
+    },
+    "ns": {
+      "<40": 152,
+      "40-60": 307,
+      "60+": 339
+    }
+  }
+}

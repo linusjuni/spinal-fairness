@@ -1,0 +1,109 @@
+{
+  "encoder": "mri_core",
+  "n_samples": 1254,
+  "output_dim": 768,
+  "pca_explained_variance_ratio": [
+    0.27748239215306075,
+    0.19971824478891928
+  ],
+  "probe_sex": {
+    "attribute": "sex",
+    "metric": "auroc",
+    "n": 1254,
+    "n_classes": 2,
+    "classes": [
+      "Female",
+      "Male"
+    ],
+    "class_counts": [
+      683,
+      571
+    ],
+    "n_pcs": 50,
+    "mean": 0.9311985105388594,
+    "ci95": 0.01442014633714651,
+    "per_fold": [
+      0.939300806761429,
+      0.9088871814572929,
+      0.9502497118709181,
+      0.9372762148337596,
+      0.9202786377708979
+    ]
+  },
+  "probe_race_group": {
+    "attribute": "race_group",
+    "metric": "balanced_accuracy",
+    "n": 1254,
+    "n_classes": 3,
+    "classes": [
+      "Black",
+      "Other",
+      "White"
+    ],
+    "class_counts": [
+      349,
+      96,
+      809
+    ],
+    "n_pcs": 50,
+    "mean": 0.5130316397542434,
+    "ci95": 0.033618251088016055,
+    "per_fold": [
+      0.5637643491444662,
+      0.5178439926977939,
+      0.5332126612828367,
+      0.47766638819270396,
+      0.4726708074534161
+    ]
+  },
+  "probe_age_at_imaging_group": {
+    "attribute": "age_at_imaging_group",
+    "metric": "balanced_accuracy",
+    "n": 1254,
+    "n_classes": 3,
+    "classes": [
+      "40-60",
+      "60+",
+      "<40"
+    ],
+    "class_counts": [
+      486,
+      527,
+      241
+    ],
+    "n_pcs": 50,
+    "mean": 0.631680691793024,
+    "ci95": 0.020243629633508068,
+    "per_fold": [
+      0.6402131986815345,
+      0.6219958287406255,
+      0.6255808424647172,
+      0.6661564625850339,
+      0.6044571264932089
+    ]
+  },
+  "probe_manufacturer": {
+    "attribute": "manufacturer",
+    "metric": "auroc",
+    "n": 1254,
+    "n_classes": 2,
+    "classes": [
+      "GE MEDICAL SYSTEMS",
+      "SIEMENS"
+    ],
+    "class_counts": [
+      466,
+      788
+    ],
+    "n_pcs": 50,
+    "mean": 0.9970600872147871,
+    "ci95": 0.003404278567448351,
+    "per_fold": [
+      0.999728960563762,
+      1.0,
+      0.9920375663536137,
+      0.9936708860759493,
+      0.9998630230806109
+    ]
+  }
+}

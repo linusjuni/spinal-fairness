@@ -1,0 +1,2 @@
+mean_width,std_width,min_width,max_width,mean_height,std_height,min_height,max_height,mean_n_slices,std_n_slices,min_n_slices,max_n_slices,mean_spacing_x,std_spacing_x,mean_spacing_y,std_spacing_y,mean_spacing_z,std_spacing_z
+452.24,124.90862702945293,256,768,452.24,124.90862702945293,256,768,15.2825,1.333197479520288,13,22,0.5278525348007679,0.1518620573716159,0.5278525348007679,0.1518620573716159,3.9524875018000603,0.1739684556011368

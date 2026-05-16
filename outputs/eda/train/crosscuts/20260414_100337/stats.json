@@ -1,0 +1,63 @@
+{
+  "mann_whitney_age_by_sex": {
+    "test": "mann_whitney",
+    "U": 73035.0,
+    "p": 0.10722603953746686,
+    "r_rb": 0.06616800920598387,
+    "median_a": 55.0,
+    "median_b": 57.5,
+    "n_a": 395,
+    "n_b": 396
+  },
+  "mann_whitney_age_by_race": {
+    "test": "mann_whitney",
+    "U": 62369.0,
+    "p": 0.005753659549024284,
+    "r_rb": -0.1293310276769304,
+    "median_a": 57.0,
+    "median_b": 54.0,
+    "n_a": 509,
+    "n_b": 217
+  },
+  "chi2_sex_by_race": {
+    "test": "chi2",
+    "chi2": 6.989697950377561,
+    "p": 0.3218009788211657,
+    "dof": 6,
+    "cramers_v": 0.09358963611395124
+  },
+  "chi2_race_by_manufacturer": {
+    "test": "chi2",
+    "chi2": 8.182226722278964,
+    "p": 0.22505465036781383,
+    "dof": 6,
+    "cramers_v": 0.101259157340024
+  },
+  "chi2_race_by_field_strength": {
+    "test": "chi2",
+    "chi2": 9.448372950163272,
+    "p": 0.14988752911078632,
+    "dof": 6,
+    "cramers_v": 0.10881206897025743
+  },
+  "mann_whitney_age_by_manufacturer": {
+    "test": "mann_whitney",
+    "U": 80585.0,
+    "p": 0.044522726704255236,
+    "r_rb": -0.08467709370877863,
+    "median_a": 57.0,
+    "median_b": 55.0,
+    "n_a": 307,
+    "n_b": 484
+  },
+  "mann_whitney_age_by_field_strength": {
+    "test": "mann_whitney",
+    "U": 82487.5,
+    "p": 0.006770221019420461,
+    "r_rb": -0.1143345401491409,
+    "median_a": 57.0,
+    "median_b": 53.0,
+    "n_a": 487,
+    "n_b": 304
+  }
+}

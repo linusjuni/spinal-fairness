@@ -1,0 +1,113 @@
+{
+  "encoder": "nnunet",
+  "n_samples": 1085,
+  "output_dim": 320,
+  "pca_explained_variance_ratio": [
+    0.1191012418879803,
+    0.08566000096513779
+  ],
+  "probe_sex": {
+    "attribute": "sex",
+    "metric": "auroc",
+    "n": 1085,
+    "n_classes": 2,
+    "classes": [
+      "Female",
+      "Male"
+    ],
+    "class_counts": [
+      535,
+      550
+    ],
+    "n_pcs": 50,
+    "mean": 0.9573322005097704,
+    "ci95": 0.030152147878430804,
+    "ci95_naive": 0.02010143191895387,
+    "per_fold": [
+      0.9681393372982158,
+      0.9711129991503823,
+      0.9584536958368735,
+      0.930161427357689,
+      0.9587935429056924
+    ]
+  },
+  "probe_race_group": {
+    "attribute": "race_group",
+    "metric": "balanced_accuracy",
+    "n": 1085,
+    "n_classes": 3,
+    "classes": [
+      "Black",
+      "Other",
+      "White"
+    ],
+    "class_counts": [
+      297,
+      88,
+      700
+    ],
+    "n_pcs": 50,
+    "mean": 0.4910810425865261,
+    "ci95": 0.10372435525497557,
+    "ci95_naive": 0.06914957016998372,
+    "per_fold": [
+      0.4135854341736695,
+      0.5168534080298787,
+      0.5181284189758766,
+      0.45494126087346426,
+      0.5518966908797417
+    ]
+  },
+  "probe_age_at_imaging_group": {
+    "attribute": "age_at_imaging_group",
+    "metric": "balanced_accuracy",
+    "n": 1085,
+    "n_classes": 3,
+    "classes": [
+      "40-60",
+      "60+",
+      "<40"
+    ],
+    "class_counts": [
+      415,
+      456,
+      214
+    ],
+    "n_pcs": 50,
+    "mean": 0.6416164530342171,
+    "ci95": 0.023421786601482798,
+    "ci95_naive": 0.01561452440098853,
+    "per_fold": [
+      0.6363578515441782,
+      0.6265737624661694,
+      0.6444761925288683,
+      0.6398884574844227,
+      0.6607860011474469
+    ]
+  },
+  "probe_manufacturer": {
+    "attribute": "manufacturer",
+    "metric": "auroc",
+    "n": 1085,
+    "n_classes": 2,
+    "classes": [
+      "GE MEDICAL SYSTEMS",
+      "SIEMENS"
+    ],
+    "class_counts": [
+      403,
+      682
+    ],
+    "n_pcs": 50,
+    "mean": 0.9969622022910274,
+    "ci95": 0.00432639871289919,
+    "ci95_naive": 0.0028842658085994595,
+    "per_fold": [
+      0.9935548293391431,
+      0.9996368917937546,
+      0.9973674655047204,
+      0.995985401459854,
+      0.9982664233576644
+    ]
+  }
+}

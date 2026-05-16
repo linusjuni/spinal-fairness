@@ -1,0 +1,9 @@
+{
+  "encoder": "mri_core",
+  "n_samples": 1254,
+  "output_dim": 768,
+  "pca_explained_variance_ratio": [
+    0.27748239215306075,
+    0.19971824478891928
+  ]
+}

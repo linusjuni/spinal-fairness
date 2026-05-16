@@ -1,0 +1,49 @@
+{
+  "total_images": 228,
+  "shape_stats": {
+    "width": {
+      "mean": 454.17543859649123,
+      "std": 126.28826863553468,
+      "min": 256,
+      "max": 640
+    },
+    "height": {
+      "mean": 454.17543859649123,
+      "std": 126.28826863553468,
+      "min": 256,
+      "max": 640
+    },
+    "n_slices": {
+      "mean": 15.346491228070175,
+      "std": 1.4656525556964823,
+      "min": 13,
+      "max": 25
+    }
+  },
+  "spacing_stats": {
+    "spacing_x": {
+      "mean": 0.5249977485652555,
+      "std": 0.1506184922260108
+    },
+    "spacing_y": {
+      "mean": 0.5249977485652555,
+      "std": 0.1506184922260108
+    },
+    "spacing_z": {
+      "mean": 3.940876686782168,
+      "std": 0.18436475165556598
+    }
+  },
+  "width_outliers_2sigma": 0,
+  "width_outliers_3sigma": 0,
+  "height_outliers_2sigma": 0,
+  "height_outliers_3sigma": 0,
+  "n_slices_outliers_2sigma": 9,
+  "n_slices_outliers_3sigma": 1,
+  "spacing_x_outliers_2sigma": 3,
+  "spacing_x_outliers_3sigma": 0,
+  "spacing_y_outliers_2sigma": 3,
+  "spacing_y_outliers_3sigma": 0,
+  "spacing_z_outliers_2sigma": 17,
+  "spacing_z_outliers_3sigma": 17
+}

@@ -1,0 +1,17 @@
+stat_key,test,p_raw,p_adjusted,reject_h0,effect_size,effect_name
+vol_by_sex_volume_mm3_vertebral_body,mann_whitney,2.813344149414995e-65,2.250675319531996e-64,true,0.5588331072608996,r_rb
+vol_by_race_volume_mm3_vertebral_body,mann_whitney,2.7146727111276722e-15,5.4293454222553444e-15,true,-0.2923556975430419,r_rb
+vol_by_age_volume_mm3_vertebral_body,kruskal_wallis,1.5314364104155512e-33,4.6497984711210126e-33,true,0.11919920374658315,epsilon_sq
+vol_by_sex_volume_mm3_disc,mann_whitney,4.1778669678127297e-70,6.684587148500367e-69,true,0.5797129692071397,r_rb
+vol_by_race_volume_mm3_disc,mann_whitney,0.5041098147649912,0.5041098147649912,false,-0.024714795229881625,r_rb
+vol_by_age_volume_mm3_disc,kruskal_wallis,0.0007942682830227193,0.00097756096372027,true,0.009813092351479582,epsilon_sq
+voxels_by_manufacturer_n_voxels_vertebral_body,mann_whitney,5.070126377941489e-37,2.0280505511765956e-36,true,-0.4290647262586871,r_rb
+voxels_by_manufacturer_n_voxels_disc,mann_whitney,6.625679585941542e-38,3.533695779168822e-37,true,-0.43440230060347274,r_rb
+vol_mm3_by_manufacturer_volume_mm3_vertebral_body,mann_whitney,6.416858309178744e-7,8.555811078904993e-7,true,0.1680301082765081,r_rb
+vol_mm3_by_manufacturer_volume_mm3_disc,mann_whitney,0.3673371116652623,0.39182625244294644,false,0.030429620269710855,r_rb
+comp_by_sex_n_components_vertebral_body,mann_whitney,1.2658607366789967e-11,2.0253771786863946e-11,true,-0.21971676414704877,r_rb
+comp_by_race_n_components_vertebral_body,mann_whitney,1.0807894444920182e-15,2.470375873124613e-15,true,0.293772424125437,r_rb
+comp_by_age_n_components_vertebral_body,kruskal_wallis,1.7436744266703798e-33,4.6497984711210126e-33,true,0.118991708141805,epsilon_sq
+comp_by_sex_n_components_disc,mann_whitney,2.4589686459406846e-13,4.3714998150056615e-13,true,-0.2327477672676177,r_rb
+comp_by_race_n_components_disc,mann_whitney,0.17910462775088698,0.20469100314387084,false,-0.048253707396375356,r_rb
+comp_by_age_n_components_disc,kruskal_wallis,2.831096335481011e-8,4.117958306154198e-8,true,0.026187077073732794,epsilon_sq

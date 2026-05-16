@@ -1,0 +1,17 @@
+stat_key,test,p_raw,p_adjusted,reject_h0,effect_size,effect_name
+vol_by_sex_volume_mm3_vertebral_body,mann_whitney,5.280520497466922e-8,4.2244163979735376e-7,true,0.5862068965517242,r_rb
+vol_by_race_volume_mm3_vertebral_body,mann_whitney,0.02166757003835127,0.04333514007670254,true,-0.29064039408866993,r_rb
+vol_by_age_volume_mm3_vertebral_body,kruskal_wallis,0.01797113897430006,0.04107688908411442,true,0.05343341943731991,epsilon_sq
+vol_by_sex_volume_mm3_disc,mann_whitney,2.2735114232314485e-10,3.6376182771703176e-9,true,0.683115338882283,r_rb
+vol_by_race_volume_mm3_disc,mann_whitney,0.38725949606613497,0.4766270720813969,false,-0.10971786833855801,r_rb
+vol_by_age_volume_mm3_disc,kruskal_wallis,0.06154357622830525,0.0984697219652884,false,0.03164619112423963,epsilon_sq
+voxels_by_manufacturer_n_voxels_vertebral_body,mann_whitney,1.0634280411811897e-6,4.253712164724759e-6,true,-0.5774748923959827,r_rb
+voxels_by_manufacturer_n_voxels_disc,mann_whitney,5.89079758841307e-7,3.1417587138203037e-6,true,-0.5911047345767575,r_rb
+vol_mm3_by_manufacturer_volume_mm3_vertebral_body,mann_whitney,0.19325711413551905,0.25767615218069206,false,0.1542324246771879,r_rb
+vol_mm3_by_manufacturer_volume_mm3_disc,mann_whitney,0.8484813127042587,0.8484813127042587,false,-0.022955523672883782,r_rb
+comp_by_sex_n_components_vertebral_body,mann_whitney,0.03152060293823739,0.05603662744575536,false,-0.2285969084423305,r_rb
+comp_by_race_n_components_vertebral_body,mann_whitney,0.0003313807253836954,0.0010604183212278252,true,0.4473802060008957,r_rb
+comp_by_age_n_components_vertebral_body,kruskal_wallis,0.008518679561963045,0.022716478831901452,true,0.06664591028569841,epsilon_sq
+comp_by_sex_n_components_disc,mann_whitney,0.09167957528599316,0.13335210950689913,false,-0.17598097502972654,r_rb
+comp_by_race_n_components_disc,mann_whitney,0.4219778686149126,0.48226042127418584,false,-0.09852216748768483,r_rb
+comp_by_age_n_components_disc,kruskal_wallis,0.7406196195964209,0.789994260902849,false,-0.012384635055487309,epsilon_sq

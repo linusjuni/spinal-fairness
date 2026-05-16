@@ -1,0 +1,17 @@
+{
+  "gold_cutoff": 481,
+  "gold_patient_nums": [
+    324,
+    57,
+    13,
+    373,
+    138
+  ],
+  "silver_patient_nums": [
+    727,
+    705,
+    623,
+    1222,
+    585
+  ]
+}

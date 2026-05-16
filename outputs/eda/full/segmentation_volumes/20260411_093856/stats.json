@@ -1,0 +1,31 @@
+{
+  "n_high_component_outliers": 22,
+  "volume_mm3_vertebral_body_by_manufacturer": [
+    {
+      "manufacturer": "GE MEDICAL SYSTEMS",
+      "mean": 51028.38832917187,
+      "std": 11546.88420533393,
+      "median": 49850.407050403664
+    },
+    {
+      "manufacturer": "SIEMENS",
+      "mean": 55086.262637739026,
+      "std": 15886.622704907188,
+      "median": 52955.942727502435
+    }
+  ],
+  "volume_mm3_disc_by_manufacturer": [
+    {
+      "manufacturer": "GE MEDICAL SYSTEMS",
+      "mean": 11972.170734522246,
+      "std": 2710.098784465775,
+      "median": 11830.765195055103
+    },
+    {
+      "manufacturer": "SIEMENS",
+      "mean": 12291.7748675702,
+      "std": 3647.062011529179,
+      "median": 11914.163407383021
+    }
+  ]
+}

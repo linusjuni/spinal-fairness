@@ -1,0 +1,4 @@
+series_submitter_id,filename,n_components_vertebral_body,n_components_disc,sex,race,age_at_imaging,manufacturer,magnetic_field_strength
+1.2.826.0.1.3680043.10.474.593973.530,593973-000029_Study-MR-30_Series-3.nii.gz,5,16,Female,White,78.0,SIEMENS,3.0
+1.2.826.0.1.3680043.10.474.593973.9351,593973-000505_Study-MR-513_Series-4.nii.gz,3,16,Male,White,84.0,SIEMENS,1.5
+1.2.826.0.1.3680043.10.474.593973.19817,593973-001070_Study-MR-1089_Series-6.nii.gz,4,27,Male,White,75.0,SIEMENS,1.5

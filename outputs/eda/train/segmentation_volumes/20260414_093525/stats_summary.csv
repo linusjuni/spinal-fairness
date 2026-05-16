@@ -1,0 +1,17 @@
+stat_key,test,p_raw,p_adjusted,reject_h0,effect_size,effect_name
+vol_by_sex_volume_mm3_vertebral_body,mann_whitney,6.93485785396739e-45,1.1095772566347824e-43,true,0.5749775441109038,r_rb
+vol_by_race_volume_mm3_vertebral_body,mann_whitney,1.536234424318836e-11,3.511392969871625e-11,true,-0.3148570410617262,r_rb
+vol_by_age_volume_mm3_vertebral_body,kruskal_wallis,2.218623858531708e-21,5.916330289417888e-21,true,0.11712553417042085,epsilon_sq
+vol_by_sex_volume_mm3_disc,mann_whitney,3.2310607191647104e-44,2.5848485753317683e-43,true,0.570505210394407,r_rb
+vol_by_race_volume_mm3_disc,mann_whitney,0.6336319984499563,0.6336319984499563,false,-0.022258840295715787,r_rb
+vol_by_age_volume_mm3_disc,kruskal_wallis,0.05519778979741781,0.06793574128912962,false,0.004771905324283163,epsilon_sq
+voxels_by_manufacturer_n_voxels_vertebral_body,mann_whitney,3.353039152106501e-22,1.0729725286740803e-21,true,-0.4065507667900581,r_rb
+voxels_by_manufacturer_n_voxels_disc,mann_whitney,2.6108355481604625e-22,1.044334219264185e-21,true,-0.4076216287678478,r_rb
+vol_mm3_by_manufacturer_volume_mm3_vertebral_body,mann_whitney,0.0002309167680494702,0.00033587893534468393,true,0.1545214172395558,r_rb
+vol_mm3_by_manufacturer_volume_mm3_disc,mann_whitney,0.13281099745107539,0.1517839970869433,false,0.06307509254362775,r_rb
+comp_by_sex_n_components_vertebral_body,mann_whitney,2.6127264517115847e-6,4.180362322738536e-6,true,-0.19049503457892847,r_rb
+comp_by_race_n_components_vertebral_body,mann_whitney,8.308998668090356e-10,1.477155318771619e-9,true,0.284038478667498,r_rb
+comp_by_age_n_components_vertebral_body,kruskal_wallis,4.3202692600445657e-23,2.304143605357102e-22,true,0.1270343129807179,epsilon_sq
+comp_by_sex_n_components_disc,mann_whitney,3.658442632014965e-10,7.31688526402993e-10,true,-0.24872959340707657,r_rb
+comp_by_race_n_components_disc,mann_whitney,0.31100694495399384,0.33174074128426007,false,-0.0459160951278168,r_rb
+comp_by_age_n_components_disc,kruskal_wallis,0.0012200545964638158,0.0016267394619517543,true,0.01436191111959353,epsilon_sq

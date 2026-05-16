@@ -1,0 +1,4 @@
+stat_key,test,p_raw,p_adjusted,reject_h0,effect_size,effect_name
+sex_by_race,chi2,0.5085229401649702,0.651437076288244,false,0.1371636306643254,cramers_v
+race_by_manufacturer,chi2,0.26230239390052756,0.651437076288244,false,0.16858084718350952,cramers_v
+race_by_field_strength,chi2,0.651437076288244,0.651437076288244,false,0.12059268586654685,cramers_v

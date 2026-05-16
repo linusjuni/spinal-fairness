@@ -1,0 +1,245 @@
+{
+  "n_high_component_outliers": 1,
+  "mann_whitney_vol_by_sex_volume_mm3_vertebral_body": {
+    "test": "mann_whitney",
+    "U": 696.0,
+    "p": 5.280520497466922e-08,
+    "r_rb": 0.5862068965517242,
+    "median_a": 48024.403825723566,
+    "median_b": 59193.29092669879,
+    "n_a": 58,
+    "n_b": 58
+  },
+  "mann_whitney_vol_by_race_volume_mm3_vertebral_body": {
+    "test": "mann_whitney",
+    "U": 1441.0,
+    "p": 0.02166757003835127,
+    "r_rb": -0.29064039408866993,
+    "median_a": 54799.57739029225,
+    "median_b": 50202.251009663814,
+    "n_a": 77,
+    "n_b": 29
+  },
+  "kruskal_vol_by_age_volume_mm3_vertebral_body": {
+    "test": "kruskal_wallis",
+    "H": 8.03797639641715,
+    "p": 0.01797113897430006,
+    "epsilon_sq": 0.05343341943731991,
+    "posthoc": [
+      {
+        "pair": "<40 vs 40-60",
+        "p": 0.06249932617451164
+      },
+      {
+        "pair": "<40 vs 60+",
+        "p": 0.018099234041879315
+      },
+      {
+        "pair": "40-60 vs 60+",
+        "p": 1.0
+      }
+    ],
+    "medians": {
+      "<40": 47931.994802065194,
+      "40-60": 53314.292452003654,
+      "60+": 54718.206314152485
+    },
+    "ns": {
+      "<40": 25,
+      "40-60": 45,
+      "60+": 46
+    }
+  },
+  "mann_whitney_vol_by_sex_volume_mm3_disc": {
+    "test": "mann_whitney",
+    "U": 533.0,
+    "p": 2.2735114232314485e-10,
+    "r_rb": 0.683115338882283,
+    "median_a": 11036.263409985188,
+    "median_b": 13739.74843326211,
+    "n_a": 58,
+    "n_b": 58
+  },
+  "mann_whitney_vol_by_race_volume_mm3_disc": {
+    "test": "mann_whitney",
+    "U": 1239.0,
+    "p": 0.38725949606613497,
+    "r_rb": -0.10971786833855801,
+    "median_a": 12401.696305175312,
+    "median_b": 11732.173506684601,
+    "n_a": 77,
+    "n_b": 29
+  },
+  "kruskal_vol_by_age_volume_mm3_disc": {
+    "test": "kruskal_wallis",
+    "H": 5.576019597039078,
+    "p": 0.06154357622830525,
+    "epsilon_sq": 0.03164619112423963,
+    "posthoc": [],
+    "medians": {
+      "<40": 11687.13489459264,
+      "40-60": 12401.696305175312,
+      "60+": 12531.55940983526
+    },
+    "ns": {
+      "<40": 25,
+      "40-60": 45,
+      "60+": 46
+    }
+  },
+  "mann_whitney_voxels_by_manufacturer_n_voxels_vertebral_body": {
+    "test": "mann_whitney",
+    "U": 2199.0,
+    "p": 1.0634280411811897e-06,
+    "r_rb": -0.5774748923959827,
+    "median_a": 68590.5,
+    "median_b": 31206.0,
+    "n_a": 34,
+    "n_b": 82
+  },
+  "mann_whitney_voxels_by_manufacturer_n_voxels_disc": {
+    "test": "mann_whitney",
+    "U": 2218.0,
+    "p": 5.89079758841307e-07,
+    "r_rb": -0.5911047345767575,
+    "median_a": 16918.0,
+    "median_b": 6943.0,
+    "n_a": 34,
+    "n_b": 82
+  },
+  "mann_whitney_vol_mm3_by_manufacturer_volume_mm3_vertebral_body": {
+    "test": "mann_whitney",
+    "U": 1179.0,
+    "p": 0.19325711413551905,
+    "r_rb": 0.1542324246771879,
+    "median_a": 50658.77007216298,
+    "median_b": 53298.481436316855,
+    "n_a": 34,
+    "n_b": 82
+  },
+  "mann_whitney_vol_mm3_by_manufacturer_volume_mm3_disc": {
+    "test": "mann_whitney",
+    "U": 1426.0,
+    "p": 0.8484813127042587,
+    "r_rb": -0.022955523672883782,
+    "median_a": 12383.062824315826,
+    "median_b": 12158.387255623005,
+    "n_a": 34,
+    "n_b": 82
+  },
+  "volume_mm3_vertebral_body_by_manufacturer": [
+    {
+      "manufacturer": "GE MEDICAL SYSTEMS",
+      "mean": 52013.50872767699,
+      "std": 11406.8831898287,
+      "median": 50658.77007216298
+    },
+    {
+      "manufacturer": "SIEMENS",
+      "mean": 55074.264499205485,
+      "std": 10415.444855454403,
+      "median": 53298.481436316855
+    }
+  ],
+  "volume_mm3_disc_by_manufacturer": [
+    {
+      "manufacturer": "GE MEDICAL SYSTEMS",
+      "mean": 12699.64490294099,
+      "std": 3073.2141426844782,
+      "median": 12383.062824315826
+    },
+    {
+      "manufacturer": "SIEMENS",
+      "mean": 12407.868445954386,
+      "std": 2430.540680149841,
+      "median": 12158.387255623005
+    }
+  ],
+  "mann_whitney_comp_by_sex_n_components_vertebral_body": {
+    "test": "mann_whitney",
+    "U": 2066.5,
+    "p": 0.03152060293823739,
+    "r_rb": -0.2285969084423305,
+    "median_a": 8.0,
+    "median_b": 8.0,
+    "n_a": 58,
+    "n_b": 58
+  },
+  "mann_whitney_comp_by_race_n_components_vertebral_body": {
+    "test": "mann_whitney",
+    "U": 617.0,
+    "p": 0.0003313807253836954,
+    "r_rb": 0.4473802060008957,
+    "median_a": 8.0,
+    "median_b": 9.0,
+    "n_a": 77,
+    "n_b": 29
+  },
+  "kruskal_comp_by_age_n_components_vertebral_body": {
+    "test": "kruskal_wallis",
+    "H": 9.53098786228392,
+    "p": 0.008518679561963045,
+    "epsilon_sq": 0.06664591028569841,
+    "posthoc": [
+      {
+        "pair": "<40 vs 40-60",
+        "p": 1.0
+      },
+      {
+        "pair": "<40 vs 60+",
+        "p": 0.3106720105177333
+      },
+      {
+        "pair": "40-60 vs 60+",
+        "p": 0.006570372611205633
+      }
+    ],
+    "medians": {
+      "<40": 8.0,
+      "40-60": 9.0,
+      "60+": 7.0
+    },
+    "ns": {
+      "<40": 25,
+      "40-60": 45,
+      "60+": 46
+    }
+  },
+  "mann_whitney_comp_by_sex_n_components_disc": {
+    "test": "mann_whitney",
+    "U": 1978.0,
+    "p": 0.09167957528599316,
+    "r_rb": -0.17598097502972654,
+    "median_a": 9.0,
+    "median_b": 9.0,
+    "n_a": 58,
+    "n_b": 58
+  },
+  "mann_whitney_comp_by_race_n_components_disc": {
+    "test": "mann_whitney",
+    "U": 1226.5,
+    "p": 0.4219778686149126,
+    "r_rb": -0.09852216748768483,
+    "median_a": 9.0,
+    "median_b": 9.0,
+    "n_a": 77,
+    "n_b": 29
+  },
+  "kruskal_comp_by_age_n_components_disc": {
+    "test": "kruskal_wallis",
+    "H": 0.6005362387299341,
+    "p": 0.7406196195964209,
+    "epsilon_sq": -0.012384635055487309,
+    "posthoc": [],
+    "medians": {
+      "<40": 9.0,
+      "40-60": 9.0,
+      "60+": 9.0
+    },
+    "ns": {
+      "<40": 25,
+      "40-60": 45,
+      "60+": 46
+    }
+  }
+}

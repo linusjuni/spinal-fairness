@@ -1,0 +1,7 @@
+# Excluded series IDs from Duke CSpineSeg dataset
+# Format: One series_submitter_id per line, followed by reason
+# Date: 2026-02-10
+
+# Localizer/scout scan - not a diagnostic cervical spine image
+# Characteristics: 56x512x512 voxels, physical depth 250mm (>150mm expected)
+1.2.826.0.1.3680043.10.474.593973.22529

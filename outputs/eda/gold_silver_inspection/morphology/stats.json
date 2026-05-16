@@ -1,0 +1,49 @@
+{
+  "n_gold": 489,
+  "n_silver": 766,
+  "gold_cutoff": 481,
+  "feature_stats": {
+    "boundary_ratio": {
+      "gold_median": 0.42826785529180056,
+      "silver_median": 0.429757126504008,
+      "mw_p": 0.1834757551522982,
+      "significant": false
+    },
+    "n_total": {
+      "gold_median": 69984.0,
+      "silver_median": 72856.0,
+      "mw_p": 0.6289559271989302,
+      "significant": false
+    },
+    "n1": {
+      "gold_median": 55151.0,
+      "silver_median": 58350.5,
+      "mw_p": 0.5607439644870615,
+      "significant": false
+    },
+    "n2": {
+      "gold_median": 13193.0,
+      "silver_median": 13617.5,
+      "mw_p": 0.824318321111414,
+      "significant": false
+    },
+    "n_components_1": {
+      "gold_median": 8.0,
+      "silver_median": 8.0,
+      "mw_p": 0.03424599103459902,
+      "significant": true
+    },
+    "n_components_2": {
+      "gold_median": 9.0,
+      "silver_median": 9.0,
+      "mw_p": 0.7285459449072722,
+      "significant": false
+    },
+    "file_size": {
+      "gold_median": 15202.0,
+      "silver_median": 16084.0,
+      "mw_p": 0.12862588511894804,
+      "significant": false
+    }
+  }
+}

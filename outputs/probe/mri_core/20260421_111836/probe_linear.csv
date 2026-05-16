@@ -1,0 +1,5 @@
+attribute,metric,n,n_classes,n_pcs,mean,ci95
+sex,auroc,1254,2,50,0.9312,0.0144
+race_group,balanced_accuracy,1254,3,50,0.513,0.0336
+age_at_imaging_group,balanced_accuracy,1254,3,50,0.6317,0.0202
+manufacturer,auroc,1254,2,50,0.9971,0.0034

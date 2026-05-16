@@ -1,0 +1,53 @@
+{
+  "smallest": {
+    "filename": "593973-000066_Study-MR-67_Series-7.nii.gz",
+    "shape": [
+      256,
+      256,
+      15
+    ],
+    "spacing": [
+      0.8594,
+      0.8594,
+      3.99
+    ],
+    "total_voxels": 983040,
+    "age_at_imaging": 32.0,
+    "sex": "Male",
+    "race": "White"
+  },
+  "median": {
+    "filename": "593973-000096_Study-MR-99_Series-3.nii.gz",
+    "shape": [
+      512,
+      512,
+      14
+    ],
+    "spacing": [
+      0.4297,
+      0.4297,
+      4.0
+    ],
+    "total_voxels": 3670016,
+    "age_at_imaging": 38.0,
+    "sex": "Female",
+    "race": "Other"
+  },
+  "largest": {
+    "filename": "593973-000184_Study-MR-187_Series-3.nii.gz",
+    "shape": [
+      640,
+      640,
+      19
+    ],
+    "spacing": [
+      0.3438,
+      0.3438,
+      3.99
+    ],
+    "total_voxels": 7782400,
+    "age_at_imaging": 19.0,
+    "sex": "Male",
+    "race": "White"
+  }
+}
