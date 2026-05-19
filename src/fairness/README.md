@@ -74,16 +74,16 @@ uv run -m src.fairness.analyze \
 
 Any difference in the fairness gap between the two evaluations is the pure ruler effect: same model, same images, different reference labels. Dataset001 and Dataset002 are independently trained, so Dice != 1.
 
-### Include HD95 (slower)
+### Include HD95 and nDSC
 
 ```bash
 uv run -m src.fairness.evaluate \
     --predictions ... --references ... --mapping ... --output ... \
-    --metrics dice hd95 \
+    --metrics dice hd95 ndsc \
     --workers 24
 ```
 
-HD95 uses `surface-distance` and is significantly slower (~10x). Dice is the default. Use `--workers N` to parallelize across cases (each case is independent).
+HD95 uses `surface-distance` and is significantly slower (~10x). nDSC (Normalized Dice, Raina et al. 2023) decorrelates Dice from reference volume — it scales the FP penalty by the ratio of the case's class load to the dataset mean, so that cases with smaller structures aren't penalized more for the same absolute error. The effective load parameter is computed automatically from all evaluated cases. Use `--workers N` to parallelize across cases (each case is independent).
 
 ### Bias amplification (Dataset002 vs Dataset003)
 
@@ -113,7 +113,7 @@ uv run -m src.fairness.analyze \
 | File | Purpose |
 |---|---|
 | `__init__.py` | Label constants: `LABEL_VERTEBRAL_BODY=1`, `LABEL_DISC=2`, `LABELS={1: "vb", 2: "disc"}` |
-| `evaluate.py` | NIfTI I/O. Computes per-case Dice and HD95 per label. Emits CSV. |
+| `evaluate.py` | NIfTI I/O. Computes per-case Dice, HD95, and nDSC per label. Emits CSV. |
 | `metrics.py` | Pure functions. All take `(df, score_col, group_col)`. No I/O. |
 | `plots.py` | Visualization functions. Each takes data + `EDAReport`. |
 | `analyze.py` | Orchestrator. Loads CSVs, joins demographics, calls metrics + plots. |
@@ -124,7 +124,9 @@ uv run -m src.fairness.analyze \
 |---|---|---|
 | `dice_coefficient` | `(pred, ref, label)` | `float`. NaN if both empty, 0.0 if one empty. |
 | `hausdorff_95` | `(pred, ref, label, spacing)` | `float` in mm. NaN if both empty, inf if one empty. |
-| `evaluate_case` | `(pred_path, ref_path, case_id, series_submitter_id, metrics={"dice"})` | `dict` with case_id, series_submitter_id, dice/hd95 per label |
+| `_segmentation_counts` | `(pred, ref, label)` | `dict` with tp, fp, fn, ref_vol. Used internally by nDSC. |
+| `_compute_ndsc` | `(df)` | `pl.DataFrame` with ndsc_{label} columns. Two-pass: computes effective_load per label from the dataset, then nDSC per case. |
+| `evaluate_case` | `(pred_path, ref_path, case_id, series_submitter_id, metrics={"dice"})` | `dict` with case_id, series_submitter_id, dice/hd95/ndsc per label |
 | `evaluate_folder` | `(pred_dir, ref_dir, mapping, output_path=None, metrics={"dice"}, split="test")` | `pl.DataFrame` |
 
 ### metrics.py
@@ -173,9 +175,18 @@ Training on silver labels may not just affect measurement — it can amplify bia
 
 When neither prediction nor reference contains a label, there is nothing to measure. Returning 0.0 would drag down group means; returning 1.0 would inflate them. NaN (skip) matches the nnU-Net convention and lets aggregations use `nanmean` to exclude these cases transparently.
 
-### Why Dice defaults, HD95 opt-in?
+### Why Dice defaults, HD95 and nDSC opt-in?
 
-Dice is O(n) on voxel counts. HD95 requires computing surface distances between 3D meshes — roughly 10x slower per case. For rapid iteration, Dice-only evaluation completes in minutes; HD95 can be added when needed for final analysis (HD95 and Dice can reveal different bias patterns, particularly for boundary-sensitive structures).
+Dice is O(n) on voxel counts. HD95 requires computing surface distances between 3D meshes — roughly 10x slower per case. nDSC has the same computational cost as Dice (it reuses voxel counts) but requires a two-pass computation across all cases to derive the effective load. For rapid iteration, Dice-only evaluation completes in minutes; HD95 and nDSC can be added when needed for final analysis.
+
+### Why nDSC alongside Dice?
+
+Standard Dice has two properties that can confound fairness analysis:
+
+1. **Volume dependence**: The same absolute segmentation error produces a larger Dice drop for smaller structures. If one demographic group has systematically smaller structures, Dice will make them look worse even with identical segmentation quality.
+2. **Erosion/dilation asymmetry**: Undersegmentation (erosion) removes TP from both numerator and denominator, while oversegmentation (dilation) only adds FP to the denominator. Equal-magnitude errors produce unequal Dice changes.
+
+nDSC (Raina et al. 2023) addresses this by scaling the FP penalty by `kappa = (1-r) * |R| / (r * (N-|R|))`, where `r` is the mean class load across the dataset. When a case's class load equals the dataset mean, nDSC = Dice. When it's smaller, FP is penalized less (boosting the score); when larger, FP is penalized more (reducing the score). This decorrelates the metric from reference volume.
 
 ### Volume adjustment via OLS
 
