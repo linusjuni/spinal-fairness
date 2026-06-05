@@ -175,6 +175,7 @@ def _analyze_single_ruler(
             violin_by_group(
                 grouped_df, score_col, group_col, report,
                 title=f"{ruler_label}: {score_col} by {grouping_label}",
+                fig_name=f"violin_{key}",
             )
 
     if all_p_values:

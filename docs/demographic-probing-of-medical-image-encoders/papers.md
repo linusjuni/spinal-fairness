@@ -59,9 +59,11 @@ Demographic invariance is *neither necessary nor sufficient* for fairness.
 Important caveat: finding demographic signal in embeddings does not imply
 the segmentation model is unfair, and removing it does not imply fairness.
 
-### Ioannou et al. — closest MRI analogue
-**Investigating Demographic Bias in Brain MRI Segmentation.**
-arXiv:2510.17999, 2025.
+### Danaee et al. — closest MRI analogue
+**Investigating Demographic Bias in Brain MRI Segmentation: A Comparative
+Study of Deep-Learning and Non-Deep-Learning Methods.**
+Danaee, Niethammer, Rushmore, Bouix. *MELBA* (Journal of Machine Learning
+for Biomedical Imaging); arXiv:2510.17999, 2025.
 
 Brain MRI, not spine, but same methodological family.
 
@@ -132,5 +134,5 @@ From Gichoya 2022 and FairMedFM thresholds:
 - [Jones et al. arXiv:2305.01397](https://arxiv.org/html/2305.01397v3)
 - [Parikh et al. arXiv:2511.00477](https://arxiv.org/abs/2511.00477)
 - [Parikh et al. arXiv:2510.27421](https://arxiv.org/abs/2510.27421)
-- [Ioannou et al. arXiv:2510.17999](https://arxiv.org/html/2510.17999v2)
+- [Danaee et al. arXiv:2510.17999](https://arxiv.org/html/2510.17999v2)
 - [Understanding UMAP (pair-code)](https://pair-code.github.io/understanding-umap/)

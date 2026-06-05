@@ -50,6 +50,7 @@ then the per-folder tables for individual documents.
 | [05 — Model Selection & Test Evaluation](nnunet/05_model_selection.md) | Training status, ensemble Dice vs mixed/gold/silver references, per-fold CV Dice, comparison with Zhou et al. baseline, and per-case macro Dice distribution |
 | [06 — Gold / Silver Label Experiment](nnunet/06_gold_silver_training.md) | Biased-ruler experiment — Dataset001 (mixed), Dataset002 (gold), Dataset003 (silver); bias-amplification evaluation design and per-dataset train/predict/eval steps |
 | [07 — Hugging Face Release Plan](nnunet/07_huggingface_release.md) | Export models to zip, upload to private HF repo, and write a model card (CC-BY-NC-4.0 license, input specs, performance tables, fairness caveats, inference instructions) |
+| [08 — Carbon Footprint of Training](nnunet/08_carbon_footprint.md) | GPU-hours by hardware (A100/L40S), ML-CO₂ emissions estimate (~50–70 kg CO₂e), methodology, scenario/sensitivity table, suggested paper wording, and BibTeX citations |
 
 ## Fairness Analysis
 
@@ -57,6 +58,7 @@ then the per-folder tables for individual documents.
 |---|---|
 | [Fairness Runs](fairness/fairness-runs.md) | Chronological catalog of fairness evaluation runs (1–5) — rulers, metrics, test cases, and Dice/HD95/nDSC findings across 7 demographic groupings, plus planned analyses |
 | [HD95 Outliers](fairness/hd95-outliers.md) | Analysis of 13 cases (5.7%) with HD95 > 5mm from disc-localization errors, why HD95 DIR is misleading under right skew, mean-vs-median DIR, and confirmation outliers aren't demographically concentrated |
+| [Related Work & Novelty](fairness/related-work.md) | Positioning vs prior fairness literature — FairMedFM (the one prior spine-segmentation fairness work, sex-only/lumbar) and how our scope (cervical, sex+race+age, biased ruler) is novel; how to phrase the "first" claim |
 
 ## Demographic Probing of Medical Image Encoders
 

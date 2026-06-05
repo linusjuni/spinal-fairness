@@ -21,10 +21,18 @@ def violin_by_group(
     report: EDAReport,
     *,
     title: str | None = None,
+    fig_name: str | None = None,
 ) -> None:
-    """Violin plot of a score by demographic group."""
+    """Violin plot of a score by demographic group.
+
+    Pass an explicit ``fig_name`` to disambiguate plots that share a
+    ``group_col`` (e.g. the race_wb/wbo/wn strategies all map to
+    ``race_group``, and each ruler reuses the same columns). Without it,
+    those plots overwrite each other on disk.
+    """
     pdf = df.select([score_col, group_col]).to_pandas()
-    fig_name = f"violin_{score_col}_by_{group_col}"
+    if fig_name is None:
+        fig_name = f"violin_{score_col}_by_{group_col}"
 
     with report.figure(fig_name, figsize=(8, 5)) as fig:
         ax = fig.gca()
