@@ -1,14 +1,28 @@
 # 06 — Gold / Silver Label Experiment
 
-> **Status (2026-04-30):** Splits ready. Infrastructure build in progress. Training not yet submitted.
+> **Status (2026-06-05):**
+> - **Gold (Dataset002): fully trained.** All 10 folds (`2d` + `3d_fullres`, folds 0–4) have
+>   `checkpoint_final.pth` and `validation/summary.json` on disk. Ready for
+>   `find_best_configuration` → predict → ensemble → postprocess.
+>   *Provenance note:* `2d` fold 1 crashed at epoch 959 (transient `OSError: Stale file handle`)
+>   and was finished via a resume/validation step rather than one uninterrupted run — it had
+>   converged (poly-LR ≈ 0, EMA Dice plateaued ~0.89), so no effect on results.
+> - **Silver (Dataset003): 7/10 trained.** `2d` complete (5/5). `3d_fullres`: folds 2–3 done;
+>   fold 0 has `checkpoint_final` but needs a validation-only pass (`--val`); fold 1 training in
+>   progress (job 28602550, ~44 h); fold 4 had no checkpoint and needs a fresh retrain. Folds 0
+>   and 4 are submitted via `jobs/finish_silver.sh`. `find_best_configuration` for Dataset003 is
+>   blocked until folds 0/1/4 finish (the two 3d retrains run in parallel, ~44 h).
+>
+> Both 3d_fullres retrains use `nnUNet_n_proc_DA=1` to avoid the recurring glibc/DA-worker crash
+> ("background workers are no longer alive") that killed the original fold-1 and fold-4 runs.
 
 ## Three Models, Three Roles
 
 | Dataset | Train cases | Labels | Split file | Role | Status |
 |---|---|---|---|---|---|
 | `Dataset001_CSpineSeg` | 798 (318 gold + 480 silver) | Mixed | `split_v3` | **Global fairness audit** | Trained |
-| `Dataset002_CSpineSeg_Gold` | 288 | Expert (gold) | `split_v3_gold` | **Bias amplification baseline** + **biased ruler** (predictions on gold test images serve as generated silver labels) | To build |
-| `Dataset003_CSpineSeg_Silver` | 450 | Auto-generated (silver) | `split_v3_silver` | **Bias amplification** — compare against gold-trained | To build |
+| `Dataset002_CSpineSeg_Gold` | 288 | Expert (gold) | `split_v3_gold` | **Bias amplification baseline** + **biased ruler** (predictions on gold test images serve as generated silver labels) | **Trained (10/10)** |
+| `Dataset003_CSpineSeg_Silver` | 450 | Auto-generated (silver) | `split_v3_silver` | **Bias amplification** — compare against gold-trained | **Training (7/10)** — 3d_fullres f0/f1/f4 pending |
 
 All three use sex-balanced cohorts (50/50 M/F in every split).
 

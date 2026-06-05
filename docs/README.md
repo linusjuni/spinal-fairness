@@ -31,6 +31,7 @@
 | [04 — Inference & Evaluation](nnunet/04_inference.md) | Model selection, prediction, postprocessing, metrics, fairness analysis |
 | [05 — Model Selection & Test Evaluation](nnunet/05_model_selection.md) | Current training status, CV Dice table, step-by-step pipeline from find_best_configuration through test set evaluation |
 | [06 — Gold / Silver Label Experiment](nnunet/06_gold_silver_training.md) | Biased Ruler experiment — Dataset002 (gold) and Dataset003 (silver) build steps, training, and evaluation design |
+| [07 — Hugging Face Release Plan](nnunet/07_huggingface_release.md) | Export trained models, re-stamp custom trainer, upload to HF, and model-card documentation for external users |
 
 ## Demographic Probing of Medical Image Encoders
 
