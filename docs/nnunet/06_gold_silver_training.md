@@ -17,6 +17,114 @@
 > Both 3d_fullres retrains use `nnUNet_n_proc_DA=1` to avoid the recurring glibc/DA-worker crash
 > ("background workers are no longer alive") that killed the original fold-1 and fold-4 runs.
 
+## Pipeline at a Glance
+
+How the three datasets are built, how each label set is produced, and which models feed
+which experiment. All model-vs-model comparisons are scored on the **same 76-case gold test
+set** (`split_v3_gold`, expert labels) so that differences are attributable to training
+labels — not to the test data.
+
+```mermaid
+flowchart TD
+    CS["CSpineSeg<br/>1,255 release → 1,254 after exclusions<br/>→ 1,142 analysis cohort (50/50 M/F downsample)<br/>each image is labelled gold OR silver, never both"]:::src
+
+    CS --> GOLD["Gold labels — expert annotation<br/>448-exam pool"]:::gold
+    CS --> SILV["Silver labels — Zhou et al. nnU-Net<br/>(trained on gold, run on unlabelled cases)<br/>694-exam pool"]:::silver
+
+    subgraph TR["Sex-balanced training sets — split_v3 family (50/50 M/F)"]
+      direction LR
+      DS1["Dataset001 — Mixed<br/>798 train = 318 gold + 480 silver<br/>(production-realistic)"]:::mixed
+      DS2["Dataset002 — Gold<br/>288 train, expert only"]:::gold
+      DS3["Dataset003 — Silver<br/>450 train, auto only<br/>(training 7/10)"]:::silver
+    end
+
+    GOLD --> DS1
+    SILV --> DS1
+    GOLD --> DS2
+    SILV --> DS3
+
+    DS1 --> M1["Model M1 (mixed)<br/>nnU-Net ResEncUNetL ensemble"]:::mixed
+    DS2 --> M2["Model M2 (gold)"]:::gold
+    DS3 --> M3["Model M3 (silver)"]:::silver
+
+    M2 -- "predict on the 76 gold-test images" --> GENS["Generated silver labels<br/>= M2 predictions<br/>(the 'silver ruler')"]:::silver
+
+    subgraph EXP["Experiments — model-vs-model comparisons all use the 76-case gold test set (expert labels)"]
+      direction TB
+      E1["E1 · Global fairness audit<br/>M1 vs all labels, full test set (228)<br/>Is a realistically-trained model fair?"]:::exp
+      E2["E2 · Biased ruler<br/>M1 on the 76 images, scored twice<br/>Does the choice of ruler hide/inflate the gap?"]:::exp
+      E3["E3 · Bias amplification<br/>M2 vs M3, scored vs gold labels<br/>Does silver-label training widen gaps?"]:::exp
+      E4["E4 · Mixed vs gold training<br/>M1 vs M2, scored vs gold labels<br/>Does mixing silver into training hurt fairness?"]:::exp
+    end
+
+    M1 --> E1
+    M1 --> E2
+    GOLD -. "Ruler A (true)" .-> E2
+    GENS -. "Ruler B (generated silver)" .-> E2
+    M1 --> E4
+    M2 --> E3
+    M2 --> E4
+    M3 --> E3
+
+    classDef src fill:#f3f3f3,stroke:#999,color:#000
+    classDef gold fill:#f6e7b0,stroke:#b8941f,color:#000
+    classDef silver fill:#dfe3e6,stroke:#8a9199,color:#000
+    classDef mixed fill:#cfe2f3,stroke:#3d6fa5,color:#000
+    classDef exp fill:#d9ead3,stroke:#4e8f43,color:#000
+```
+
+### How each label set is produced
+
+| Label set | Provenance | Used as |
+|---|---|---|
+| **Gold** | Expert manual annotation (original CSpineSeg) | Training labels for Dataset002; ground-truth reference (Ruler A) for E2–E4 |
+| **Silver (original)** | Zhou et al. trained an nnU-Net on the gold development set and ran it on the unannotated cases | Training labels for Dataset003 and the silver portion of Dataset001 |
+| **Generated silver** | **M2 (our gold-trained model) predicting on the 76 gold-test images** | The "silver ruler" (Ruler B) for the biased-ruler experiment E2 only |
+
+The *generated silver* labels mirror how the *original* silver labels were created — a
+gold-trained nnU-Net applied to images it never saw in training — but produced on our own
+split so the 76 test cases are guaranteed unseen.
+
+### How this differs from the MAMA-MIA "biased ruler"
+
+Our biased-ruler setup adapts Aditya et al.'s MAMA-MIA design to a dataset where gold and
+silver labels never co-exist on the same image.
+
+```mermaid
+flowchart TB
+    subgraph MM["Aditya et al. — MAMA-MIA (breast DCE-MRI)"]
+      direction TB
+      MMI["Every image carries BOTH labels"]
+      MMI --> MMG["Gold (expert)"]:::gold
+      MMI --> MMS["Silver (independent nnU-Net,<br/>external training data)"]:::silver
+      MMG -. "ruler A" .-> MMC{{"Direct ruler comparison<br/>same image, two pre-existing references"}}
+      MMS -. "ruler B" .-> MMC
+    end
+
+    subgraph OU["This work — CSpineSeg (cervical MRI)"]
+      direction TB
+      OI["Every image carries EITHER gold OR silver"]
+      OI --> OG["Gold (expert)"]:::gold
+      OG --> OM2["Train Dataset002 (gold-only)"]:::gold
+      OM2 -- "predict on the 76 gold-test images" --> OGS["Generated silver labels"]:::silver
+      OG -. "ruler A" .-> OC{{"Ruler comparison on the SAME 76 images<br/>gold labels vs generated silver"}}
+      OGS -. "ruler B" .-> OC
+    end
+
+    classDef gold fill:#f6e7b0,stroke:#b8941f,color:#000
+    classDef silver fill:#dfe3e6,stroke:#8a9199,color:#000
+```
+
+- **MAMA-MIA:** each image already has both an expert (gold) and an automated (silver)
+  reference, so the two rulers can be compared directly on every image.
+- **CSpineSeg:** each image has only one label tier. We therefore *generate* the second
+  ruler by predicting with the gold-trained M2 on the 76 gold-test images. Both rulers then
+  exist for the same images, and any difference in the observed fairness gap is the pure
+  ruler effect.
+- **Why not reuse Zhou et al.'s silver model?** Its weights are unavailable, and its training
+  split may overlap our gold test cases — a leakage risk. M2 is trained on our split, which
+  excludes the test cases by design.
+
 ## Three Models, Three Roles
 
 | Dataset | Train cases | Labels | Split file | Role | Status |

@@ -48,7 +48,7 @@ then the per-folder tables for individual documents.
 | [03 — Training](nnunet/03_training.md) | Preprocessing, write_splits, 10 training jobs (2d + 3d_fullres), custom `nnUNetTrainerWandB` with W&B logging, job submission/monitoring/resume, and output structure |
 | [04 — Inference & Evaluation](nnunet/04_inference.md) | Five-step pipeline — find best configuration, predict on test set, postprocess, compute metrics (Dice, IoU), and fairness analysis across sex/race/age |
 | [05 — Model Selection & Test Evaluation](nnunet/05_model_selection.md) | Training status, ensemble Dice vs mixed/gold/silver references, per-fold CV Dice, comparison with Zhou et al. baseline, and per-case macro Dice distribution |
-| [06 — Gold / Silver Label Experiment](nnunet/06_gold_silver_training.md) | Biased-ruler experiment — Dataset001 (mixed), Dataset002 (gold), Dataset003 (silver); bias-amplification evaluation design and per-dataset train/predict/eval steps |
+| [06 — Gold / Silver Label Experiment](nnunet/06_gold_silver_training.md) | Biased-ruler experiment — Dataset001 (mixed), Dataset002 (gold), Dataset003 (silver); pipeline diagram of dataset/label flow + MAMA-MIA contrast, bias-amplification evaluation design, and per-dataset train/predict/eval steps |
 | [07 — Hugging Face Release Plan](nnunet/07_huggingface_release.md) | Export models to zip, upload to private HF repo, and write a model card (CC-BY-NC-4.0 license, input specs, performance tables, fairness caveats, inference instructions) |
 | [08 — Carbon Footprint of Training](nnunet/08_carbon_footprint.md) | GPU-hours by hardware (A100/L40S), ML-CO₂ emissions estimate (~50–70 kg CO₂e), methodology, scenario/sensitivity table, suggested paper wording, and BibTeX citations |
 
