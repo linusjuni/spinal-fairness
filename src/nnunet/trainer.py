@@ -79,4 +79,7 @@ class nnUNetTrainerWandB(nnUNetTrainer):
             artifact.add_file(str(checkpoint))
             wandb.log_artifact(artifact)
 
-        wandb.finish()
+    def perform_actual_validation(self, save_probabilities: bool = False) -> None:
+        super().perform_actual_validation(save_probabilities)
+        if wandb.run is not None:
+            wandb.finish()
