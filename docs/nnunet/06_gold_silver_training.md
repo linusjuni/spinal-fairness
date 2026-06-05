@@ -1,17 +1,18 @@
 # 06 — Gold / Silver Label Experiment
 
 > **Status (2026-06-05):**
-> - **Gold (Dataset002): fully trained.** All 10 folds (`2d` + `3d_fullres`, folds 0–4) have
->   `checkpoint_final.pth` and `validation/summary.json` on disk. Ready for
->   `find_best_configuration` → predict → ensemble → postprocess.
+> - **Gold (Dataset002): fully evaluated.** All 10 folds trained. Ensemble (2d + 3d_fullres)
+>   selected by `find_best_configuration` (CV macro Dice 0.8831, no postprocessing applied).
+>   Predictions generated on 76 gold test images, postprocessed, and evaluated against expert
+>   labels: VB Dice 0.914, Disc Dice 0.862, Macro Dice 0.888. `eval_gold.csv` written.
 >   *Provenance note:* `2d` fold 1 crashed at epoch 959 (transient `OSError: Stale file handle`)
->   and was finished via a resume/validation step rather than one uninterrupted run — it had
->   converged (poly-LR ≈ 0, EMA Dice plateaued ~0.89), so no effect on results.
+>   and was finished via a resume/validation step — it had converged (poly-LR ≈ 0, EMA Dice
+>   plateaued ~0.89), so no effect on results.
 > - **Silver (Dataset003): 7/10 trained.** `2d` complete (5/5). `3d_fullres`: folds 2–3 done;
 >   fold 0 has `checkpoint_final` but needs a validation-only pass (`--val`); fold 1 training in
 >   progress (job 28602550, ~44 h); fold 4 had no checkpoint and needs a fresh retrain. Folds 0
 >   and 4 are submitted via `jobs/finish_silver.sh`. `find_best_configuration` for Dataset003 is
->   blocked until folds 0/1/4 finish (the two 3d retrains run in parallel, ~44 h).
+>   blocked until folds 0/1/4 finish.
 >
 > Both 3d_fullres retrains use `nnUNet_n_proc_DA=1` to avoid the recurring glibc/DA-worker crash
 > ("background workers are no longer alive") that killed the original fold-1 and fold-4 runs.
@@ -21,7 +22,7 @@
 | Dataset | Train cases | Labels | Split file | Role | Status |
 |---|---|---|---|---|---|
 | `Dataset001_CSpineSeg` | 798 (318 gold + 480 silver) | Mixed | `split_v3` | **Global fairness audit** | Trained |
-| `Dataset002_CSpineSeg_Gold` | 288 | Expert (gold) | `split_v3_gold` | **Bias amplification baseline** + **biased ruler** (predictions on gold test images serve as generated silver labels) | **Trained (10/10)** |
+| `Dataset002_CSpineSeg_Gold` | 288 | Expert (gold) | `split_v3_gold` | **Bias amplification baseline** + **biased ruler** (predictions on gold test images serve as generated silver labels) | **Evaluated ✅** |
 | `Dataset003_CSpineSeg_Silver` | 450 | Auto-generated (silver) | `split_v3_silver` | **Bias amplification** — compare against gold-trained | **Training (7/10)** — 3d_fullres f0/f1/f4 pending |
 
 All three use sex-balanced cohorts (50/50 M/F in every split).
@@ -124,7 +125,7 @@ $nnUNet_raw/
 
 ---
 
-## Step 2 — Plan and Preprocess
+## Step 2 — Plan and Preprocess (done)
 
 CPU only (~10–20 min each). Run on login node:
 
@@ -135,7 +136,7 @@ uv run --env-file .env nnUNetv2_plan_and_preprocess -d 3 --verify_dataset_integr
 
 ---
 
-## Step 3 — Write CV Splits
+## Step 3 — Write CV Splits (done)
 
 Same stratified 5-fold logic as `write_splits.py`, split version is derived from `--dataset-id`:
 
@@ -148,7 +149,7 @@ Writes `splits_final.json` to each preprocessed dataset directory.
 
 ---
 
-## Step 4 — Submit Training Jobs
+## Step 4 — Submit Training Jobs (done)
 
 Same `jobs/train.sh` template, just different dataset IDs. Train both 2d and 3d_fullres
 for consistency with Dataset001 — decide on best config per dataset after training via
@@ -176,37 +177,71 @@ Or add a `--dataset-id` parameter to `train.sh` and create a `submit_gold_silver
 
 ---
 
-## Step 5 — Predict, Ensemble, Postprocess
+## Step 5 — Predict, Ensemble, Postprocess (done 2026-06-05)
 
-After training completes, generate predictions and postprocess them. Scripts resolve
-dataset names from the `DATASETS` registry in `src/nnunet/__init__.py`.
+Predictions run on interactive GPU node (`a100sh`), both configs in parallel. Ensemble and
+postprocessing run on login node.
 
 ```bash
-# GPU: submit predict jobs (2d + 3d_fullres)
-bash jobs/submit_predict.sh 2
+# GPU: interactive node (two sessions in parallel)
+uv run nnUNetv2_predict -d Dataset002_CSpineSeg_Gold \
+    -i "${nnUNet_raw}/Dataset002_CSpineSeg_Gold/imagesTs" \
+    -o "${nnUNet_results}/Dataset002_CSpineSeg_Gold/predictions_test_2d" \
+    -f 0 1 2 3 4 -tr nnUNetTrainerWandB -c 2d -p nnUNetResEncUNetLPlans --save_probabilities
+
+uv run nnUNetv2_predict -d Dataset002_CSpineSeg_Gold \
+    -i "${nnUNet_raw}/Dataset002_CSpineSeg_Gold/imagesTs" \
+    -o "${nnUNet_results}/Dataset002_CSpineSeg_Gold/predictions_test_3d_fullres" \
+    -f 0 1 2 3 4 -tr nnUNetTrainerWandB -c 3d_fullres -p nnUNetResEncUNetLPlans --save_probabilities
 
 # CPU (after predict jobs finish): find_best_config → ensemble → postprocess
 bash jobs/ensemble_and_postprocess.sh 2
 ```
 
-Output: `$nnUNet_results/Dataset002_CSpineSeg_Gold/predictions_test_pp/`
+`find_best_configuration` result: ensemble (2d + 3d_fullres) wins (CV macro Dice 0.8831 vs
+0.8819 for 2d alone). No postprocessing applied (keep-largest destroys multi-vertebra
+structures, same as Dataset001).
+
+Output: `$nnUNet_results/Dataset002_CSpineSeg_Gold/predictions_test_pp/` (76 files)
 
 ## Step 6 — Evaluate
 
-**Biased ruler** (requires Dataset002 predictions):
-- Evaluate Dataset001 predictions against gold labels → true fairness gap.
-- Evaluate Dataset001 predictions against Dataset002's predictions (generated silver) → observed fairness gap with biased ruler.
-- The difference between the two gaps is the pure ruler effect.
+### Dataset002 on gold test set (done 2026-06-05)
 
-**Bias amplification** (after training Dataset002 + Dataset003):
-1. Predict with Dataset002 (gold) and Dataset003 (silver) on the gold test set (76 cases).
-2. Evaluate both against gold labels. Compare fairness gaps: if Dataset003 has wider gaps,
-   silver labels amplify bias through training.
+`labelsTs/` symlinks created for all 76 gold test cases pointing to expert segmentations.
 
-**Mixed vs gold** — predict with Dataset001 (mixed) on the gold test set. Compare against
-Dataset002 to see whether including silver labels in training hurts fairness.
+```bash
+source .env
+uv run --env-file .env -m src.fairness.evaluate \
+    --predictions "${nnUNet_results}/Dataset002_CSpineSeg_Gold/predictions_test_pp" \
+    --references  "${nnUNet_raw}/Dataset002_CSpineSeg_Gold/labelsTs" \
+    --mapping     "${nnUNet_raw}/Dataset002_CSpineSeg_Gold/case_id_mapping.json" \
+    --output      "${nnUNet_results}/Dataset002_CSpineSeg_Gold/predictions_test_pp/eval_gold.csv" \
+    --metrics dice hd95 ndsc
+```
 
-Compare fairness gaps (DPD, DIR) across all comparisons.
+Results (76 gold test cases, expert labels):
+
+| Model | VB Dice | Disc Dice | Macro Dice |
+|---|---|---|---|
+| Dataset002 (gold-trained) | 0.9141 | 0.8623 | 0.8882 |
+| Dataset001 (mixed-trained, from `05_model_selection.md`) | 0.9216 | 0.8721 | 0.8969 |
+
+Dataset001 scores marginally higher than Dataset002 on the gold test set despite being trained
+on noisier labels — likely because it has ~2.8× more training cases (798 vs 288). This is a
+preliminary result for the mixed vs gold comparison; the fairness gap comparison (DPD, DIR)
+is what matters for the experiment conclusions.
+
+### Remaining evaluations (pending Dataset003)
+
+**Biased ruler** (Dataset002 predictions now available — can run immediately):
+- Evaluate Dataset001 predictions against gold labels → already done (Run 5 in `fairness-runs.md`).
+- Evaluate Dataset001 predictions against Dataset002's predictions on the same 76 images → run `src.fairness.evaluate` pointing `--references` at `predictions_test_pp/` for Dataset002.
+- Any difference in fairness gap is the pure ruler effect.
+
+**Bias amplification** (blocked until Dataset003 training completes):
+1. Predict with Dataset003 on the gold test set (76 cases).
+2. Evaluate against gold labels. Compare fairness gaps against Dataset002.
 
 ---
 

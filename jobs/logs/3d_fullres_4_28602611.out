@@ -1,0 +1,16 @@
+Installed custom trainer to /zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/nnUNetTrainer/variants/training_length/nnUNetTrainerWandB.py
+=== Training: dataset=3 config=3d_fullres fold=4 plans=nnUNetResEncUNetLPlans trainer=nnUNetTrainerWandB ===
+Using device: cuda:0
+
+#######################################################################
+Please cite the following paper when using nnU-Net:
+Isensee, F., Jaeger, P. F., Kohl, S. A., Petersen, J., & Maier-Hein, K. H. (2021). nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation. Nature methods, 18(2), 203-211.
+#######################################################################
+
+2026-06-05 11:56:18.548561: Using torch.compile...
+2026-06-05 11:56:19.753985: do_dummy_2d_data_aug: True
+2026-06-05 11:56:19.793414: Using splits from existing split file: /work3/s225224/nnunet/preprocessed/Dataset003_CSpineSeg_Silver/splits_final.json
+2026-06-05 11:56:19.805608: The split file contains 5 splits.
+2026-06-05 11:56:19.806766: Desired fold for training: 4
+2026-06-05 11:56:19.807680: This split has 413 training and 103 validation cases.
+using pin_memory on device 0

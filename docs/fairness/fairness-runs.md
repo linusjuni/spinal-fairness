@@ -89,13 +89,24 @@ Adds nDSC (Raina et al. 2023) to Run 4. nDSC decorrelates Dice from reference vo
 
 ## Future runs
 
-### Biased ruler (requires Dataset002 predictions)
+### Run 6 — Biased ruler (unblocked as of 2026-06-05)
 
-Evaluate Dataset001 predictions on the 76 gold test images against both gold labels and Dataset002-generated silver labels. Same model, same images, different reference -- any difference in DIR is a pure ruler effect.
+Dataset002 predictions on the 76 gold test images are ready in
+`$nnUNet_results/Dataset002_CSpineSeg_Gold/predictions_test_pp/`.
 
-### Bias amplification (requires Dataset002 + Dataset003 predictions)
+Evaluate Dataset001 predictions against both rulers on the same 76 images:
+1. Dataset001 vs gold labels (`labelsTs_gold` in Dataset001) → already in Run 5 (`eval_gold.csv`).
+2. Dataset001 vs Dataset002's predictions (use Dataset002 `predictions_test_pp/` as `--references`).
 
-Evaluate Dataset001 (mixed-trained), Dataset002 (gold-trained), and Dataset003 (silver-trained) on the 76 gold test images against gold labels. If Dataset003 shows wider demographic gaps than Dataset002, silver labels amplify bias through training.
+Any difference in DIR / fairness gap between (1) and (2) is the pure ruler effect — same model,
+same images, different reference labels.
+
+### Run 7 — Mixed vs gold + Bias amplification (blocked until Dataset003 completes)
+
+Evaluate Dataset001, Dataset002, and Dataset003 on the 76 gold test images against gold labels.
+Compare fairness gaps (DPD, DIR):
+- Dataset002 vs Dataset003 → does silver training widen gaps? (bias amplification)
+- Dataset001 vs Dataset002 → does mixing silver into training hurt fairness? (mixed vs gold)
 
 ## Outputs per run
 

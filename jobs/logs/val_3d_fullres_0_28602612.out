@@ -1,0 +1,312 @@
+Installed custom trainer to /zhome/77/2/187952/projects/spinal-fairness/.venv/lib/python3.13/site-packages/nnunetv2/training/nnUNetTrainer/variants/training_length/nnUNetTrainerWandB.py
+=== Validation: config=3d_fullres fold=0 ===
+Using device: cuda:0
+
+#######################################################################
+Please cite the following paper when using nnU-Net:
+Isensee, F., Jaeger, P. F., Kohl, S. A., Petersen, J., & Maier-Hein, K. H. (2021). nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation. Nature methods, 18(2), 203-211.
+#######################################################################
+
+2026-06-05 11:02:23.349536: Using torch.compile...
+2026-06-05 11:02:32.329041: Using splits from existing split file: /work3/s225224/nnunet/preprocessed/Dataset003_CSpineSeg_Silver/splits_final.json
+2026-06-05 11:02:32.342152: The split file contains 5 splits.
+2026-06-05 11:02:32.349842: Desired fold for training: 0
+2026-06-05 11:02:32.359674: This split has 412 training and 104 validation cases.
+2026-06-05 11:02:32.370265: predicting cspine_000005
+2026-06-05 11:02:32.429931: cspine_000005, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:03:18.824572: predicting cspine_000016
+2026-06-05 11:03:18.918001: cspine_000016, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:03:19.576346: predicting cspine_000020
+2026-06-05 11:03:19.622785: cspine_000020, shape torch.Size([1, 14, 535, 535]), rank 0
+2026-06-05 11:03:22.101486: predicting cspine_000025_s0
+2026-06-05 11:03:22.158482: cspine_000025_s0, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:03:22.836108: predicting cspine_000028
+2026-06-05 11:03:22.883660: cspine_000028, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:03:23.563106: predicting cspine_000038
+2026-06-05 11:03:23.664166: cspine_000038, shape torch.Size([1, 17, 512, 512]), rank 0
+2026-06-05 11:03:24.951107: predicting cspine_000039
+2026-06-05 11:03:25.020142: cspine_000039, shape torch.Size([1, 18, 512, 512]), rank 0
+2026-06-05 11:03:26.289099: predicting cspine_000050
+2026-06-05 11:03:26.407166: cspine_000050, shape torch.Size([1, 18, 511, 511]), rank 0
+2026-06-05 11:03:27.688004: predicting cspine_000051
+2026-06-05 11:03:27.779156: cspine_000051, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:03:28.435108: predicting cspine_000068
+2026-06-05 11:03:28.546185: cspine_000068, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:03:29.221102: predicting cspine_000098
+2026-06-05 11:03:29.347739: cspine_000098, shape torch.Size([1, 16, 512, 512]), rank 0
+2026-06-05 11:03:30.021112: predicting cspine_000104
+2026-06-05 11:03:30.070206: cspine_000104, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:03:30.775109: predicting cspine_000108
+2026-06-05 11:03:30.857080: cspine_000108, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:03:31.561113: predicting cspine_000109
+2026-06-05 11:03:31.622758: cspine_000109, shape torch.Size([1, 15, 465, 465]), rank 0
+2026-06-05 11:03:32.349366: predicting cspine_000113
+2026-06-05 11:03:32.462479: cspine_000113, shape torch.Size([1, 19, 512, 512]), rank 0
+2026-06-05 11:03:33.777482: predicting cspine_000114
+2026-06-05 11:03:33.850602: cspine_000114, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:03:34.588868: predicting cspine_000148
+2026-06-05 11:03:34.684871: cspine_000148, shape torch.Size([1, 16, 512, 512]), rank 0
+2026-06-05 11:03:36.352957: predicting cspine_000150
+2026-06-05 11:03:36.458197: cspine_000150, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:03:38.969079: predicting cspine_000164
+2026-06-05 11:03:39.092167: cspine_000164, shape torch.Size([1, 16, 512, 512]), rank 0
+2026-06-05 11:03:41.510519: predicting cspine_000173
+2026-06-05 11:03:41.601166: cspine_000173, shape torch.Size([1, 14, 535, 533]), rank 0
+2026-06-05 11:03:44.103286: predicting cspine_000175
+2026-06-05 11:03:44.258129: cspine_000175, shape torch.Size([1, 18, 512, 512]), rank 0
+2026-06-05 11:03:45.721382: predicting cspine_000182
+2026-06-05 11:03:45.815557: cspine_000182, shape torch.Size([1, 16, 512, 510]), rank 0
+2026-06-05 11:03:46.524817: predicting cspine_000191
+2026-06-05 11:03:46.597668: cspine_000191, shape torch.Size([1, 15, 510, 510]), rank 0
+2026-06-05 11:03:47.314112: predicting cspine_000192
+2026-06-05 11:03:47.378139: cspine_000192, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:03:48.118116: predicting cspine_000196
+2026-06-05 11:03:48.185105: cspine_000196, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:03:48.871120: predicting cspine_000218
+2026-06-05 11:03:48.980224: cspine_000218, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:03:49.694115: predicting cspine_000244
+2026-06-05 11:03:49.790156: cspine_000244, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:03:50.503534: predicting cspine_000261
+2026-06-05 11:03:50.613153: cspine_000261, shape torch.Size([1, 14, 512, 512]), rank 0
+2026-06-05 11:03:51.344828: predicting cspine_000262
+2026-06-05 11:03:51.432187: cspine_000262, shape torch.Size([1, 16, 512, 512]), rank 0
+2026-06-05 11:03:52.733305: predicting cspine_000264
+2026-06-05 11:03:52.803252: cspine_000264, shape torch.Size([1, 15, 465, 465]), rank 0
+2026-06-05 11:03:53.991900: predicting cspine_000270
+2026-06-05 11:03:54.095179: cspine_000270, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:03:55.307767: predicting cspine_000271
+2026-06-05 11:03:55.443150: cspine_000271, shape torch.Size([1, 14, 512, 512]), rank 0
+2026-06-05 11:03:57.144026: predicting cspine_000281
+2026-06-05 11:03:57.244174: cspine_000281, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:03:59.052459: predicting cspine_000288
+2026-06-05 11:03:59.148841: cspine_000288, shape torch.Size([1, 13, 512, 512]), rank 0
+2026-06-05 11:03:59.864890: predicting cspine_000297
+2026-06-05 11:03:59.968151: cspine_000297, shape torch.Size([1, 14, 512, 512]), rank 0
+2026-06-05 11:04:03.174541: predicting cspine_000328
+2026-06-05 11:04:03.247567: cspine_000328, shape torch.Size([1, 14, 512, 512]), rank 0
+2026-06-05 11:04:03.957118: predicting cspine_000340
+2026-06-05 11:04:04.056182: cspine_000340, shape torch.Size([1, 17, 512, 512]), rank 0
+2026-06-05 11:04:05.384126: predicting cspine_000362
+2026-06-05 11:04:05.488148: cspine_000362, shape torch.Size([1, 15, 511, 511]), rank 0
+2026-06-05 11:04:06.196615: predicting cspine_000363
+2026-06-05 11:04:06.289020: cspine_000363, shape torch.Size([1, 15, 535, 535]), rank 0
+2026-06-05 11:04:08.796136: predicting cspine_000374
+2026-06-05 11:04:08.869314: cspine_000374, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:04:09.582163: predicting cspine_000375
+2026-06-05 11:04:09.694195: cspine_000375, shape torch.Size([1, 19, 512, 512]), rank 0
+2026-06-05 11:04:10.988218: predicting cspine_000377
+2026-06-05 11:04:11.089811: cspine_000377, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:04:11.789700: predicting cspine_000403
+2026-06-05 11:04:11.875903: cspine_000403, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:04:12.583466: predicting cspine_000438
+2026-06-05 11:04:12.648183: cspine_000438, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:04:13.382138: predicting cspine_000463
+2026-06-05 11:04:13.480284: cspine_000463, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:04:14.198121: predicting cspine_000475
+2026-06-05 11:04:14.332449: cspine_000475, shape torch.Size([1, 14, 512, 512]), rank 0
+2026-06-05 11:04:15.028122: predicting cspine_000483
+2026-06-05 11:04:15.173172: cspine_000483, shape torch.Size([1, 15, 510, 510]), rank 0
+2026-06-05 11:04:16.263478: predicting cspine_000502
+2026-06-05 11:04:16.367249: cspine_000502, shape torch.Size([1, 14, 512, 512]), rank 0
+2026-06-05 11:04:17.039123: predicting cspine_000519_s0
+2026-06-05 11:04:17.179157: cspine_000519_s0, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:04:17.891402: predicting cspine_000535
+2026-06-05 11:04:17.978462: cspine_000535, shape torch.Size([1, 17, 511, 511]), rank 0
+2026-06-05 11:04:19.301062: predicting cspine_000547
+2026-06-05 11:04:19.382714: cspine_000547, shape torch.Size([1, 15, 512, 510]), rank 0
+2026-06-05 11:04:20.117672: predicting cspine_000564
+2026-06-05 11:04:20.211008: cspine_000564, shape torch.Size([1, 14, 512, 512]), rank 0
+2026-06-05 11:04:21.905944: predicting cspine_000566
+2026-06-05 11:04:21.997196: cspine_000566, shape torch.Size([1, 15, 510, 510]), rank 0
+2026-06-05 11:04:22.716651: predicting cspine_000568
+2026-06-05 11:04:22.811458: cspine_000568, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:04:23.723896: predicting cspine_000576
+2026-06-05 11:04:23.793206: cspine_000576, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:04:24.910913: predicting cspine_000579
+2026-06-05 11:04:25.010152: cspine_000579, shape torch.Size([1, 13, 512, 512]), rank 0
+2026-06-05 11:04:27.406548: predicting cspine_000584
+2026-06-05 11:04:27.478064: cspine_000584, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:04:28.249128: predicting cspine_000592
+2026-06-05 11:04:28.326936: cspine_000592, shape torch.Size([1, 16, 512, 512]), rank 0
+2026-06-05 11:04:29.032911: predicting cspine_000599
+2026-06-05 11:04:29.095158: cspine_000599, shape torch.Size([1, 12, 512, 512]), rank 0
+2026-06-05 11:04:29.803051: predicting cspine_000601
+2026-06-05 11:04:29.885251: cspine_000601, shape torch.Size([1, 16, 512, 512]), rank 0
+2026-06-05 11:04:30.604139: predicting cspine_000605
+2026-06-05 11:04:30.829164: cspine_000605, shape torch.Size([1, 19, 838, 836]), rank 0
+2026-06-05 11:04:41.639569: predicting cspine_000606
+2026-06-05 11:04:41.686191: cspine_000606, shape torch.Size([1, 16, 512, 512]), rank 0
+2026-06-05 11:04:42.350500: predicting cspine_000633
+2026-06-05 11:04:42.389758: cspine_000633, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:04:43.066100: predicting cspine_000643
+2026-06-05 11:04:43.149144: cspine_000643, shape torch.Size([1, 14, 535, 535]), rank 0
+2026-06-05 11:04:45.724776: predicting cspine_000649
+2026-06-05 11:04:45.763483: cspine_000649, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:04:46.412492: predicting cspine_000667
+2026-06-05 11:04:46.458526: cspine_000667, shape torch.Size([1, 14, 512, 512]), rank 0
+2026-06-05 11:04:47.115131: predicting cspine_000673
+2026-06-05 11:04:47.163299: cspine_000673, shape torch.Size([1, 16, 512, 512]), rank 0
+2026-06-05 11:04:47.935772: predicting cspine_000676
+2026-06-05 11:04:48.021780: cspine_000676, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:04:48.711978: predicting cspine_000677
+2026-06-05 11:04:48.794512: cspine_000677, shape torch.Size([1, 17, 512, 512]), rank 0
+2026-06-05 11:04:50.104092: predicting cspine_000685
+2026-06-05 11:04:50.175605: cspine_000685, shape torch.Size([1, 18, 512, 512]), rank 0
+2026-06-05 11:04:51.487680: predicting cspine_000693
+2026-06-05 11:04:51.600841: cspine_000693, shape torch.Size([1, 15, 511, 511]), rank 0
+2026-06-05 11:04:52.303378: predicting cspine_000700
+2026-06-05 11:04:52.380460: cspine_000700, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:04:53.097132: predicting cspine_000735
+2026-06-05 11:04:53.216243: cspine_000735, shape torch.Size([1, 14, 512, 512]), rank 0
+2026-06-05 11:04:53.951135: predicting cspine_000748
+2026-06-05 11:04:54.030258: cspine_000748, shape torch.Size([1, 17, 512, 510]), rank 0
+2026-06-05 11:04:55.501129: predicting cspine_000776
+2026-06-05 11:04:55.593243: cspine_000776, shape torch.Size([1, 16, 512, 512]), rank 0
+2026-06-05 11:04:56.311136: predicting cspine_000784
+2026-06-05 11:04:56.419107: cspine_000784, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:04:57.123135: predicting cspine_000785
+2026-06-05 11:04:57.233345: cspine_000785, shape torch.Size([1, 14, 512, 512]), rank 0
+2026-06-05 11:04:59.334254: predicting cspine_000796
+2026-06-05 11:04:59.441172: cspine_000796, shape torch.Size([1, 15, 510, 510]), rank 0
+2026-06-05 11:05:00.953803: predicting cspine_000812
+2026-06-05 11:05:01.106149: cspine_000812, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:05:05.314268: predicting cspine_000828
+2026-06-05 11:05:05.388607: cspine_000828, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:05:06.109463: predicting cspine_000836
+2026-06-05 11:05:06.179502: cspine_000836, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:05:06.904560: predicting cspine_000843
+2026-06-05 11:05:06.988149: cspine_000843, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:05:07.770115: predicting cspine_000862
+2026-06-05 11:05:07.842143: cspine_000862, shape torch.Size([1, 15, 489, 489]), rank 0
+2026-06-05 11:05:09.366468: predicting cspine_000863
+2026-06-05 11:05:09.463172: cspine_000863, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:05:10.470842: predicting cspine_000874
+2026-06-05 11:05:10.570147: cspine_000874, shape torch.Size([1, 15, 510, 510]), rank 0
+2026-06-05 11:05:11.375562: predicting cspine_000895
+2026-06-05 11:05:11.454159: cspine_000895, shape torch.Size([1, 15, 511, 511]), rank 0
+2026-06-05 11:05:12.168194: predicting cspine_000912
+2026-06-05 11:05:12.229485: cspine_000912, shape torch.Size([1, 16, 512, 512]), rank 0
+2026-06-05 11:05:12.926143: predicting cspine_000946
+2026-06-05 11:05:12.998260: cspine_000946, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:05:13.708154: predicting cspine_000963
+2026-06-05 11:05:13.790178: cspine_000963, shape torch.Size([1, 14, 512, 512]), rank 0
+2026-06-05 11:05:14.520141: predicting cspine_000965
+2026-06-05 11:05:14.643174: cspine_000965, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:05:15.724640: predicting cspine_000981
+2026-06-05 11:05:15.800847: cspine_000981, shape torch.Size([1, 14, 465, 465]), rank 0
+2026-06-05 11:05:16.536136: predicting cspine_000983
+2026-06-05 11:05:16.622197: cspine_000983, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:05:17.309140: predicting cspine_000985
+2026-06-05 11:05:17.427185: cspine_000985, shape torch.Size([1, 15, 510, 510]), rank 0
+2026-06-05 11:05:18.118142: predicting cspine_001040
+2026-06-05 11:05:18.203419: cspine_001040, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:05:19.789508: predicting cspine_001059
+2026-06-05 11:05:19.844624: cspine_001059, shape torch.Size([1, 16, 512, 512]), rank 0
+2026-06-05 11:05:21.250393: predicting cspine_001064
+2026-06-05 11:05:21.319343: cspine_001064, shape torch.Size([1, 14, 512, 512]), rank 0
+2026-06-05 11:05:22.218848: predicting cspine_001076
+2026-06-05 11:05:22.298625: cspine_001076, shape torch.Size([1, 14, 512, 512]), rank 0
+2026-06-05 11:05:23.534039: predicting cspine_001112
+2026-06-05 11:05:23.623152: cspine_001112, shape torch.Size([1, 18, 511, 511]), rank 0
+2026-06-05 11:05:24.977217: predicting cspine_001129
+2026-06-05 11:05:25.063242: cspine_001129, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:05:26.273224: predicting cspine_001178
+2026-06-05 11:05:26.372465: cspine_001178, shape torch.Size([1, 16, 512, 512]), rank 0
+2026-06-05 11:05:27.280802: predicting cspine_001187
+2026-06-05 11:05:27.431222: cspine_001187, shape torch.Size([1, 15, 510, 510]), rank 0
+2026-06-05 11:05:28.140140: predicting cspine_001189
+2026-06-05 11:05:28.211252: cspine_001189, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:05:28.920088: predicting cspine_001214
+2026-06-05 11:05:29.022475: cspine_001214, shape torch.Size([1, 18, 510, 510]), rank 0
+2026-06-05 11:05:30.341755: predicting cspine_001219
+2026-06-05 11:05:30.440176: cspine_001219, shape torch.Size([1, 15, 512, 512]), rank 0
+2026-06-05 11:05:51.796034: Validation complete
+2026-06-05 11:05:51.797714: Mean Validation Dice:  0.9725321060052723
+=== Validation complete: config=3d_fullres fold=0 ===
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@hpc.dtu.dk>
+Subject: Job 28602612: <cspine_val_3d_fullres_0> in cluster <dcc> Done
+
+Job <cspine_val_3d_fullres_0> was submitted from host <n-62-12-19> by user <s225224> in cluster <dcc> at Fri Jun  5 10:50:56 2026
+Job was executed on host(s) <4*n-62-13-15>, in queue <gpul40s>, as user <s225224> in cluster <dcc> at Fri Jun  5 11:02:02 2026
+</zhome/77/2/187952> was used as the home directory.
+</zhome/77/2/187952/projects/spinal-fairness> was used as the working directory.
+Started at Fri Jun  5 11:02:02 2026
+Terminated at Fri Jun  5 11:05:56 2026
+Results reported at Fri Jun  5 11:05:56 2026
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -J cspine_val_3d_fullres_0
+#BSUB -q gpul40s
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=8GB]"
+#BSUB -n 4
+#BSUB -W 04:00
+#BSUB -o jobs/logs/val_3d_fullres_0_%J.out
+#BSUB -e jobs/logs/val_3d_fullres_0_%J.err
+
+set -euo pipefail
+
+DATASET_ID=3
+CONFIG=3d_fullres
+FOLD=0
+PLANS=nnUNetResEncUNetLPlans
+TRAINER=nnUNetTrainerWandB
+
+export UV_ENV_FILE=".env"
+export OMP_NUM_THREADS=1
+export nnUNet_n_proc_DA=2
+export nnUNet_wandb_enabled=0
+
+mkdir -p jobs/logs
+
+uv sync
+
+TRAINER_DST="$(uv run python -c "import nnunetv2; print(nnunetv2.__path__[0])")/training/nnUNetTrainer/variants/training_length/nnUNetTrainerWandB.py"
+cp "${TRAINER_SRC:-src/nnunet/trainer.py}" "${TRAINER_DST}"
+echo "Installed custom trainer to ${TRAINER_DST}"
+
+echo "=== Validation: config=${CONFIG} fold=${FOLD} ==="
+
+uv run nnUNetv2_train \
+    ${DATASET_ID} \
+    ${CONFIG} \
+    ${FOLD} \
+    --npz \
+    -p ${PLANS} \
+    -tr ${TRAINER} \
+    --val
+
+echo "=== Validation complete: config=${CONFIG} fold=${FOLD} ==="
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   778.00 sec.
+    Max Memory :                                 7506 MB
+    Average Memory :                             5189.00 MB
+    Total Requested Memory :                     32768.00 MB
+    Delta Memory :                               25262.00 MB
+    Max Swap :                                   -
+    Max Processes :                              19
+    Max Threads :                                198
+    Run time :                                   234 sec.
+    Turnaround time :                            900 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <jobs/logs/val_3d_fullres_0_28602612.err> for stderr output of this job.
+
