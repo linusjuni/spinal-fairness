@@ -1,10 +1,10 @@
 # 06 — Gold / Silver Label Experiment
 
 > **Status (2026-06-05):**
-> - **Gold (Dataset002): fully evaluated.** All 10 folds trained. Ensemble (2d + 3d_fullres)
->   selected by `find_best_configuration` (CV macro Dice 0.8831, no postprocessing applied).
->   Predictions generated on 76 gold test images, postprocessed, and evaluated against expert
->   labels: VB Dice 0.914, Disc Dice 0.862, Macro Dice 0.888. `eval_gold.csv` written.
+> - **Gold (Dataset002): fully evaluated + biased ruler done.** All 10 folds trained. Ensemble
+>   selected (CV macro Dice 0.8831). Predictions on 76 gold test images: VB 0.914, Disc 0.862,
+>   Macro 0.888. Biased ruler experiment (Run 6) complete: silver ruler narrows apparent race/sex
+>   gaps by 70–86%; all DIRs remain above 0.80 on both rulers.
 >   *Provenance note:* `2d` fold 1 crashed at epoch 959 (transient `OSError: Stale file handle`)
 >   and was finished via a resume/validation step — it had converged (poly-LR ≈ 0, EMA Dice
 >   plateaued ~0.89), so no effect on results.
@@ -232,14 +232,19 @@ on noisier labels — likely because it has ~2.8× more training cases (798 vs 2
 preliminary result for the mixed vs gold comparison; the fairness gap comparison (DPD, DIR)
 is what matters for the experiment conclusions.
 
-### Remaining evaluations (pending Dataset003)
+### Biased ruler (done 2026-06-05 — Run 6 in `fairness-runs.md`)
 
-**Biased ruler** (Dataset002 predictions now available — can run immediately):
-- Evaluate Dataset001 predictions against gold labels → already done (Run 5 in `fairness-runs.md`).
-- Evaluate Dataset001 predictions against Dataset002's predictions on the same 76 images → run `src.fairness.evaluate` pointing `--references` at `predictions_test_pp/` for Dataset002.
-- Any difference in fairness gap is the pure ruler effect.
+Recomputed Ruler A (Dataset001 vs gold labels) and Ruler B (Dataset001 vs Dataset002 predictions)
+on the same 76 gold test images with `dice hd95 ndsc`. CSVs written to
+`Dataset001_CSpineSeg/predictions_test_pp/eval_ruler_gold.csv` and `eval_ruler_silver.csv`.
+Fairness analysis in `outputs/fairness/biased_ruler/20260605_121654/`.
 
-**Bias amplification** (blocked until Dataset003 training completes):
+Key result: the generated silver ruler narrows apparent race and sex gaps by 70–86% (negative
+DIR widening). All DIRs remain above 0.80 on both rulers. See `fairness-runs.md` Run 6 for full
+numbers.
+
+### Bias amplification (blocked until Dataset003 training completes)
+
 1. Predict with Dataset003 on the gold test set (76 cases).
 2. Evaluate against gold labels. Compare fairness gaps against Dataset002.
 

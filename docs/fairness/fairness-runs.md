@@ -87,19 +87,73 @@ Adds nDSC (Raina et al. 2023) to Run 4. nDSC decorrelates Dice from reference vo
 
 ---
 
+### Run 6 — `20260605_121654` (biased ruler, Dice + HD95 + nDSC)
+
+| | |
+|---|---|
+| **Path** | `outputs/fairness/biased_ruler/20260605_121654/` |
+| **Rulers** | `gold` (Dataset001 vs expert labels, 76 cases) · `silver` (Dataset001 vs Dataset002 predictions, same 76 cases) |
+| **Model** | Dataset001 (mixed-trained) |
+| **Test cases** | 76 (gold test set, split_v3_gold) |
+| **Metrics** | Dice + HD95 + nDSC (9 score columns) |
+| **Groupings** | All 7 |
+| **FDR significant** | gold: 0 · silver: 11 |
+
+The biased ruler experiment: same model, same 76 images, two different reference labels. Ruler A is expert annotations; Ruler B is Dataset002's predictions on those same images (the "generated silver" ruler, mirroring how CSpineSeg's original silver labels were created).
+
+**Macro Dice DIR by grouping:**
+
+| Grouping | DIR (gold ruler) | DIR (silver ruler) | Widening | Direction |
+|---|---|---|---|---|
+| sex | 0.9914 | 0.9985 | −82.6% | narrowed |
+| race_wb | 0.9704 | 0.9948 | −82.4% | narrowed |
+| race_wbo | 0.9568 | 0.9905 | −78.0% | narrowed |
+| race_wn | 0.9838 | 0.9977 | −85.8% | narrowed |
+| age_3bin | 0.9932 | 0.9931 | +1.7% | widened |
+| age_median | 0.9978 | 0.9964 | +60.0% | widened |
+| ethnicity | 0.9881 | 0.9964 | −69.9% | narrowed |
+
+Negative widening means the silver ruler makes the gap appear smaller (masks it). All race and sex groupings narrow by 70–86%; age groupings are near-neutral or slightly widen. All DIRs on both rulers remain well above the four-fifths threshold (0.80).
+
+**Gold ruler macro Dice DPD (worst gaps):**
+- race_wb: DPD=0.027 (White 0.901 > Black 0.875)
+- race_wbo: DPD=0.039 (Other 0.914 > Black 0.875)
+- sex: DPD=0.008 (Female 0.901 > Male 0.893)
+
+**Silver ruler macro Dice DPD (same groupings):**
+- race_wb: DPD=0.005 (White 0.974 > Black 0.969)
+- race_wbo: DPD=0.009 (Other 0.978 > Black 0.969)
+- sex: DPD=0.002 (Male 0.974 > Female 0.973)
+
+**Commands used:**
+```bash
+source .env
+uv run -m src.fairness.evaluate \
+    --predictions "${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp" \
+    --references  "${nnUNet_raw}/Dataset001_CSpineSeg/labelsTs_gold" \
+    --mapping     "${nnUNet_raw}/Dataset001_CSpineSeg/case_id_mapping.json" \
+    --output      "${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp/eval_ruler_gold.csv" \
+    --metrics dice hd95 ndsc --workers 24
+
+uv run -m src.fairness.evaluate \
+    --predictions "${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp" \
+    --references  "${nnUNet_results}/Dataset002_CSpineSeg_Gold/predictions_test_pp" \
+    --mapping     "${nnUNet_raw}/Dataset001_CSpineSeg/case_id_mapping.json" \
+    --output      "${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp/eval_ruler_silver.csv" \
+    --metrics dice hd95 ndsc --workers 24
+
+uv run -m src.fairness.analyze \
+    --evaluation-csvs \
+        "${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp/eval_ruler_gold.csv" \
+        "${nnUNet_results}/Dataset001_CSpineSeg/predictions_test_pp/eval_ruler_silver.csv" \
+    --ruler-labels gold silver \
+    --mapping "${nnUNet_raw}/Dataset001_CSpineSeg/case_id_mapping.json" \
+    --report-name biased_ruler
+```
+
+---
+
 ## Future runs
-
-### Run 6 — Biased ruler (unblocked as of 2026-06-05)
-
-Dataset002 predictions on the 76 gold test images are ready in
-`$nnUNet_results/Dataset002_CSpineSeg_Gold/predictions_test_pp/`.
-
-Evaluate Dataset001 predictions against both rulers on the same 76 images:
-1. Dataset001 vs gold labels (`labelsTs_gold` in Dataset001) → already in Run 5 (`eval_gold.csv`).
-2. Dataset001 vs Dataset002's predictions (use Dataset002 `predictions_test_pp/` as `--references`).
-
-Any difference in DIR / fairness gap between (1) and (2) is the pure ruler effect — same model,
-same images, different reference labels.
 
 ### Run 7 — Mixed vs gold + Bias amplification (blocked until Dataset003 completes)
 
