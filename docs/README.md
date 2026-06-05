@@ -1,37 +1,62 @@
 # Documentation Index
 
+This is the documentation root for the **spinal-fairness** project (fairness in
+cervical-spine MRI segmentation). Use the folder map below to jump to a topic,
+then the per-folder tables for individual documents.
+
+## Folder Map
+
+| Folder | What lives here |
+|---|---|
+| [`project-plan/`](#project-plan) | Formal course project plan — goals, methods, risks |
+| [`eda/`](#exploratory-data-analysis-eda) | Exploratory data analysis — distributions, volumes, full-vs-train comparison |
+| [`statistical-testing/`](#methodology) | Statistical test battery used across EDA |
+| [`splits/`](#methodology) | Train/val/test split design and sex-balancing decisions |
+| [`nnunet/`](#nnu-net-pipeline) | nnU-Net pipeline — setup → preparation → training → inference → release |
+| [`fairness/`](#fairness-analysis) | Fairness evaluation runs and outlier diagnostics |
+| [`demographic-probing-of-medical-image-encoders/`](#demographic-probing-of-medical-image-encoders) | Probing whether demographic signal is latent in MRI encoders |
+| [`meetings/`](#meeting-notes) | Supervisor meeting notes (by date) |
+| [`papers/`](#reference-papers) | Reference PDFs (supervisor prior work + dataset paper) |
+
 ## Project Plan
 
 | Document | Contents |
 |---|---|
 | [Project Plan](project-plan/project-plan.md) | Formal course project plan — research goals, infrastructure, methods, risks |
 
-## Exploratory Data Analysis
+## Exploratory Data Analysis (EDA)
 
 | Document | Contents |
 |---|---|
-| [Data Distribution](eda/data-distribution.md) | Demographic and scanner counts, cross-demographic confounder analysis, implications for study design |
-| [Segmentation Volumes](eda/segmentation-volumes.md) | Plot-by-plot analysis of segmentation volumes (mm³ vs voxels, by sex/race/age/scanner) |
-| [Comparison: Full vs Train](eda/comparison.md) | Statistical test results (effect sizes, BH-FDR) comparing full cohort and train split |
+| [Data Distribution](eda/data-distribution.md) | Demographic distributions (sex, race, ethnicity, age), scanner distributions (manufacturer, field strength, protocols), and confounder analysis (race–scanner independence, age confounders) with implications for fairness study design |
+| [Segmentation Volumes](eda/segmentation-volumes.md) | Segmentation volume distributions — physical volumes by sex/race/age, scanner voxel-count validation, component-count patterns across demographics, and fairness implications |
+| [Comparison: Full vs Train](eda/comparison.md) | Statistical results comparing full cohort vs train split across volumes, demographic effects, scanner effects, annotation completeness, and confounder checks (effect sizes, significance) |
 
 ## Methodology
 
 | Document | Contents |
 |---|---|
 | [Statistical Testing](statistical-testing/statistical-testing.md) | Test battery for EDA (Mann-Whitney, Kruskal-Wallis, chi-squared), effect sizes, multiple testing correction, and when each technique is/isn't useful |
-| [Splits](splits/splits.md) | Sex-balancing decision — split v1/v2/v3 explored, v3 (exam-level 50/50 downsample) adopted |
+| [Splits](splits/splits.md) | Sex-balancing decision — splits v1/v2/v3 explored, v3 (exam-level 50/50 downsample) adopted |
 
 ## nnU-Net Pipeline
 
 | Document | Contents |
 |---|---|
-| [01 — Setup](nnunet/01_setup.md) | Environment variables, directory layout, known dependency issues |
-| [02 — Dataset Preparation](nnunet/02_dataset_preparation.md) | nnU-Net format, naming, dataset.json, demographic splits |
-| [03 — Training](nnunet/03_training.md) | Preprocessing, job scripts, custom trainer, submitting jobs |
-| [04 — Inference & Evaluation](nnunet/04_inference.md) | Model selection, prediction, postprocessing, metrics, fairness analysis |
-| [05 — Model Selection & Test Evaluation](nnunet/05_model_selection.md) | Current training status, CV Dice table, step-by-step pipeline from find_best_configuration through test set evaluation |
-| [06 — Gold / Silver Label Experiment](nnunet/06_gold_silver_training.md) | Biased Ruler experiment — Dataset002 (gold) and Dataset003 (silver) build steps, training, and evaluation design |
-| [07 — Hugging Face Release Plan](nnunet/07_huggingface_release.md) | Export trained models, re-stamp custom trainer, upload to HF, and model-card documentation for external users |
+| [01 — Setup](nnunet/01_setup.md) | PyTorch/nnunetv2 installation, required environment variables (raw/preprocessed/results dirs), and CSpineSeg directory layout |
+| [02 — Dataset Preparation](nnunet/02_dataset_preparation.md) | nnU-Net format for Dataset001_CSpineSeg — file naming, dataset.json (channels, labels), train/val/test layout, and stratified 5-fold CV setup |
+| [03 — Training](nnunet/03_training.md) | Preprocessing, write_splits, 10 training jobs (2d + 3d_fullres), custom `nnUNetTrainerWandB` with W&B logging, job submission/monitoring/resume, and output structure |
+| [04 — Inference & Evaluation](nnunet/04_inference.md) | Five-step pipeline — find best configuration, predict on test set, postprocess, compute metrics (Dice, IoU), and fairness analysis across sex/race/age |
+| [05 — Model Selection & Test Evaluation](nnunet/05_model_selection.md) | Training status, ensemble Dice vs mixed/gold/silver references, per-fold CV Dice, comparison with Zhou et al. baseline, and per-case macro Dice distribution |
+| [06 — Gold / Silver Label Experiment](nnunet/06_gold_silver_training.md) | Biased-ruler experiment — Dataset001 (mixed), Dataset002 (gold), Dataset003 (silver); bias-amplification evaluation design and per-dataset train/predict/eval steps |
+| [07 — Hugging Face Release Plan](nnunet/07_huggingface_release.md) | Export models to zip, upload to private HF repo, and write a model card (CC-BY-NC-4.0 license, input specs, performance tables, fairness caveats, inference instructions) |
+
+## Fairness Analysis
+
+| Document | Contents |
+|---|---|
+| [Fairness Runs](fairness/fairness-runs.md) | Chronological catalog of fairness evaluation runs (1–5) — rulers, metrics, test cases, and Dice/HD95/nDSC findings across 7 demographic groupings, plus planned analyses |
+| [HD95 Outliers](fairness/hd95-outliers.md) | Analysis of 13 cases (5.7%) with HD95 > 5mm from disc-localization errors, why HD95 DIR is misleading under right skew, mean-vs-median DIR, and confirmation outliers aren't demographically concentrated |
 
 ## Demographic Probing of Medical Image Encoders
 
@@ -45,3 +70,23 @@ encoded in MRI features — precursor to any debiasing work.
 | [Methodology](demographic-probing-of-medical-image-encoders/methodology.md) | Preprocessing, PCA+UMAP, probe AUROC, permutation test, confounds |
 | [Sketch](demographic-probing-of-medical-image-encoders/sketch.md) | Flow diagram, MVP plan, output structure |
 | [Findings](demographic-probing-of-medical-image-encoders/findings.md) | MRI-CORE MVP probe results (2026-04-21) |
+
+## Meeting Notes
+
+Supervisor meetings (Linus Juni with Aditya Parikh). Filenames are dates in
+DD-MM-YYYY format.
+
+| Document | Date | Contents |
+|---|---|---|
+| [11-03-2026](meetings/11-03-2026) | 11 Mar 2026 | Data splits with sex balancing, formal statistical-testing requirements, EDA consolidation + deep volumetric analysis, and automated segmentation quality checks |
+| [11-04-2026](meetings/11-04-2026) | 11 Apr 2026 | Completion of sex-balanced exam-level splits (v3), statistical testing for group comparisons, structured EDA tables, and segmentation quality-assessment libraries |
+| [14-04-2026](meetings/14-04-2026) | 14 Apr 2026 | Baseline fairness audit across strata, class-conditional training for mitigation, confident learning for label noise, statistical tests, vertebral morphology, and representation-space debiasing |
+| [01-05-2026](meetings/01-05-2026) | 1 May 2026 | Biased-ruler methodology (global predictions as silver labels), need for gold-only/silver-only models, EDA by annotation quality, nnU-Net encoder probing, and exam/paper milestones |
+
+## Reference Papers
+
+| Document | Title & Authors | Contents |
+|---|---|---|
+| [papers/aditya1.pdf](papers/aditya1.pdf) | *Investigating Label Bias and Representational Sources of Age-Related Disparities in Medical Segmentation* — Parikh, Das, Feragen (DTU Compute) | Algorithmic bias in breast-cancer MRI segmentation — systematic disparities against younger patients from label quality and representational imbalance in MAMA-MIA |
+| [papers/aditya2.pdf](papers/aditya2.pdf) | *Who Does Your Algorithm Fail? Investigating Age and Ethnic Bias in the MAMA-MIA Dataset* — Parikh, Das, Feragen (DTU Compute) | Age/ethnic bias in automated breast-cancer segmentation labels — intrinsic age bias persists after controlling for confounders; label-quality vs representation sources |
+| [papers/spine.pdf](papers/spine.pdf) | *The Duke University Cervical Spine MRI Segmentation Dataset (CSpineSeg)* — Zhou, Wiggins, Zhang, Colglazier, Willhite, Dixon, Malinzak, Gu, Mazurowski, Calabrese | The CSpineSeg dataset — 1,255 sagittal T2-weighted MRI scans from 1,232 patients with expert vertebral-body and intervertebral-disc segmentations |
