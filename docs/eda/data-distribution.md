@@ -1,7 +1,34 @@
 # Data Distribution & Confounders
 
 **Dataset:** Duke CSpineSeg (after exclusions: N=1,254 exams, 1,231 patients)
-**Date:** 2026-02-17
+**Date:** 2026-02-17 | Cohort flow verified 2026-06-05
+
+---
+
+## 0. Cohort Flow
+
+### From source paper to study cohort
+
+| Stage | Exams | Patients | Action | Source |
+|-------|-------|----------|--------|--------|
+| CSpineSeg public release | 1,255 | 1,232 | — | Zhou et al., *Sci. Data* 2025 |
+| After exclusions (`exclusions.py`) | 1,254 | 1,231 | −1 localizer/scout scan (56×512×512 voxels; abnormal dimensions, wrong scan type) | `src/data/exclusions.py` |
+| After v3 sex-balancing (split_v3) | **1,142** | — | −112 excess female exams randomly downsampled (80 train / 7 val / 25 test) to achieve exact 50/50 M/F in every split | `src/data/splits/v3.py` |
+
+The 1,254 figure is the **study working set** — all cases with valid metadata. The 1,142 figure is the **analysis cohort** — what actually enters training, validation, and test sets. The gap of 112 is entirely attributable to the deliberate sex-balancing downsample, not data quality issues.
+
+### Why sex-balance by downsampling?
+
+The source cohort is ~55% female / ~45% male (684 F / 570 M in the 1,254 working set), reflecting the clinical population. For the fairness audit, controlled sex-balance in both training and evaluation sets is necessary to isolate sex-based performance gaps from imbalance effects. Following Aditya et al. (MAMA-MIA), the approach is to downsample the majority sex (female) rather than upsample. See `docs/splits/splits.md` for full split version history.
+
+### Gold / silver label pool (in the 1,142 analysis cohort)
+
+| Pool | Exams | Overlap with other pool |
+|------|-------|------------------------|
+| Gold (expert annotations) | 448 | 0 (mutually exclusive by design) |
+| Silver (auto-generated) | 694 | 0 |
+
+Every exam in the analysis cohort carries exactly one label type. Verified: `split_v3_gold.tsv` ∩ `split_v3_silver.tsv` = ∅.
 
 ---
 

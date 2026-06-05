@@ -31,7 +31,7 @@ All three use sex-balanced cohorts (50/50 M/F in every split).
 
 Dataset001 is the "production-realistic" model: trained on all available labels without
 distinguishing quality. This is what someone would actually deploy. It is evaluated on
-the full test set (226 cases) against all labels, and compared to the published baseline
+the full test set (228 cases) against all labels, and compared to the published baseline
 (Zhou et al.). The main fairness analysis — demographic performance gaps across race,
 age, sex — uses this model. See `05_model_selection.md`.
 
@@ -82,7 +82,7 @@ labels widen demographic performance gaps (cf. Parikh et al. MAMA-MIA Experiment
 
 | Experiment | Model | Eval reference | What it shows |
 |---|---|---|---|
-| Global fairness audit | Dataset001 (mixed) | All test labels (226) | How fair is a realistically-trained model? |
+| Global fairness audit | Dataset001 (mixed) | All test labels (228) | How fair is a realistically-trained model? |
 | Biased ruler | Dataset001 (mixed) | Gold labels vs Dataset002's predictions (generated silver) on gold test images (76) | Does the choice of ruler inflate/deflate the observed fairness gap? |
 | Bias amplification | Dataset002 (gold) vs Dataset003 (silver) | Gold test labels (76) | Does training on silver labels widen demographic gaps? |
 | Mixed vs gold training | Dataset001 (mixed) vs Dataset002 (gold) | Gold test labels (76) | Does including silver labels in training hurt fairness? |
