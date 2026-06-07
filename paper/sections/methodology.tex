@@ -4,3 +4,27 @@
 % - [ ] Model/Experimental Setup (subsection): nnUnet, parameters, runtime, hardware, reproducibility
 % - [ ] Dataset Setup (subsection): Dataset001 (Mixed labels), 002, 003 (better naming convention expected) -- why do we do that, and what do we get out of this?
 % - [ ] Evaluation (subsection): How do we evaluate? i.e., what does observed performance mean (evaluating with silver labels), etc. And metrics used (Dice, HD95, etc)
+
+% ---- DEFERRED FROM DATASET SECTION (keep the Data section data-only) ----
+% Dataset Setup subsection should absorb:
+% - v3 sex-balancing mechanics: exam-level 50/50 M/F, downsample the majority sex (female), following
+%   MAMA-MIA (Parikh et al.); seeded/reproducible; operates at exam level (no patient leakage since v2
+%   already confines a patient's exams to one split). 1,254 -> 1,142 (-112 excess female exams).
+% - Per-model split composition table (verified 2026-06-05):
+%     Dataset001 (Mixed)  split_v3        798 (318 gold + 480 silver) / 116 / 228
+%     Dataset002 (Gold)   split_v3_gold   288 / 44 / 76
+%     Dataset003 (Silver) split_v3_silver 450 / 66 / 138
+%   All splits exactly 50/50 M/F. Note D001 gold-train (318) != D002 train (288): independent
+%   sex-stratified downsampling runs; D002 train is a strict subset of D001 gold-train.
+% - WHY three datasets: isolate the effect of TRAINING LABELS (mixed vs gold-only vs silver-only) on
+%   fairness gaps, holding architecture + sex-balance + stratification constant.
+% - Biased-ruler PURPOSE of the gold/silver split (moved out of Data, where gold/silver is described
+%   as a dataset property only): each CSpineSeg image carries gold OR silver, never both (unlike
+%   MAMA-MIA where both co-exist). We therefore GENERATE the second ruler: train D002 (gold-only),
+%   predict on the 76 gold-test images -> "generated silver" labels. D001 is then scored on the same
+%   76 images against (A) expert gold = true performance, (B) generated silver = observed performance;
+%   the difference is the pure ruler effect. (Avoids Zhou et al. weights being unavailable + test-leakage.)
+% Evaluation subsection should absorb:
+% - Bias-amplification design: D002 (gold) vs D003 (silver) on the SAME 76-case gold test set.
+% - Metrics: Dice, HD95, nDSC (nDSC motivated by the volume confound from the Data section);
+%   fairness metrics DPD / DIR + four-fifths-rule caveat (per statistical-testing.md).

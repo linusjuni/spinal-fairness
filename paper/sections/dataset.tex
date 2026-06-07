@@ -5,15 +5,72 @@
 % - [ ] Demographic Probing (subsection)
 % - [ ] Confounders/Intersectional Bias and Volumetric Analysis (subsection)
 
+% SCOPE NOTE: this section describes the DATA only. The experimental USE of the
+% gold/silver split (biased-ruler, bias-amplification)
+
 \subsection{The CSpineSeg Cohort}
 % - Dataset origin (Duke, Zhou et al.), task (VB + intervertebral disc segmentation), anatomy/overlay figure
 % - Compact cohort table: sex 54/46, White 65% / Black 28%, Siemens 63% / GE 37%, 1.5T/3T, age 55+-17
 % - Viable-axis decision: White+Black, sex, age get statistics; ethnicity/minor races descriptive only
 % - Cohort flow funnel: 1,255 public release -> 1,254 working set (-1 localizer/scout) -> 1,142 analysis cohort (-112 excess female, v3 downsample)
 %   (1,254 = study working set / all valid metadata; 1,142 = analysis cohort = what enters train/val/test)
-% - Splits: v3 exam-level 50/50 sex-balancing (downsample majority, following MAMA-MIA); what gold vs silver labels are (load-bearing for the paper)
-% - Gold/silver pools in the 1,142 cohort: 448 gold (expert) / 694 silver (auto), mutually exclusive (one label type per exam)
-% - Per-model split composition (verified 2026-06-05): D001 Mixed 798(318g+480s)/116/228; D002 Gold 288/44/76; D003 Silver 450/66/138
+% - Gold vs silver as a DATASET PROPERTY ONLY: ~40% expert-annotated (gold); remainder auto-labelled
+%   by Zhou et al.'s own nnU-Net and flagged by them as unreviewed "weakly labelled" data (silver).
+%   Pool sizes in the 1,142 cohort: 448 gold / 694 silver, mutually exclusive (one label type per exam).
+%   -> DEFER to Methodology: the biased-ruler / bias-amplification PURPOSE of this split.
+% - DEFER to Methodology: v3 exam-level 50/50 sex-balancing mechanics (downsample majority, following MAMA-MIA)
+%   and the per-model split composition (D001 Mixed 798(318g+480s)/116/228; D002 Gold 288/44/76; D003 Silver 450/66/138).
+
+We work with CSpineSeg, a public collection of cervical-spine MRI released by
+Zhou et al.~\cite{zhou2025cspineseg}. It contains $N_0 = 1{,}254$ sagittal
+T2-weighted exams from Duke University, and the task we study is semantic
+segmentation: labelling every voxel of a scan as background, vertebral body, or
+intervertebral disc. About $40\%$ of the exams come with segmentations drawn by
+expert radiologists; the rest were labelled automatically by the authors' own
+model and never checked by a human.
+
+We use the following notation throughout (\autoref{tab:notation}). We write the
+cohort as a set of exams
+\begin{equation}
+  \mathcal{D} = \{(X_i, Y_i, A_i, q_i)\}_{i=1}^{N},
+\end{equation}
+where $i$ indexes an exam and $\pi(i)$ is the patient it belongs to (a handful of
+patients contributed more than one exam). Each exam pairs an image $X_i$ -- a 3D
+volume over a voxel grid $\Omega_i$ -- with a reference segmentation $Y_i$ that
+gives every voxel one of the classes $\mathcal{L} = \{0, 1, 2\}$ (background,
+vertebral body, disc). The vector $A_i$ holds the demographic attributes we audit
+-- sex, race, and age -- and $q_i \in \{\mathsf{g}, \mathsf{s}\}$ records whether
+the segmentation is \emph{gold} (drawn by an expert) or \emph{silver}
+(machine-generated). For fairness definitions that apply to any
+attribute, we use a generic protected attribute $A \in \mathcal{A}$ taking value
+$a$, and write $\mathcal{D}_{A=a}$ for the subgroup of exams with that value.
+
+\begin{table}[t]
+\centering
+\setlength{\tabcolsep}{12pt}
+\caption{Notation used throughout the paper. Symbols marked $(\ast)$ denote the
+label pools and data splits, which are defined in the Methodology section.}
+\label{tab:notation}
+\small
+\begin{tabularx}{\textwidth}{l >{\raggedright\arraybackslash}X}
+\hline\noalign{\smallskip}
+Symbol & Meaning \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+$\mathcal{D} = \{(X_i, Y_i, A_i, q_i)\}_{i=1}^{N}$ & analysis cohort; $N = |\mathcal{D}| = 1{,}142$ exams \\
+$i$, $\pi(i)$ & exam index; patient that exam $i$ belongs to \\
+$\mathcal{D}_0 \supseteq \mathcal{D}$ & working set before sex-balancing; $N_0 = |\mathcal{D}_0| = 1{,}254$ \\
+$X_i : \Omega_i \to \mathbb{R}$ & sagittal T2 volume on voxel grid $\Omega_i \subset \mathbb{Z}^3$ \\
+$Y_i : \Omega_i \to \mathcal{L}$ & reference segmentation \\
+$\mathcal{L} = \{0, 1, 2\}$ & classes: background, vertebral body, disc \\
+$A_i = (S_i, R_i, \mathrm{age}_i)$ & demographics: sex, race, age \\
+$A \in \mathcal{A}$, value $a$ & a generic protected attribute \\
+$\mathcal{D}_{A=a}$ & subgroup of exams with $A = a$ \\
+$q_i \in \{\mathsf{g}, \mathsf{s}\}$ & label provenance: gold (expert) or silver (auto) \\
+$\mathcal{D}^{\mathsf{g}}, \mathcal{D}^{\mathsf{s}}$ & gold / silver pools $(\ast)$ \\
+$\mathcal{D}_{\mathrm{train}}, \mathcal{D}_{\mathrm{val}}, \mathcal{D}_{\mathrm{test}}$ & train / validation / test split $(\ast)$ \\
+\noalign{\smallskip}\hline
+\end{tabularx}
+\end{table}
 
 \subsection{Anatomical Confounders}
 % - Volumetric: sex dominant (~25% larger VB, large effect), race small-on-VB/negligible-on-disc, age medium-on-VB
