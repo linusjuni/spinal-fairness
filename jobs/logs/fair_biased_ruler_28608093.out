@@ -1,0 +1,94 @@
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@hpc.dtu.dk>
+Subject: Job 28608093: <fair_biased_ruler> in cluster <dcc> Exited
+
+Job <fair_biased_ruler> was submitted from host <hpclogin1> by user <s225224> in cluster <dcc> at Sun Jun  7 17:37:30 2026
+Job was executed on host(s) <24*n-62-11-68>, in queue <hpc>, as user <s225224> in cluster <dcc> at Sun Jun  7 17:37:31 2026
+</zhome/77/2/187952> was used as the home directory.
+</zhome/77/2/187952/projects/spinal-fairness> was used as the working directory.
+Started at Sun Jun  7 17:37:31 2026
+Terminated at Sun Jun  7 18:50:24 2026
+Results reported at Sun Jun  7 18:50:24 2026
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -J fair_biased_ruler
+#BSUB -q hpc
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=16GB]"
+#BSUB -n 24
+#BSUB -W 12:00
+#BSUB -o jobs/logs/fair_biased_ruler_%J.out
+#BSUB -e jobs/logs/fair_biased_ruler_%J.err
+#
+# One fairness analysis under the binarized (rate-based) DPD/DIR definitions
+# (Parikh et al. / four-fifths rule). STAGE is replaced by submit_fairness.sh.
+# Submit all three in parallel:   bash jobs/submit_fairness.sh
+# Or one directly:                sed 's/biased_ruler/global/g' jobs/fairness_analysis.sh | bsub
+#
+# Per-case metric CSVs are UNCHANGED by the redefinition, so `evaluate` only runs
+# when a CSV is missing (idempotent reuse) — the work is the `analyze` pass
+# (bootstrap + permutation). No GPU; predictions already exist. The stage is
+# GUARDED: if its prediction/reference inputs are not present it skips cleanly
+# (exit 0). Each analyze pass also writes sensitivity_<ruler>.csv (DIR/DPD sweep).
+
+set -euo pipefail
+
+# global | biased_ruler | bias_amplification (replaced by submit_fairness.sh)
+STAGE=biased_ruler
+
+export UV_ENV_FILE=".env"
+mkdir -p jobs/logs outputs
+uv sync
+source .env
+
+RAW="${nnUNet_raw}"
+RES="${nnUNet_results}"
+MAP="${RAW}/Dataset001_CSpineSeg/case_id_mapping.json"
+METRICS="dice hd95 ndsc"
+WORKERS=24
+
+# Common input locations.
+D1_PP="${RES}/Dataset001_CSpineSeg/predictions_test_pp"
+D2_PP="${RES}/Dataset002_CSpineSeg_Gold/predictions_test_pp"
+LABELS_TS="${RAW}/Dataset001_CSpineSeg/labelsTs"
+LABELS_GOLD="${RAW}/Dataset001_CSpineSeg/labelsTs_gold"
+# Dataset003 predictions on the 76 GOLD test images (NOT its own 138-case silver
+# test set). Produced after Dataset003 finishes training; override if named
+# differently.
+DS3_GOLD_PREDS="${DS3_GOLD_PREDS:-${RES}/Dataset003_CSpineSeg_Silver/predictions_gold_test_pp}"
+
+# Return 0 only if every path exists; otherwise list the missing ones and return 1.
+require_paths () {
+    local missing=0 p
+
+(... more ...)
+------------------------------------------------------------
+
+Exited with exit code 120.
+
+Resource usage summary:
+
+    CPU time :                                   36010.41 sec.
+    Max Memory :                                 2056 MB
+    Average Memory :                             702.56 MB
+    Total Requested Memory :                     393216.00 MB
+    Delta Memory :                               391160.00 MB
+    Max Swap :                                   -
+    Max Processes :                              29
+    Max Threads :                                67
+    Run time :                                   4373 sec.
+    Turnaround time :                            4374 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <jobs/logs/fair_biased_ruler_28608093.err> for stderr output of this job.
+

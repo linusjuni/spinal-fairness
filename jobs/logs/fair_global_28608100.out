@@ -1,0 +1,236 @@
+=== Global fairness audit (Dataset001, 228 cases) ===
+  reuse existing outputs/eval_global.csv
+[[97mINFO[0m] [[96mfairness.analyze[0m] Beneficial-outcome thresholds [90mdice=0.8[0m [90mndsc=0.8[0m [90mhd95=5.0[0m
+[[92mSUCCESS[0m] [[96msrc.data.loader[0m] [92m Loaded annotation filenames [90mrows=1255[0m[0m
+[[97mINFO[0m] [[96msrc.data.loader[0m] Excluded 1 outlier cases [90mtotal=1254[0m
+[[92mSUCCESS[0m] [[96msrc.data.loader[0m] [92m Loaded metadata [90mrows=1254[0m [90mcols=71[0m[0m
+[[97mINFO[0m] [[96mfairness.analyze[0m] Loaded metadata [90mn=1254[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Report started [90mpath=outputs/fairness/fairness_global/20260607_173932[0m
+[[97mINFO[0m] [[96mfairness.analyze[0m] Loaded global [90mcases=228[0m [90mcolumns=['case_id', 'series_submitter_id', 'dice_vb', 'hd95_vb', 'dice_disc', 'hd95_disc', 'ndsc_vb', 'ndsc_disc', 'dice_macro', 'hd95_macro', 'ndsc_macro'][0m
+[[97mINFO[0m] [[96mfairness.analyze[0m] Ruler 'global': joined 228 cases
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_vb__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_vb__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_disc__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_disc__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_macro__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_macro__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_vb__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_vb__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_disc__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_disc__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_macro__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_macro__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_vb__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_vb__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_disc__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_disc__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_macro__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_macro__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_vb__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_vb__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_disc__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_disc__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_macro__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_macro__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_vb__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_vb__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_disc__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_disc__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_macro__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_macro__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_vb__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_vb__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_disc__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_disc__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_macro__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_macro__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_vb__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_vb__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_disc__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_disc__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_macro__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_macro__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_vb__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_vb__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_disc__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_disc__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_macro__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_macro__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_vb__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_vb__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_disc__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_disc__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_macro__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_macro__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_vb__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_vb__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_disc__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_disc__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_macro__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_macro__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_vb__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_vb__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_disc__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_disc__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_macro__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_macro__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_vb__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_vb__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_disc__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_disc__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_macro__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_macro__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_vb__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_vb__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_disc__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_disc__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_macro__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_macro__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_vb__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_vb__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_disc__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_disc__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_macro__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_macro__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_vb__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_vb__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_disc__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_disc__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_macro__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_macro__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_vb__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_vb__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_disc__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_disc__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_macro__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_macro__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_vb__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_vb__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_disc__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_disc__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_macro__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_macro__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_vb__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_vb__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_disc__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_disc__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_macro__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_macro__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_vb__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_vb__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_disc__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_disc__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__dice_macro__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__dice_macro__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_vb__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_vb__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_disc__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_disc__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__hd95_macro__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__hd95_macro__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_vb__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_vb__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_disc__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_disc__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=summary_global__ndsc_macro__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=violin_global__ndsc_macro__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=sensitivity_global[0m [90mshape=(91, 9)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved table [90mname=fdr_global[0m [90mshape=(63, 3)[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=dir_bar_global[0m
+[[97mINFO[0m] [[96mfairness.fairness_global[0m] Saved figure [90mname=forest_global[0m
+[[92mSUCCESS[0m] [[96mfairness.fairness_global[0m] [92m Report finished [90mstats=1[0m [90mpath=outputs/fairness/fairness_global/20260607_173932[0m[0m
+=== Done: global ===
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@hpc.dtu.dk>
+Subject: Job 28608100: <fair_global> in cluster <dcc> Done
+
+Job <fair_global> was submitted from host <hpclogin1> by user <s225224> in cluster <dcc> at Sun Jun  7 17:39:23 2026
+Job was executed on host(s) <24*n-62-21-90>, in queue <hpc>, as user <s225224> in cluster <dcc> at Sun Jun  7 17:39:24 2026
+</zhome/77/2/187952> was used as the home directory.
+</zhome/77/2/187952/projects/spinal-fairness> was used as the working directory.
+Started at Sun Jun  7 17:39:24 2026
+Terminated at Sun Jun  7 18:34:37 2026
+Results reported at Sun Jun  7 18:34:37 2026
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -J fair_global
+#BSUB -q hpc
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=16GB]"
+#BSUB -n 24
+#BSUB -W 12:00
+#BSUB -o jobs/logs/fair_global_%J.out
+#BSUB -e jobs/logs/fair_global_%J.err
+#
+# One fairness analysis under the binarized (rate-based) DPD/DIR definitions
+# (Parikh et al. / four-fifths rule). STAGE is replaced by submit_fairness.sh.
+# Submit all three in parallel:   bash jobs/submit_fairness.sh
+# Or one directly:                sed 's/global/global/g' jobs/fairness_analysis.sh | bsub
+#
+# Per-case metric CSVs are UNCHANGED by the redefinition, so `evaluate` only runs
+# when a CSV is missing (idempotent reuse) — the work is the `analyze` pass
+# (bootstrap + permutation). No GPU; predictions already exist. The stage is
+# GUARDED: if its prediction/reference inputs are not present it skips cleanly
+# (exit 0). Each analyze pass also writes sensitivity_<ruler>.csv (DIR/DPD sweep).
+
+set -euo pipefail
+
+# global | biased_ruler | bias_amplification (replaced by submit_fairness.sh)
+STAGE=global
+
+export UV_ENV_FILE=".env"
+mkdir -p jobs/logs outputs
+uv sync
+source .env
+
+RAW="${nnUNet_raw}"
+RES="${nnUNet_results}"
+MAP="${RAW}/Dataset001_CSpineSeg/case_id_mapping.json"
+METRICS="dice hd95 ndsc"
+WORKERS=24
+
+# Common input locations.
+D1_PP="${RES}/Dataset001_CSpineSeg/predictions_test_pp"
+D2_PP="${RES}/Dataset002_CSpineSeg_Gold/predictions_test_pp"
+LABELS_TS="${RAW}/Dataset001_CSpineSeg/labelsTs"
+LABELS_GOLD="${RAW}/Dataset001_CSpineSeg/labelsTs_gold"
+# Dataset003 predictions on the 76 GOLD test images (NOT its own 138-case silver
+# test set). Produced after Dataset003 finishes training; override if named
+# differently.
+DS3_GOLD_PREDS="${DS3_GOLD_PREDS:-${RES}/Dataset003_CSpineSeg_Silver/predictions_gold_test_pp}"
+
+# Return 0 only if every path exists; otherwise list the missing ones and return 1.
+require_paths () {
+    local missing=0 p
+
+(... more ...)
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   25714.59 sec.
+    Max Memory :                                 763 MB
+    Average Memory :                             666.56 MB
+    Total Requested Memory :                     393216.00 MB
+    Delta Memory :                               392453.00 MB
+    Max Swap :                                   -
+    Max Processes :                              5
+    Max Threads :                                67
+    Run time :                                   3313 sec.
+    Turnaround time :                            3314 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <jobs/logs/fair_global_28608100.err> for stderr output of this job.
+
