@@ -25,6 +25,9 @@ set -euo pipefail
 STAGE=TPLSTAGE
 
 export UV_ENV_FILE=".env"
+# Force unbuffered Python output so a crash leaves its traceback in the log
+# instead of losing buffered stdout/stderr when the process exits abruptly.
+export PYTHONUNBUFFERED=1
 mkdir -p jobs/logs outputs
 uv sync
 source .env
@@ -64,7 +67,7 @@ ensure_eval () {
         echo "  reuse existing ${out}"
     else
         echo "  evaluate -> ${out}"
-        uv run -m src.fairness.evaluate \
+        uv run python -u -m src.fairness.evaluate \
             --predictions "${preds}" \
             --references  "${refs}" \
             --mapping     "${MAP}" \
@@ -79,7 +82,7 @@ global)
     echo "=== Global fairness audit (Dataset001, 228 cases) ==="
     require_paths "${D1_PP}" "${LABELS_TS}" || { echo "  SKIP: inputs not ready."; exit 0; }
     ensure_eval outputs/eval_global.csv "${D1_PP}" "${LABELS_TS}"
-    uv run -m src.fairness.analyze \
+    uv run python -u -m src.fairness.analyze \
         --evaluation-csvs outputs/eval_global.csv \
         --ruler-labels    global \
         --mapping         "${MAP}" \
@@ -94,7 +97,7 @@ biased_ruler)
     ensure_eval outputs/eval_ruler_silver.csv "${D1_PP}" "${D2_PP}"
     # Labels MUST be `gold` and `silver` so analyze computes the DIR-widening (the
     # biased-ruler headline). Renaming the silver ruler disables that comparison.
-    uv run -m src.fairness.analyze \
+    uv run python -u -m src.fairness.analyze \
         --evaluation-csvs outputs/eval_ruler_gold.csv outputs/eval_ruler_silver.csv \
         --ruler-labels    gold silver \
         --mapping         "${MAP}" \
@@ -108,7 +111,7 @@ bias_amplification)
     ensure_eval outputs/eval_ds1_on_gold.csv "${D1_PP}"          "${LABELS_GOLD}"
     ensure_eval outputs/eval_ds2_on_gold.csv "${D2_PP}"          "${LABELS_GOLD}"
     ensure_eval outputs/eval_ds3_on_gold.csv "${DS3_GOLD_PREDS}" "${LABELS_GOLD}"
-    uv run -m src.fairness.analyze \
+    uv run python -u -m src.fairness.analyze \
         --evaluation-csvs outputs/eval_ds1_on_gold.csv outputs/eval_ds2_on_gold.csv outputs/eval_ds3_on_gold.csv \
         --ruler-labels    mixed gold_trained silver_trained \
         --mapping         "${MAP}" \

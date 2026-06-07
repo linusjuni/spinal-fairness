@@ -31,8 +31,15 @@ def mann_whitney_result(a: Any, b: Any) -> dict:
     """
     a = np.asarray(a, dtype=float)
     b = np.asarray(b, dtype=float)
-    U, p = stats.mannwhitneyu(a, b, alternative="two-sided")
-    r_rb = 1.0 - (2.0 * U) / (len(a) * len(b))
+    # scipy.stats.mannwhitneyu raises ValueError when every observation across
+    # both groups is identical (no ranks to compare). This is a real case for
+    # the silver ruler, where HD95 between two near-identical predictions is
+    # 0.0 for a whole group. Treat it as "no detectable difference" (p=1.0).
+    if np.unique(np.concatenate([a, b])).size <= 1:
+        U, p, r_rb = float("nan"), 1.0, 0.0
+    else:
+        U, p = stats.mannwhitneyu(a, b, alternative="two-sided")
+        r_rb = 1.0 - (2.0 * U) / (len(a) * len(b))
     return {
         "test": "mann_whitney",
         "U": float(U),
@@ -64,8 +71,13 @@ def kruskal_result(groups: dict[str, Any]) -> dict:
     k = len(arrays)
     N = sum(len(a) for a in arrays)
 
-    H, p = stats.kruskal(*arrays)
-    epsilon_sq = (H - k + 1) / (N - k)
+    # stats.kruskal raises ValueError when every observation across all groups
+    # is identical (e.g. silver-ruler HD95 all 0.0). Treat as no difference.
+    if np.unique(np.concatenate(arrays)).size <= 1:
+        H, p, epsilon_sq = float("nan"), 1.0, 0.0
+    else:
+        H, p = stats.kruskal(*arrays)
+        epsilon_sq = (H - k + 1) / (N - k)
 
     posthoc_pairs: list[dict] = []
     if p < 0.05:

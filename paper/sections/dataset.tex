@@ -22,12 +22,14 @@
 %   and the per-model split composition (D001 Mixed 798(318g+480s)/116/228; D002 Gold 288/44/76; D003 Silver 450/66/138).
 
 We work with CSpineSeg, a public collection of cervical-spine MRI released by
-Zhou et al.~\cite{zhou2025cspineseg}. It contains $N_0 = 1{,}254$ sagittal
-T2-weighted exams from Duke University, and the task we study is semantic
-segmentation: labelling every voxel of a scan as background, vertebral body, or
-intervertebral disc. About $40\%$ of the exams come with segmentations drawn by
-expert radiologists; the rest were labelled automatically by the authors' own
-model and never checked by a human.
+Zhou et al.~\cite{zhou2025cspineseg}. It provides 1,255 sagittal T2-weighted exams
+from 1,232 patients at Duke University. We drop a single scan -- a localizer
+series with anomalous dimensions, unsuitable for the task -- leaving a working set
+$\mathcal{D}_0$ of $N_0 = 1{,}254$ exams from 1,231 patients. The task we study is
+semantic segmentation: labelling every voxel of a scan as background, vertebral
+body, or intervertebral disc. About $40\%$ of the exams come with segmentations
+drawn by expert radiologists; the rest were labelled automatically by the authors'
+own model and never checked by a human.
 
 We use the following notation throughout (\autoref{tab:notation}). We write the
 cohort as a set of exams
@@ -38,12 +40,12 @@ where $i$ indexes an exam and $\pi(i)$ is the patient it belongs to (a handful o
 patients contributed more than one exam). Each exam pairs an image $X_i$ -- a 3D
 volume over a voxel grid $\Omega_i$ -- with a reference segmentation $Y_i$ that
 gives every voxel one of the classes $\mathcal{L} = \{0, 1, 2\}$ (background,
-vertebral body, disc). The vector $A_i$ holds the demographic attributes we audit
--- sex, race, and age -- and $q_i \in \{\mathsf{g}, \mathsf{s}\}$ records whether
-the segmentation is \emph{gold} (drawn by an expert) or \emph{silver}
-(machine-generated). For fairness definitions that apply to any
-attribute, we use a generic protected attribute $A \in \mathcal{A}$ taking value
-$a$, and write $\mathcal{D}_{A=a}$ for the subgroup of exams with that value.
+vertebral body, disc). The audit covers three protected attributes,
+$\mathcal{A} = \{\text{sex}, \text{race}, \text{age}\}$; for an attribute
+$A \in \mathcal{A}$ we write $A_i$ for its value on exam $i$ and
+$\mathcal{D}_{A=a} = \{i : A_i = a\}$ for the subgroup of exams taking value $a$.
+Finally, $q_i \in \{\mathsf{g}, \mathsf{s}\}$ records whether the segmentation is
+\emph{gold} (drawn by an expert) or \emph{silver} (machine-generated).
 
 \begin{table}[t]
 \centering
@@ -62,14 +64,58 @@ $\mathcal{D}_0 \supseteq \mathcal{D}$ & working set before sex-balancing; $N_0 =
 $X_i : \Omega_i \to \mathbb{R}$ & sagittal T2 volume on voxel grid $\Omega_i \subset \mathbb{Z}^3$ \\
 $Y_i : \Omega_i \to \mathcal{L}$ & reference segmentation \\
 $\mathcal{L} = \{0, 1, 2\}$ & classes: background, vertebral body, disc \\
-$A_i = (S_i, R_i, \mathrm{age}_i)$ & demographics: sex, race, age \\
-$A \in \mathcal{A}$, value $a$ & a generic protected attribute \\
-$\mathcal{D}_{A=a}$ & subgroup of exams with $A = a$ \\
+$\mathcal{A} = \{\text{sex}, \text{race}, \text{age}\}$ & protected attributes audited; $A \in \mathcal{A}$ denotes one \\
+$A_i$, value $a$ & exam $i$'s value of $A$; a value $a$ of $A$ \\
+$\mathcal{D}_{A=a} = \{i : A_i = a\}$ & subgroup of exams with $A = a$ \\
 $q_i \in \{\mathsf{g}, \mathsf{s}\}$ & label provenance: gold (expert) or silver (auto) \\
 $\mathcal{D}^{\mathsf{g}}, \mathcal{D}^{\mathsf{s}}$ & gold / silver pools $(\ast)$ \\
 $\mathcal{D}_{\mathrm{train}}, \mathcal{D}_{\mathrm{val}}, \mathcal{D}_{\mathrm{test}}$ & train / validation / test split $(\ast)$ \\
 \noalign{\smallskip}\hline
 \end{tabularx}
+\end{table}
+
+\autoref{tab:cohort} summarises the working set $\mathcal{D}_0$. The cohort leans
+slightly female (55\%), is predominantly White (65\%) with a sizeable Black
+minority (28\%) and only small numbers in the remaining race groups, and is
+overwhelmingly non-Hispanic. Ages span the adult range (18--89, median 56), and
+scans are split across two manufacturers (Siemens 63\%, GE 37\%) and two field
+strengths (1.5\,T 60\%, 3.0\,T 40\%).
+
+These group sizes decide which fairness axes we can actually test. Sex (Female vs.
+Male), race (White vs. Black), and age have enough exams in each group for a
+reliable statistical comparison, so we test them formally throughout. The smaller
+race categories (8\% of the cohort combined) and ethnicity are too sparse for
+trustworthy subgroup inference, so we report them descriptively only.
+
+\begin{table}[t]
+\centering
+\caption{Composition of the working set $\mathcal{D}_0$ ($N_0 = 1{,}254$ exams,
+counted at the exam level). Percentages are of $N_0$.}
+\label{tab:cohort}
+\small
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l r l r}
+\hline\noalign{\smallskip}
+Characteristic & $n$ (\%) & Characteristic & $n$ (\%) \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+\textit{Sex} & & \textit{Age, years}$^{b}$ & $54.6 \pm 16.3$ \\
+\quad Female & 683 (54.5) & \quad $<$40 & 241 (19.2) \\
+\quad Male & 571 (45.5) & \quad 40--60 & 486 (38.8) \\
+\textit{Race} & & \quad $\ge$60 & 527 (42.0) \\
+\quad White & 809 (64.5) & \textit{Manufacturer} & \\
+\quad Black & 349 (27.8) & \quad Siemens & 788 (62.8) \\
+\quad Other/unknown$^{a}$ & 96 (7.7) & \quad GE & 466 (37.2) \\
+\textit{Ethnicity} & & \textit{Field strength} & \\
+\quad Non-Hispanic & 1{,}162 (92.7) & \quad 1.5\,T & 746 (59.5) \\
+\quad Hispanic & 59 (4.7) & \quad 3.0\,T & 508 (40.5) \\
+\quad Not reported & 33 (2.6) & & \\
+\noalign{\smallskip}\hline
+\end{tabular*}
+
+\smallskip
+{\footnotesize $^{a}$\,Asian (25), American Indian or Alaska Native (9), Native
+Hawaiian or other Pacific Islander (1), Other (28), Not Reported (33).
+\quad $^{b}$\,mean $\pm$ SD; 13 exams with missing age (confirmed ${>}89$) are
+grouped into the oldest bin.}
 \end{table}
 
 \subsection{Anatomical Confounders}

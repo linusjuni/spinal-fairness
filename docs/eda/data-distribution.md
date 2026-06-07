@@ -1,7 +1,13 @@
 # Data Distribution & Confounders
 
 **Dataset:** Duke CSpineSeg (after exclusions: N=1,254 exams, 1,231 patients)
-**Date:** 2026-02-17 | Cohort flow verified 2026-06-05
+**Date:** 2026-02-17 | Cohort flow verified 2026-06-05 | Distributions re-verified
+2026-06-07 against the 1,254 working set via `scripts/cohort_composition.py`
+
+> **Note:** the §1–§2 distribution counts below are on the **1,254 working set**
+> (post-exclusion). An earlier revision reported these on the 1,255 public release,
+> which inflated White / Female / Siemens / 1.5T by one each — the single excluded
+> localizer scan was a White female on a Siemens 1.5T scanner.
 
 ---
 
@@ -19,7 +25,7 @@ The 1,254 figure is the **study working set** — all cases with valid metadata.
 
 ### Why sex-balance by downsampling?
 
-The source cohort is ~55% female / ~45% male (684 F / 570 M in the 1,254 working set), reflecting the clinical population. For the fairness audit, controlled sex-balance in both training and evaluation sets is necessary to isolate sex-based performance gaps from imbalance effects. Following Aditya et al. (MAMA-MIA), the approach is to downsample the majority sex (female) rather than upsample. See `docs/splits/splits.md` for full split version history.
+The source cohort is ~55% female / ~45% male (683 F / 571 M in the 1,254 working set), reflecting the clinical population. For the fairness audit, controlled sex-balance in both training and evaluation sets is necessary to isolate sex-based performance gaps from imbalance effects. Following Aditya et al. (MAMA-MIA), the approach is to downsample the majority sex (female) rather than upsample. See `docs/splits/splits.md` for full split version history.
 
 ### Gold / silver label pool (in the 1,142 analysis cohort)
 
@@ -37,36 +43,36 @@ Every exam in the analysis cohort carries exactly one label type. Verified: `spl
 ### Sex (exam-level)
 | Group | Count | % |
 |-------|-------|---|
-| Female | 684 | 54% |
-| Male | 571 | 46% |
+| Female | 683 | 54.5% |
+| Male | 571 | 45.5% |
 
 Slight female skew, but reasonably balanced for subgroup analysis.
 
 ### Race (exam-level)
 | Group | Count | % | Viable for subgroup analysis? |
 |-------|-------|---|------|
-| White | 810 | 65% | Yes |
-| Black or African American | 349 | 28% | Yes |
-| Not Reported | 33 | 3% | No — exclude or merge |
-| Other | 28 | 2% | No |
-| Asian | 25 | 2% | No — too small |
-| American Indian or Alaska Native | 9 | <1% | No |
-| Native Hawaiian or Other Pacific Islander | 1 | <1% | No |
+| White | 809 | 64.5% | Yes |
+| Black or African American | 349 | 27.8% | Yes |
+| Not Reported | 33 | 2.6% | No — exclude or merge |
+| Other | 28 | 2.2% | No |
+| Asian | 25 | 2.0% | No — too small |
+| American Indian or Alaska Native | 9 | 0.7% | No |
+| Native Hawaiian or Other Pacific Islander | 1 | 0.1% | No |
 
 Heavily White-dominant. Only White and Black groups have sufficient sample sizes for reliable subgroup fairness analysis. Asian/AIAN/NHPI are too small. For the fairness study, the primary racial comparison will be **White vs. Black**, with remaining groups either excluded or reported descriptively without statistical testing.
 
 ### Ethnicity (exam-level)
 | Group | Count | % |
 |-------|-------|---|
-| Not Hispanic or Latino | ~1,160 | 92% |
-| Hispanic or Latino | ~63 | 5% |
-| Not Reported | ~35 | 3% |
+| Not Hispanic or Latino | 1,162 | 92.7% |
+| Hispanic or Latino | 59 | 4.7% |
+| Not Reported | 33 | 2.6% |
 
-Hispanic group is very small (~63 exams). Statistical power for ethnicity-based fairness testing will be limited. Consider reporting descriptively only.
+Hispanic group is very small (59 exams). Statistical power for ethnicity-based fairness testing will be limited. Consider reporting descriptively only.
 
 ### Age
-- Mean: ~55 years, SD: ~17
-- Range: 18–90+
+- Mean: 54.6 years, SD: 16.3, median: 56
+- Range: 18–89 (13 exams have missing age, stored null, confirmed >89)
 - Distribution: roughly normal with slight right skew, peak ~55–58
 - Small secondary bump around age 25
 
@@ -77,14 +83,14 @@ Hispanic group is very small (~63 exams). Statistical power for ethnicity-based 
 ### Manufacturer
 | Manufacturer | Count | % |
 |---|---|---|
-| Siemens | 789 | 63% |
-| GE Medical Systems | 466 | 37% |
+| Siemens | 788 | 62.8% |
+| GE Medical Systems | 466 | 37.2% |
 
 ### Magnetic Field Strength
 | Strength | Count | % |
 |---|---|---|
-| 1.5T | ~747 | 60% |
-| 3.0T | ~508 | 40% |
+| 1.5T | 746 | 59.5% |
+| 3.0T | 508 | 40.5% |
 
 ### Acquisition Protocol Variations
 | Protocol | Slice Thickness | Count | % |

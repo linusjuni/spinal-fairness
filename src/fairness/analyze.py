@@ -166,57 +166,68 @@ def _analyze_single_ruler(
             continue
 
         for score_col in score_cols:
-            key = f"{ruler_label}__{score_col}__{grouping_label}"
-            thr, hib = _beneficial_spec(score_col, thresholds)
-            dir_fn = functools.partial(
-                disparate_impact_ratio, threshold=thr, higher_is_better=hib
-            )
-
-            summary = group_summary(grouped_df, score_col, group_col)
-            report.save_table(summary, f"summary_{key}")
-
-            gap = fairness_gap(
-                grouped_df, score_col, group_col, threshold=thr, higher_is_better=hib
-            )
-            ruler_stats[f"gap_{key}"] = gap
-
-            if score_col == "dice_macro":
-                ruler_gaps.append(gap)
-                ruler_gap_labels.append(grouping_label)
-
-            if score_col in SWEEP_SCORES:
-                sweep = _sweep_for(score_col, sweep_higher, sweep_hd95)
-                sw = dir_sensitivity(
-                    grouped_df, score_col, group_col, sweep, higher_is_better=hib
-                ).with_columns(
-                    pl.lit(grouping_label).alias("grouping"),
-                    pl.lit(score_col).alias("score"),
+            # One failing (score, grouping) combination must not abort the whole
+            # ruler — otherwise a single degenerate metric (e.g. silver-ruler
+            # HD95) silently loses the entire silver ruler and the cross-ruler
+            # widening. Log and continue, mirroring the OLS guard below.
+            try:
+                key = f"{ruler_label}__{score_col}__{grouping_label}"
+                thr, hib = _beneficial_spec(score_col, thresholds)
+                dir_fn = functools.partial(
+                    disparate_impact_ratio, threshold=thr, higher_is_better=hib
                 )
-                sensitivity_rows.append(sw)
 
-            if ng == 2:
-                test_result = mann_whitney_test(grouped_df, score_col, group_col)
-            else:
-                test_result = kruskal_wallis_test(grouped_df, score_col, group_col)
-            ruler_stats[f"test_{key}"] = test_result
-            all_p_values.append(test_result["p"])
-            all_p_labels.append(key)
+                summary = group_summary(grouped_df, score_col, group_col)
+                report.save_table(summary, f"summary_{key}")
 
-            ci = bootstrap_ci(grouped_df, score_col, group_col, dir_fn, seed=42)
-            ruler_stats[f"bootstrap_dir_{key}"] = ci
+                gap = fairness_gap(
+                    grouped_df, score_col, group_col, threshold=thr, higher_is_better=hib
+                )
+                ruler_stats[f"gap_{key}"] = gap
 
-            if score_col == "dice_macro":
-                ci_results.append(ci)
-                ci_labels.append(grouping_label)
+                if score_col == "dice_macro":
+                    ruler_gaps.append(gap)
+                    ruler_gap_labels.append(grouping_label)
 
-            perm = permutation_test(grouped_df, score_col, group_col, dir_fn, seed=42)
-            ruler_stats[f"permtest_dir_{key}"] = perm
+                if score_col in SWEEP_SCORES:
+                    sweep = _sweep_for(score_col, sweep_higher, sweep_hd95)
+                    sw = dir_sensitivity(
+                        grouped_df, score_col, group_col, sweep, higher_is_better=hib
+                    ).with_columns(
+                        pl.lit(grouping_label).alias("grouping"),
+                        pl.lit(score_col).alias("score"),
+                    )
+                    sensitivity_rows.append(sw)
 
-            violin_by_group(
-                grouped_df, score_col, group_col, report,
-                title=f"{ruler_label}: {score_col} by {grouping_label}",
-                fig_name=f"violin_{key}",
-            )
+                if ng == 2:
+                    test_result = mann_whitney_test(grouped_df, score_col, group_col)
+                else:
+                    test_result = kruskal_wallis_test(grouped_df, score_col, group_col)
+                ruler_stats[f"test_{key}"] = test_result
+                all_p_values.append(test_result["p"])
+                all_p_labels.append(key)
+
+                ci = bootstrap_ci(grouped_df, score_col, group_col, dir_fn, seed=42)
+                ruler_stats[f"bootstrap_dir_{key}"] = ci
+
+                if score_col == "dice_macro":
+                    ci_results.append(ci)
+                    ci_labels.append(grouping_label)
+
+                perm = permutation_test(grouped_df, score_col, group_col, dir_fn, seed=42)
+                ruler_stats[f"permtest_dir_{key}"] = perm
+
+                violin_by_group(
+                    grouped_df, score_col, group_col, report,
+                    title=f"{ruler_label}: {score_col} by {grouping_label}",
+                    fig_name=f"violin_{key}",
+                )
+            except Exception as e:
+                logger.warning(
+                    f"Skipping {score_col} x {grouping_label} for ruler "
+                    f"'{ruler_label}': {type(e).__name__}: {e}"
+                )
+                continue
 
     if sensitivity_rows:
         report.save_table(pl.concat(sensitivity_rows), f"sensitivity_{ruler_label}")
