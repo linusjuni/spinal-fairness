@@ -134,9 +134,9 @@ uv run -m src.fairness.analyze \
 | Function | Signature | Returns |
 |---|---|---|
 | `group_summary` | `(df, score_col, group_col)` | `pl.DataFrame` — n, mean, median, std, q25, q75, iqr per group |
-| `disparate_impact_ratio` | `(df, score_col, group_col)` | `float` — mean_worst / mean_best. <0.8 is four-fifths rule violation. |
-| `demographic_parity_difference` | `(df, score_col, group_col)` | `float` — mean_best - mean_worst |
-| `fairness_gap` | `(df, score_col, group_col)` | `dict` — DIR, DPD, best/worst group identities + means |
+| `disparate_impact_ratio` | `(df, score_col, group_col, threshold=0.8, higher_is_better=True)` | `float` — min/max group success rate. <0.8 is four-fifths rule violation. |
+| `demographic_parity_difference` | `(df, score_col, group_col, threshold=0.8, higher_is_better=True)` | `float` — max - min group success rate |
+| `fairness_gap` | `(df, score_col, group_col, threshold=0.8, higher_is_better=True)` | `dict` — DIR, DPD, best/worst group identities + success rates |
 | `mann_whitney_test` | `(df, score_col, group_col)` | `dict` — U, p, rank-biserial r. For 2 groups. |
 | `kruskal_wallis_test` | `(df, score_col, group_col)` | `dict` — H, p, epsilon-squared, Dunn's post-hoc. For 3+ groups. |
 | `apply_fdr` | `(p_values, method="fdr_bh")` | `list[float]` — BH-corrected p-values |
@@ -144,6 +144,7 @@ uv run -m src.fairness.analyze \
 | `bootstrap_ci` | `(df, score_col, group_col, metric_fn, ...)` | `dict` — BCa bootstrap CI for DIR or DPD |
 | `permutation_test` | `(df, score_col, group_col, metric_fn, ...)` | `dict` — observed value, empirical p-value |
 | `dir_widening` | `(dir_gold, dir_silver)` | `dict` — widening %, direction |
+| `dir_sensitivity` | `(df, score_col, group_col, thresholds, higher_is_better=True)` | `pl.DataFrame` — DIR/DPD across a threshold sweep |
 | `compare_fairness_gaps` | `(gaps, labels)` | `pl.DataFrame` — side-by-side comparison table |
 
 ### plots.py
@@ -160,6 +161,22 @@ uv run -m src.fairness.analyze \
 The analyzer applies 7 grouping strategies: sex (binary), race white-vs-black, race 3-way, race white-vs-nonwhite, age 3-bin, age median-split, and ethnicity hispanic-vs-not. Each drops unmapped rows via `GroupingSpec.apply()`.
 
 ## Explanation
+
+### How DPD and DIR are defined (binarized, Parikh et al.)
+
+DPD and DIR follow the canonical fairness definition (Parikh et al. MAMA-MIA;
+Fairlearn; EEOC four-fifths rule), **not** a continuous mean ratio. Each case is
+binarized into a *beneficial outcome* ("success") at a threshold, a per-group
+success rate is computed, then `DPD = max(rate) - min(rate)` and
+`DIR = min(rate) / max(rate)`. Success is `score > threshold` for Dice/nDSC
+(higher-is-better) and `score < threshold` for HD95 (lower-is-better, mm).
+Defaults: Dice/nDSC `0.8`, HD95 `5 mm` (override via `--dice/-ndsc/-hd95-threshold`).
+Because DIR is a rate ratio, the 0.80 four-fifths rule legitimately applies.
+
+Each run also writes `sensitivity_{ruler}.csv` — DIR/DPD across a threshold sweep
+(`--sweep-higher`, `--sweep-hd95`) — since our Dice (~0.89) sits above 0.8 and a
+single cutoff could be near-degenerate. See `docs/statistical-testing/` for the
+full definition and the Fairlearn "portability trap" caveat on the threshold.
 
 ### Biased ruler: why generated silver instead of actual silver labels?
 

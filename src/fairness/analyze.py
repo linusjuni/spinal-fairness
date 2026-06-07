@@ -13,6 +13,7 @@ Usage:
 
 from __future__ import annotations
 
+import functools
 from pathlib import Path
 
 import polars as pl
@@ -33,6 +34,7 @@ from src.fairness.metrics import (
     apply_fdr,
     bootstrap_ci,
     compare_fairness_gaps,
+    dir_sensitivity,
     dir_widening,
     disparate_impact_ratio,
     fairness_gap,
@@ -55,6 +57,30 @@ logger = get_logger("fairness.analyze")
 DICE_COLS = ["dice_vb", "dice_disc", "dice_macro"]
 HD95_COLS = ["hd95_vb", "hd95_disc", "hd95_macro"]
 NDSC_COLS = ["ndsc_vb", "ndsc_disc", "ndsc_macro"]
+
+# Beneficial-outcome thresholds for the binarized DPD/DIR (Parikh et al. /
+# four-fifths rule). Dice & nDSC are higher-is-better (success = score >
+# threshold); HD95 is lower-is-better in mm (success = score < threshold).
+DEFAULT_THRESHOLDS = {"dice": 0.8, "ndsc": 0.8, "hd95": 5.0}
+# Sensitivity sweep grids (guards against a near-degenerate cutoff).
+DEFAULT_SWEEP_HIGHER = [0.7, 0.75, 0.8, 0.85, 0.9]  # dice, ndsc
+DEFAULT_SWEEP_HD95 = [2.0, 5.0, 10.0]  # mm
+SWEEP_SCORES = ("dice_macro", "ndsc_macro", "hd95_macro")
+
+
+def _beneficial_spec(score_col: str, thresholds: dict[str, float]) -> tuple[float, bool]:
+    """Return (threshold, higher_is_better) for a score column."""
+    if score_col.startswith("hd95"):
+        return thresholds["hd95"], False
+    if score_col.startswith("ndsc"):
+        return thresholds["ndsc"], True
+    return thresholds["dice"], True  # dice_*
+
+
+def _sweep_for(
+    score_col: str, sweep_higher: list[float], sweep_hd95: list[float]
+) -> list[float]:
+    return sweep_hd95 if score_col.startswith("hd95") else sweep_higher
 
 Grouping = tuple[str, GroupingSpec | None, str, str]
 
@@ -114,6 +140,9 @@ def _analyze_single_ruler(
     ruler_label: str,
     metadata: pl.DataFrame,
     report: EDAReport,
+    thresholds: dict[str, float],
+    sweep_higher: list[float],
+    sweep_hd95: list[float],
 ) -> dict:
     """Run all fairness analyses for one ruler. Returns collected stats."""
     df = eval_df.join(metadata, on=Col.SERIES_SUBMITTER_ID, how="inner")
@@ -127,6 +156,7 @@ def _analyze_single_ruler(
     ruler_gap_labels: list[str] = []
     ci_results: list[dict] = []
     ci_labels: list[str] = []
+    sensitivity_rows: list[pl.DataFrame] = []
 
     for grouping_label, spec, source_col, group_col in GROUPINGS:
         grouped_df = _apply_grouping(df, spec, source_col)
@@ -137,16 +167,32 @@ def _analyze_single_ruler(
 
         for score_col in score_cols:
             key = f"{ruler_label}__{score_col}__{grouping_label}"
+            thr, hib = _beneficial_spec(score_col, thresholds)
+            dir_fn = functools.partial(
+                disparate_impact_ratio, threshold=thr, higher_is_better=hib
+            )
 
             summary = group_summary(grouped_df, score_col, group_col)
             report.save_table(summary, f"summary_{key}")
 
-            gap = fairness_gap(grouped_df, score_col, group_col)
+            gap = fairness_gap(
+                grouped_df, score_col, group_col, threshold=thr, higher_is_better=hib
+            )
             ruler_stats[f"gap_{key}"] = gap
 
             if score_col == "dice_macro":
                 ruler_gaps.append(gap)
                 ruler_gap_labels.append(grouping_label)
+
+            if score_col in SWEEP_SCORES:
+                sweep = _sweep_for(score_col, sweep_higher, sweep_hd95)
+                sw = dir_sensitivity(
+                    grouped_df, score_col, group_col, sweep, higher_is_better=hib
+                ).with_columns(
+                    pl.lit(grouping_label).alias("grouping"),
+                    pl.lit(score_col).alias("score"),
+                )
+                sensitivity_rows.append(sw)
 
             if ng == 2:
                 test_result = mann_whitney_test(grouped_df, score_col, group_col)
@@ -156,20 +202,14 @@ def _analyze_single_ruler(
             all_p_values.append(test_result["p"])
             all_p_labels.append(key)
 
-            ci = bootstrap_ci(
-                grouped_df, score_col, group_col,
-                disparate_impact_ratio, seed=42,
-            )
+            ci = bootstrap_ci(grouped_df, score_col, group_col, dir_fn, seed=42)
             ruler_stats[f"bootstrap_dir_{key}"] = ci
 
             if score_col == "dice_macro":
                 ci_results.append(ci)
                 ci_labels.append(grouping_label)
 
-            perm = permutation_test(
-                grouped_df, score_col, group_col,
-                disparate_impact_ratio, seed=42,
-            )
+            perm = permutation_test(grouped_df, score_col, group_col, dir_fn, seed=42)
             ruler_stats[f"permtest_dir_{key}"] = perm
 
             violin_by_group(
@@ -177,6 +217,9 @@ def _analyze_single_ruler(
                 title=f"{ruler_label}: {score_col} by {grouping_label}",
                 fig_name=f"violin_{key}",
             )
+
+    if sensitivity_rows:
+        report.save_table(pl.concat(sensitivity_rows), f"sensitivity_{ruler_label}")
 
     if all_p_values:
         corrected = apply_fdr(all_p_values)
@@ -210,11 +253,19 @@ def run(
     ruler_labels: list[str],
     mapping_path: Path,
     report_name: str = "fairness",
+    thresholds: dict[str, float] | None = None,
+    sweep_higher: list[float] | None = None,
+    sweep_hd95: list[float] | None = None,
 ) -> None:
     """Main orchestrator: load CSVs, join demographics, compute fairness metrics."""
     if len(evaluation_csvs) != len(ruler_labels):
         msg = f"Got {len(evaluation_csvs)} CSVs but {len(ruler_labels)} labels"
         raise ValueError(msg)
+
+    thresholds = thresholds or dict(DEFAULT_THRESHOLDS)
+    sweep_higher = sweep_higher or list(DEFAULT_SWEEP_HIGHER)
+    sweep_hd95 = sweep_hd95 or list(DEFAULT_SWEEP_HD95)
+    logger.info("Beneficial-outcome thresholds", **thresholds)
 
     metadata = load_metadata()
     logger.info("Loaded metadata", n=metadata.height)
@@ -228,7 +279,10 @@ def run(
             eval_df = _add_derived_columns(eval_df)
             logger.info(f"Loaded {ruler_label}", cases=eval_df.height, columns=eval_df.columns)
 
-            ruler_stats = _analyze_single_ruler(eval_df, ruler_label, metadata, report)
+            ruler_stats = _analyze_single_ruler(
+                eval_df, ruler_label, metadata, report,
+                thresholds, sweep_higher, sweep_hd95,
+            )
             all_ruler_stats[ruler_label] = ruler_stats
 
             report.log_stat(f"ruler_{ruler_label}", ruler_stats)
@@ -292,6 +346,16 @@ if __name__ == "__main__":
     parser.add_argument("--ruler-labels", type=str, nargs="+", required=True)
     parser.add_argument("--mapping", type=Path, required=True, help="case_id_mapping.json")
     parser.add_argument("--report-name", type=str, default="fairness")
+    parser.add_argument("--dice-threshold", type=float, default=DEFAULT_THRESHOLDS["dice"],
+                        help="Beneficial-outcome cutoff for Dice (success = Dice > t)")
+    parser.add_argument("--ndsc-threshold", type=float, default=DEFAULT_THRESHOLDS["ndsc"],
+                        help="Beneficial-outcome cutoff for nDSC (success = nDSC > t)")
+    parser.add_argument("--hd95-threshold", type=float, default=DEFAULT_THRESHOLDS["hd95"],
+                        help="Beneficial-outcome cutoff in mm for HD95 (success = HD95 < t)")
+    parser.add_argument("--sweep-higher", type=float, nargs="+", default=DEFAULT_SWEEP_HIGHER,
+                        help="Sensitivity-sweep thresholds for Dice/nDSC")
+    parser.add_argument("--sweep-hd95", type=float, nargs="+", default=DEFAULT_SWEEP_HD95,
+                        help="Sensitivity-sweep thresholds (mm) for HD95")
     args = parser.parse_args()
 
     run(
@@ -299,4 +363,7 @@ if __name__ == "__main__":
         ruler_labels=args.ruler_labels,
         mapping_path=args.mapping,
         report_name=args.report_name,
+        thresholds={"dice": args.dice_threshold, "ndsc": args.ndsc_threshold, "hd95": args.hd95_threshold},
+        sweep_higher=args.sweep_higher,
+        sweep_hd95=args.sweep_hd95,
     )

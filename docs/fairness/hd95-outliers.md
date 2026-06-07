@@ -1,5 +1,13 @@
 # HD95 Outlier Analysis
 
+> **⚠️ Superseded (2026-06-07).** This analysis addresses the *mean-based* HD95 DIR.
+> DIR/DPD have since been redefined to the binarized rate-based form (success =
+> HD95 < 5 mm; see `docs/statistical-testing/statistical-testing.md`), which is
+> outlier-robust by construction — a 54 mm case is one "failure," not a
+> mean-wrecking magnitude. The mean-vs-median DIR workaround below is therefore no
+> longer needed. Retain for provenance; re-derive HD95 numbers from the rerun
+> before citing.
+
 13 cases (5.7%) have hd95_macro > 5mm. These drive the misleading HD95 DIR values (0.40–0.77).
 
 ## Pattern

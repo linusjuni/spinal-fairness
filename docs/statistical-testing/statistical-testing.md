@@ -173,22 +173,43 @@ is no reason not to include it.
 BH-FDR, report both raw and adjusted p-values. Define one "family" per analysis
 module (e.g., all segmentation volume tests together, all crosscut tests together).
 
-### Fairness-Specific Metrics (DIR, Fairness Gap)
+### Fairness-Specific Metrics (DPD, DIR)
 
-From the Biased Ruler and MAMA-MIA literature:
+We use the canonical definitions from Parikh et al. (MAMA-MIA), Fairlearn, and the
+EEOC four-fifths rule. Each case is first binarized into a **beneficial outcome**
+("success"), then a per-group **success rate** `P(ŷ=1 | group)` is computed, where
+`ŷ=1` is `score > threshold` for higher-is-better metrics (Dice, nDSC) and
+`score < threshold` for lower-is-better metrics (HD95, in mm).
 
-- **Disparate Impact Ratio (DIR):** `mean_worst_group / mean_best_group`. DIR < 0.8
-  is considered a legally concerning disparity in the fairness literature.
-- **Fairness gap:** `|mean_best - mean_worst|`, the absolute difference between the
-  best and worst performing groups.
+- **Demographic Parity Difference (DPD):** `|rate_a − rate_b|`, generalized to
+  `max(rate) − min(rate)` across 3+ groups. The *absolute* gap in success rate.
+  Range 0 (parity) → 1.
+- **Disparate Impact Ratio (DIR):** `min(rate) / max(rate)`. The *relative* gap.
+  Range 0 → 1 (1.0 = parity). Following the **four-fifths rule**, DIR < 0.80 flags
+  adverse impact — a threshold that is legitimate here precisely *because* DIR is a
+  ratio of selection (success) rates, not of continuous means.
 
-**When this is useful:** These are designed for evaluating model *performance*
-across subgroups (e.g., Dice scores). Applying them to anatomical volumes in the
-EDA phase is technically possible but semantically odd — we are not measuring
-"fairness" of anatomy, we are characterizing confounders.
+**Thresholds:** default beneficial-outcome cutoffs are Dice/nDSC `0.8` and HD95
+`5 mm`, all configurable (`--dice/-ndsc/-hd95-threshold`). Binarizing HD95 makes
+its DIR outlier-robust by construction (a 54 mm case is one "failure," not a
+mean-wrecking magnitude), superseding the mean-vs-median DIR workaround.
+
+**Sensitivity:** because our macro Dice (~0.89) sits above 0.8, a single cutoff
+can be near-degenerate (success rates near 1.0). Every analysis run therefore
+writes a `sensitivity_{ruler}.csv` sweeping DIR/DPD across a threshold grid; report
+it to show the verdict is threshold-robust.
+
+> **Caveat (the "portability trap"):** the four-fifths rule originates in US
+> employment law. Fairlearn notes it "has no validity" outside that context. We
+> adopt it as the established convention in this fairness-audit literature (and for
+> direct comparability with Parikh et al.), not as a legal claim — see the sweep.
+
+**When this is useful:** these evaluate model *performance* across subgroups (e.g.
+Dice). Applying them to anatomical volumes in the EDA phase is semantically odd —
+there we characterize confounders, not "fairness" of anatomy.
 
 **Verdict:** Do not implement in the EDA. Implement in Phase 4 when analyzing
-Dice scores across subgroups, where DIR and fairness gap are the standard metrics.
+performance scores across subgroups, where DPD and DIR are the standard metrics.
 
 ### Permutation Tests
 

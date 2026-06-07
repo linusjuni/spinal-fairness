@@ -3,10 +3,18 @@
 All functions take a Polars DataFrame + column names and return
 JSON-serializable dicts or floats. No I/O, no matplotlib.
 
-Convention: score_col is a performance metric (higher = better for Dice,
-lower = better for HD95). DIR and DPD are always computed as
-worst_mean / best_mean and best_mean - worst_mean respectively,
-where best/worst are determined by the score column values.
+Convention: score_col is a performance metric (higher = better for Dice and
+nDSC, lower = better for HD95). DPD and DIR follow the canonical fairness
+definition (Parikh et al.; Fairlearn; EEOC four-fifths rule): each case is
+binarized into a *beneficial outcome* ("success") at a threshold, a per-group
+success *rate* is computed, and then
+
+    DPD = max(rate) - min(rate)        (absolute gap in success rate)
+    DIR = min(rate) / max(rate)        (relative gap; 1.0 = parity)
+
+The beneficial outcome is ``score > threshold`` when higher_is_better (Dice,
+nDSC) and ``score < threshold`` otherwise (HD95). A DIR below 0.80 flags
+adverse impact under the four-fifths rule (valid because DIR is a rate ratio).
 """
 
 from __future__ import annotations
@@ -49,57 +57,124 @@ def group_summary(df: pl.DataFrame, score_col: str, group_col: str) -> pl.DataFr
 # ---------------------------------------------------------------------------
 
 
-def _group_means(df: pl.DataFrame, score_col: str, group_col: str) -> dict[str, float]:
-    """Compute mean score per group, dropping NaN scores."""
+def _group_rates(
+    df: pl.DataFrame,
+    score_col: str,
+    group_col: str,
+    threshold: float,
+    higher_is_better: bool,
+) -> dict[str, float]:
+    """Per-group rate of the beneficial outcome, dropping NaN scores.
+
+    The beneficial outcome ("success") is ``score > threshold`` when
+    higher_is_better (Dice, nDSC) and ``score < threshold`` otherwise (HD95,
+    lower-is-better). Returns the fraction of valid cases per group that succeed.
+    """
+    clean = df.filter(pl.col(score_col).is_not_null() & pl.col(score_col).is_not_nan())
+    success = (
+        pl.col(score_col) > threshold
+        if higher_is_better
+        else pl.col(score_col) < threshold
+    )
     rows = (
-        df.filter(pl.col(score_col).is_not_null() & pl.col(score_col).is_not_nan())
+        clean.with_columns(success.cast(pl.Float64).alias("_success"))
         .group_by(group_col)
-        .agg(pl.col(score_col).mean().alias("mean"))
+        .agg(pl.col("_success").mean().alias("rate"))
         .to_dicts()
     )
     if not rows:
         msg = f"No valid scores in {score_col} for any group"
         raise ValueError(msg)
-    return {r[group_col]: float(r["mean"]) for r in rows}
+    return {r[group_col]: float(r["rate"]) for r in rows}
 
 
-def disparate_impact_ratio(df: pl.DataFrame, score_col: str, group_col: str) -> float:
-    """DIR = mean(worst_group) / mean(best_group). Range [0, 1]; 1.0 = parity."""
-    means = _group_means(df, score_col, group_col)
-    best = max(means.values())
-    worst = min(means.values())
+def disparate_impact_ratio(
+    df: pl.DataFrame,
+    score_col: str,
+    group_col: str,
+    threshold: float = 0.8,
+    higher_is_better: bool = True,
+) -> float:
+    """DIR = min(group success rate) / max(group success rate). Range [0, 1]; 1.0 = parity.
+
+    Success is binarized at ``threshold`` (Parikh et al. / four-fifths rule).
+    Returns NaN if the best group's success rate is 0.
+    """
+    rates = _group_rates(df, score_col, group_col, threshold, higher_is_better)
+    best = max(rates.values())
+    worst = min(rates.values())
     if best == 0.0:
         return float("nan")
     return float(worst / best)
 
 
 def demographic_parity_difference(
-    df: pl.DataFrame, score_col: str, group_col: str
+    df: pl.DataFrame,
+    score_col: str,
+    group_col: str,
+    threshold: float = 0.8,
+    higher_is_better: bool = True,
 ) -> float:
-    """DPD = mean(best_group) - mean(worst_group). Always non-negative."""
-    means = _group_means(df, score_col, group_col)
-    return float(max(means.values()) - min(means.values()))
+    """DPD = max(rate) - min(rate): absolute gap in beneficial-outcome rate. Non-negative."""
+    rates = _group_rates(df, score_col, group_col, threshold, higher_is_better)
+    return float(max(rates.values()) - min(rates.values()))
 
 
-def fairness_gap(df: pl.DataFrame, score_col: str, group_col: str) -> dict:
-    """Bundle DIR, DPD, and group identities into a single dict."""
-    means = _group_means(df, score_col, group_col)
-    best_group = max(means, key=means.get)  # type: ignore[arg-type]
-    worst_group = min(means, key=means.get)  # type: ignore[arg-type]
-    best_mean = means[best_group]
-    worst_mean = means[worst_group]
+def fairness_gap(
+    df: pl.DataFrame,
+    score_col: str,
+    group_col: str,
+    threshold: float = 0.8,
+    higher_is_better: bool = True,
+) -> dict:
+    """Bundle DIR, DPD, success rates, and group identities into a single dict."""
+    rates = _group_rates(df, score_col, group_col, threshold, higher_is_better)
+    best_group = max(rates, key=rates.get)  # type: ignore[arg-type]
+    worst_group = min(rates, key=rates.get)  # type: ignore[arg-type]
+    best_rate = rates[best_group]
+    worst_rate = rates[worst_group]
 
-    dir_val = worst_mean / best_mean if best_mean != 0.0 else float("nan")
+    dir_val = worst_rate / best_rate if best_rate != 0.0 else float("nan")
 
     return {
         "dir": float(dir_val),
-        "dpd": float(best_mean - worst_mean),
+        "dpd": float(best_rate - worst_rate),
         "best_group": best_group,
         "worst_group": worst_group,
-        "best_mean": float(best_mean),
-        "worst_mean": float(worst_mean),
-        "n_groups": len(means),
+        "best_rate": float(best_rate),
+        "worst_rate": float(worst_rate),
+        "threshold": float(threshold),
+        "higher_is_better": bool(higher_is_better),
+        "n_groups": len(rates),
     }
+
+
+def dir_sensitivity(
+    df: pl.DataFrame,
+    score_col: str,
+    group_col: str,
+    thresholds: list[float],
+    higher_is_better: bool = True,
+) -> pl.DataFrame:
+    """DIR/DPD across a grid of beneficial-outcome thresholds (sensitivity sweep).
+
+    Guards against a near-degenerate cutoff: with high Dice (~0.89) the success
+    rate at 0.8 can be near 1.0, so reviewers should confirm the verdict holds
+    across thresholds.
+    """
+    rows = []
+    for t in thresholds:
+        gap = fairness_gap(df, score_col, group_col, threshold=t, higher_is_better=higher_is_better)
+        rows.append({
+            "threshold": float(t),
+            "dir": gap["dir"],
+            "dpd": gap["dpd"],
+            "best_group": gap["best_group"],
+            "worst_group": gap["worst_group"],
+            "best_rate": gap["best_rate"],
+            "worst_rate": gap["worst_rate"],
+        })
+    return pl.DataFrame(rows)
 
 
 # ---------------------------------------------------------------------------
@@ -360,7 +435,7 @@ def compare_fairness_gaps(gaps: list[dict], labels: list[str]) -> pl.DataFrame:
             "dpd": gap["dpd"],
             "best_group": gap["best_group"],
             "worst_group": gap["worst_group"],
-            "best_mean": gap["best_mean"],
-            "worst_mean": gap["worst_mean"],
+            "best_rate": gap["best_rate"],
+            "worst_rate": gap["worst_rate"],
         })
     return pl.DataFrame(rows)
