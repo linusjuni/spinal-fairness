@@ -1,0 +1,119 @@
+{
+  "n0_exams": 1254,
+  "n_patients": 1231,
+  "sex": [
+    {
+      "value": "Female",
+      "n": 683,
+      "pct": 54.5
+    },
+    {
+      "value": "Male",
+      "n": 571,
+      "pct": 45.5
+    }
+  ],
+  "race": [
+    {
+      "value": "White",
+      "n": 809,
+      "pct": 64.5
+    },
+    {
+      "value": "Black or African American",
+      "n": 349,
+      "pct": 27.8
+    },
+    {
+      "value": "Not Reported",
+      "n": 33,
+      "pct": 2.6
+    },
+    {
+      "value": "Other",
+      "n": 28,
+      "pct": 2.2
+    },
+    {
+      "value": "Asian",
+      "n": 25,
+      "pct": 2.0
+    },
+    {
+      "value": "American Indian or Alaska Native",
+      "n": 9,
+      "pct": 0.7
+    },
+    {
+      "value": "Native Hawaiian or other Pacific Islander",
+      "n": 1,
+      "pct": 0.1
+    }
+  ],
+  "ethnicity": [
+    {
+      "value": "Not Hispanic or Latino",
+      "n": 1162,
+      "pct": 92.7
+    },
+    {
+      "value": "Hispanic or Latino",
+      "n": 59,
+      "pct": 4.7
+    },
+    {
+      "value": "Not Reported",
+      "n": 33,
+      "pct": 2.6
+    }
+  ],
+  "manufacturer": [
+    {
+      "value": "SIEMENS",
+      "n": 788,
+      "pct": 62.8
+    },
+    {
+      "value": "GE MEDICAL SYSTEMS",
+      "n": 466,
+      "pct": 37.2
+    }
+  ],
+  "magnetic_field_strength": [
+    {
+      "value": 1.5,
+      "n": 746,
+      "pct": 59.5
+    },
+    {
+      "value": 3.0,
+      "n": 508,
+      "pct": 40.5
+    }
+  ],
+  "age_stats": {
+    "mean": 54.59548751007252,
+    "sd": 16.309035065947448,
+    "median": 56.0,
+    "min": 18.0,
+    "max": 89.0,
+    "n_missing": 13
+  },
+  "age_three_bins": [
+    {
+      "value": "60+",
+      "n": 527,
+      "pct": 42.0
+    },
+    {
+      "value": "40-60",
+      "n": 486,
+      "pct": 38.8
+    },
+    {
+      "value": "<40",
+      "n": 241,
+      "pct": 19.2
+    }
+  ]
+}
