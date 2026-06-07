@@ -100,10 +100,11 @@ Hispanic group is very small (59 exams). Statistical power for ethnicity-based f
 | Thick-slice variant | 5.0–5.3mm | 2 | 0.2% |
 
 ### Volume Properties
-- In-plane spacing: mean 0.53mm (range ~0.3–0.9mm)
-- Slice thickness (spacing_z): mean 3.95mm, SD 0.20mm
-- Grid sizes: mostly 320×320 or 512×512, with a few 256×256 and 768×768
-- Slice count: mean 15.6, typically 12–21
+_Source: `outputs/eda/full/mri_volumes/.../stats.json` (n=1,254 working set)._
+- In-plane spacing: mean 0.53mm, SD 0.15mm
+- Slice thickness (spacing_z): mean 3.96mm, SD 0.17mm
+- Grid sizes: mostly 320×320 or 512×512, with a few 256×256 and 768×768 (mean 450±124, min 256, max 768; in-plane matrix is square)
+- Slice count: mean 15.2, SD 1.3, range 12–25 (right-skewed: 80 scans beyond 2σ, 0 beyond 3σ)
 
 ---
 
