@@ -44,3 +44,37 @@ important use case and you want to speed it up with online
 softmax.
 
   warnings.warn(
+wandb: updating run metadata
+wandb: uploading output.log; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading output.log
+wandb: uploading history steps 999-999, summary, console lines 7470-7471
+wandb: 
+wandb: Run history:
+wandb: dice_per_class_or_region/class_1 ▂▃▁▄▄▃▅▅▆▅▅▅▅▅▆▆▆▆▇▆▅▆▆▆▆▆▇▇▆▆▇█▇▇▇▇▇█▆█
+wandb: dice_per_class_or_region/class_2 ▂▁▃▄▅▅▆▆▆▆▆▆▆▆▇▆▆▆▇▇▆▇▇▇▇▇▇▇▇▇█▇█▆▇█▇▇█▇
+wandb:                      ema_fg_dice ▁███████████████████████████████████████
+wandb:                 epoch_duration_s ▆██▅█▆▅▅▆▅▁▃▃▃▂▂▂▃▄▅▄▄▇▄▇▄▄▄▅▄▅▅▄▂▃▅▅▅▅▃
+wandb:             epoch_end_timestamps ▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▅▅▅▅▅▅▅▅▆▆▆▆▆▆▆▇▇▇▇▇▇████
+wandb:           epoch_start_timestamps ▁▁▁▁▂▂▃▃▃▃▄▄▄▄▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇▇▇▇███████
+wandb:                              lrs █████▇▇▇▇▆▆▆▆▆▆▆▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:                     mean_fg_dice ▁▃▅▄▄▅▅▄▅▆▅▆▆▇▆▆▅▆▆▇▆▇▇▆▇▇▆▇▇██▇▇█████▇█
+wandb:                     train_losses █▆▆▅▅▄▄▃▃▃▃▃▃▄▃▂▂▃▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▂▁▁▁▁▁▁
+wandb:                       val_losses █▅▅▄▄▄▃▃▃▃▂▃▂▂▂▂▂▂▂▂▂▃▁▂▂▁▃▂▁▁▂▃▁▂▁▂▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:                    current_epoch 999
+wandb: dice_per_class_or_region/class_1 0.97673
+wandb: dice_per_class_or_region/class_2 0.96819
+wandb:                      ema_fg_dice 0.96944
+wandb:                 epoch_duration_s 121.28987
+wandb:             epoch_end_timestamps 1780775744.09468
+wandb:           epoch_start_timestamps 1780775622.80482
+wandb:           final_val/class_1_dice 0.97618
+wandb:           final_val/class_2_dice 0.9646
+wandb:        final_val/foreground_dice 0.97039
+wandb:                               +4 ...
+wandb: 
+wandb: 🚀 View run 3d_fullres_fold1 at: https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness/runs/ctbxbvks
+wandb: ⭐️ View project at: https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness
+wandb: Synced 5 W&B file(s), 1000 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: /work3/s225224/nnunet/results/Dataset003_CSpineSeg_Silver/nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres/fold_1/wandb/run-20260605_102739-ctbxbvks/logs

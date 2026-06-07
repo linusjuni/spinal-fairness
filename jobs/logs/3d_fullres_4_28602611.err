@@ -9,3 +9,37 @@ wandb: Run `wandb offline` to turn off syncing.
 wandb: Syncing run swift-violet-45
 wandb: ⭐️ View project at https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness
 wandb: 🚀 View run at https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness/runs/rby0abed
+wandb: updating run metadata
+wandb: uploading wandb-summary.json; uploading config.yaml; uploading output.log
+wandb: uploading output.log
+wandb: uploading history steps 999-999, summary, console lines 7438-7439
+wandb: 
+wandb: Run history:
+wandb: dice_per_class_or_region/class_1 ▁▂▃▅▅▄▅▅▅▆▆▆▇▇▆▇█▇▆▇▇▇▇▆▇█▆█▇████▆████▇▇
+wandb: dice_per_class_or_region/class_2 ▁███████████████████████████████████████
+wandb:                      ema_fg_dice ▁▂▅▅▅▅▆▅▅▅▆▆▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇█████▇▇▇█████
+wandb:                 epoch_duration_s ▃▄▅▃▂▁█▆▅▄▃▅▄▇▅▅▄▅▂▆▆▇▃▂▂▃▃▄▅▄▄▅▅▅▃▄▃▂▃▃
+wandb:             epoch_end_timestamps ▁▁▁▁▂▂▂▃▃▃▃▃▃▃▄▄▄▄▄▄▄▅▅▅▅▅▅▅▆▆▆▆▆▆▇▇▇▇▇█
+wandb:           epoch_start_timestamps ▁▁▁▁▁▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▄▄▅▅▅▅▅▅▅▆▆▆▆▆▇▇▇██
+wandb:                              lrs ██████▇▇▇▇▇▇▆▆▆▆▆▆▅▅▅▅▅▅▅▅▅▄▄▄▃▃▃▃▂▂▁▁▁▁
+wandb:                     mean_fg_dice ▁▆▆▆▆▆▇▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇█▇▇████████▇███
+wandb:                     train_losses █▇▄▄▄▃▃▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁
+wandb:                       val_losses ██▇▇▅▄▄▅▄▅▃▂▄▄▄▃▅▃▃▄▅▃▂▂▄▆▂▂▁▁▃▃▂▄▂▃▁▁▃▄
+wandb: 
+wandb: Run summary:
+wandb:                    current_epoch 999
+wandb: dice_per_class_or_region/class_1 0.97236
+wandb: dice_per_class_or_region/class_2 0.96414
+wandb:                      ema_fg_dice 0.96962
+wandb:                 epoch_duration_s 121.10821
+wandb:             epoch_end_timestamps 1780773383.4991
+wandb:           epoch_start_timestamps 1780773262.39089
+wandb:           final_val/class_1_dice 0.97583
+wandb:           final_val/class_2_dice 0.96593
+wandb:        final_val/foreground_dice 0.97088
+wandb:                               +4 ...
+wandb: 
+wandb: 🚀 View run 3d_fullres_fold4 at: https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness/runs/rby0abed
+wandb: ⭐️ View project at: https://wandb.ai/linusjunidtu-danmarks-tekniske-universitet-dtu/spinal-fairness
+wandb: Synced 5 W&B file(s), 1000 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: /work3/s225224/nnunet/results/Dataset003_CSpineSeg_Silver/nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres/fold_4/wandb/run-20260605_115611-rby0abed/logs
