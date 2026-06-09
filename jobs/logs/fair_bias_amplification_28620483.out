@@ -1,0 +1,982 @@
+=== Bias amplification (mixed vs gold-trained vs silver-trained, 76 cases) ===
+  evaluate -> outputs/eval_ds1_on_gold.csv
+[[97mINFO[0m] [[96mfairness.evaluate[0m] Evaluating [90msplit=test[0m [90mcases=228[0m [90mmetrics=['dice', 'hd95', 'ndsc'][0m [90mworkers=24[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000045[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000049[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000055[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000057[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000062[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000074[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000080[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000086[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000092[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000099[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000110[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000112[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000115[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000116[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000117[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000127[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000134[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000137[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000139[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000159[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000162[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000168[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000177[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000193[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000194[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000200[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000201[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000209[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000217[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000223[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000224[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000253[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000266[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000280[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000289[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000306[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000314[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000331[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000339[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000341[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000346[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000351[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000358[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000364[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000366[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000372[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000382[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000383[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000384[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000424[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000428[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000435[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000442[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000446[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000459[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000462[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000467[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000472[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000486[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000492[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000495[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000505[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000516[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000523[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000524[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000526[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000537[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000563[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000581[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000585[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000589[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000607[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000611[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000613[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000634[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000639[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000659[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000668_s2[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000668_s0[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000668_s1[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000678[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000684[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000688[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000697[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000699[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000711[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000713[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000718[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000722[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000723[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000737[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000738[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000746[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000747[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000751[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000760[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000775[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000788[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000793[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000800[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000802[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000805[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000846[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000867[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000884[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000886[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000888[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000906[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000909[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000921[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000922[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000924[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000928[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000938[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000939[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000940[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000943[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000960[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000969[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000970[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000980[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000984[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_000997[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001017[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001022[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001033[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001046[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001048[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001052[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001056[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001068[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001084[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001088[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001095[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001096[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001108[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001116[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001117[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001118[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001119[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001135[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001138[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001148[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001153[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001166[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001174[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001202[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001215[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001222[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001224[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001232_s0[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing reference [90mcase_id=cspine_001232_s1[0m[0m
+[[97mINFO[0m] [[96mfairness.evaluate[0m] nDSC effective_load [90mlabel=vb[0m [90mr=0.018156[0m
+[[97mINFO[0m] [[96mfairness.evaluate[0m] nDSC effective_load [90mlabel=disc[0m [90mr=0.004208[0m
+[[92mSUCCESS[0m] [[96mfairness.evaluate[0m] [92m Evaluation complete [90mcases=76[0m[0m
+[[97mINFO[0m] [[96mfairness.evaluate[0m] Saved CSV [90mpath=outputs/eval_ds1_on_gold.csv[0m
+  evaluate -> outputs/eval_ds2_on_gold.csv
+[[97mINFO[0m] [[96mfairness.evaluate[0m] Evaluating [90msplit=test[0m [90mcases=228[0m [90mmetrics=['dice', 'hd95', 'ndsc'][0m [90mworkers=24[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000045[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000049[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000055[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000057[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000062[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000074[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000080[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000086[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000092[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000099[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000110[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000112[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000115[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000116[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000117[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000127[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000134[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000137[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000139[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000159[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000162[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000168[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000177[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000193[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000194[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000200[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000201[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000209[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000217[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000223[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000224[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000253[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000266[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000280[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000289[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000306[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000314[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000331[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000339[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000341[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000346[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000351[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000358[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000364[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000366[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000372[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000382[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000383[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000384[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000424[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000428[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000435[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000442[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000446[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000459[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000462[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000467[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000472[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000486[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000492[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000495[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000505[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000516[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000523[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000524[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000526[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000537[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000563[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000581[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000585[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000589[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000607[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000611[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000613[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000634[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000639[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000659[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000668_s2[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000668_s0[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000668_s1[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000678[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000684[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000688[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000697[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000699[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000711[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000713[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000718[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000722[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000723[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000737[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000738[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000746[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000747[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000751[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000760[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000775[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000788[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000793[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000800[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000802[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000805[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000846[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000867[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000884[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000886[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000888[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000906[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000909[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000921[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000922[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000924[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000928[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000938[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000939[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000940[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000943[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000960[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000969[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000970[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000980[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000984[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000997[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001017[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001022[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001033[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001046[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001048[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001052[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001056[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001068[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001084[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001088[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001095[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001096[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001108[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001116[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001117[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001118[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001119[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001135[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001138[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001148[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001153[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001166[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001174[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001202[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001215[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001222[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001224[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001232_s0[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001232_s1[0m[0m
+[[97mINFO[0m] [[96mfairness.evaluate[0m] nDSC effective_load [90mlabel=vb[0m [90mr=0.018156[0m
+[[97mINFO[0m] [[96mfairness.evaluate[0m] nDSC effective_load [90mlabel=disc[0m [90mr=0.004208[0m
+[[92mSUCCESS[0m] [[96mfairness.evaluate[0m] [92m Evaluation complete [90mcases=76[0m[0m
+[[97mINFO[0m] [[96mfairness.evaluate[0m] Saved CSV [90mpath=outputs/eval_ds2_on_gold.csv[0m
+  evaluate -> outputs/eval_ds3_on_gold.csv
+[[97mINFO[0m] [[96mfairness.evaluate[0m] Evaluating [90msplit=test[0m [90mcases=228[0m [90mmetrics=['dice', 'hd95', 'ndsc'][0m [90mworkers=24[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000045[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000049[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000055[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000057[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000062[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000074[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000080[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000086[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000092[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000099[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000110[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000112[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000115[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000116[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000117[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000127[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000134[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000137[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000139[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000159[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000162[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000168[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000177[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000193[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000194[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000200[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000201[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000209[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000217[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000223[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000224[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000253[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000266[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000280[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000289[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000306[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000314[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000331[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000339[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000341[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000346[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000351[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000358[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000364[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000366[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000372[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000382[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000383[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000384[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000424[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000428[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000435[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000442[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000446[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000459[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000462[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000467[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000472[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000486[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000492[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000495[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000505[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000516[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000523[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000524[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000526[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000537[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000563[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000581[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000585[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000589[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000607[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000611[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000613[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000634[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000639[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000659[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000668_s2[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000668_s0[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000668_s1[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000678[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000684[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000688[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000697[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000699[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000711[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000713[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000718[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000722[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000723[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000737[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000738[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000746[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000747[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000751[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000760[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000775[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000788[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000793[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000800[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000802[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000805[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000846[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000867[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000884[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000886[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000888[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000906[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000909[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000921[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000922[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000924[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000928[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000938[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000939[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000940[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000943[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000960[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000969[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000970[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000980[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000984[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_000997[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001017[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001022[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001033[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001046[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001048[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001052[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001056[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001068[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001084[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001088[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001095[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001096[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001108[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001116[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001117[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001118[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001119[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001135[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001138[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001148[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001153[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001166[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001174[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001202[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001215[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001222[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001224[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001232_s0[0m[0m
+[[93mWARNING[0m] [[96mfairness.evaluate[0m] [93mMissing prediction [90mcase_id=cspine_001232_s1[0m[0m
+[[97mINFO[0m] [[96mfairness.evaluate[0m] nDSC effective_load [90mlabel=vb[0m [90mr=0.018156[0m
+[[97mINFO[0m] [[96mfairness.evaluate[0m] nDSC effective_load [90mlabel=disc[0m [90mr=0.004208[0m
+[[92mSUCCESS[0m] [[96mfairness.evaluate[0m] [92m Evaluation complete [90mcases=76[0m[0m
+[[97mINFO[0m] [[96mfairness.evaluate[0m] Saved CSV [90mpath=outputs/eval_ds3_on_gold.csv[0m
+[[97mINFO[0m] [[96mfairness.analyze[0m] Beneficial-outcome thresholds [90mdice=0.8[0m [90mndsc=0.8[0m [90mhd95=5.0[0m
+[[92mSUCCESS[0m] [[96msrc.data.loader[0m] [92m Loaded annotation filenames [90mrows=1255[0m[0m
+[[97mINFO[0m] [[96msrc.data.loader[0m] Excluded 1 outlier cases [90mtotal=1254[0m
+[[92mSUCCESS[0m] [[96msrc.data.loader[0m] [92m Loaded metadata [90mrows=1254[0m [90mcols=71[0m[0m
+[[97mINFO[0m] [[96mfairness.analyze[0m] Loaded metadata [90mn=1254[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Report started [90mpath=outputs/fairness/fairness_bias_amplification/20260609_163752[0m
+[[97mINFO[0m] [[96mfairness.analyze[0m] Loaded mixed [90mcases=76[0m [90mcolumns=['case_id', 'series_submitter_id', 'dice_vb', 'hd95_vb', 'dice_disc', 'hd95_disc', 'ndsc_vb', 'ndsc_disc', 'dice_macro', 'hd95_macro', 'ndsc_macro'][0m
+[[97mINFO[0m] [[96mfairness.analyze[0m] Ruler 'mixed': joined 76 cases
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_vb__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_vb__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_disc__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_disc__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_macro__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_macro__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_vb__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_vb__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_disc__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_disc__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_macro__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_macro__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_vb__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_vb__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_disc__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_disc__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_macro__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_macro__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_vb__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_vb__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_disc__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_disc__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_macro__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_macro__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_vb__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_vb__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_disc__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_disc__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_macro__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_macro__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_vb__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_vb__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_disc__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_disc__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_macro__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_macro__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_vb__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_vb__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_disc__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_disc__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_macro__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_macro__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_vb__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_vb__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_disc__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_disc__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_macro__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_macro__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_vb__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_vb__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_disc__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_disc__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_macro__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_macro__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_vb__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_vb__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_disc__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_disc__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_macro__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_macro__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_vb__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_vb__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_disc__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_disc__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_macro__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_macro__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_vb__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_vb__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_disc__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_disc__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_macro__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_macro__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_vb__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_vb__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_disc__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_disc__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_macro__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_macro__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_vb__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_vb__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_disc__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_disc__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_macro__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_macro__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_vb__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_vb__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_disc__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_disc__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_macro__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_macro__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_vb__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_vb__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_disc__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_disc__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_macro__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_macro__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_vb__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_vb__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_disc__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_disc__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_macro__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_macro__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_vb__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_vb__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_disc__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_disc__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_macro__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_macro__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_vb__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_vb__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_disc__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_disc__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__dice_macro__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__dice_macro__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_vb__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_vb__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_disc__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_disc__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__hd95_macro__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__hd95_macro__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_vb__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_vb__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_disc__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_disc__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_mixed__ndsc_macro__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_mixed__ndsc_macro__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=sensitivity_mixed[0m [90mshape=(91, 9)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=fdr_mixed[0m [90mshape=(63, 3)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=dir_bar_mixed[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=forest_mixed[0m
+[[97mINFO[0m] [[96mfairness.analyze[0m] Loaded gold_trained [90mcases=76[0m [90mcolumns=['case_id', 'series_submitter_id', 'dice_vb', 'hd95_vb', 'dice_disc', 'hd95_disc', 'ndsc_vb', 'ndsc_disc', 'dice_macro', 'hd95_macro', 'ndsc_macro'][0m
+[[97mINFO[0m] [[96mfairness.analyze[0m] Ruler 'gold_trained': joined 76 cases
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_vb__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_vb__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_disc__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_disc__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_macro__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_macro__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_vb__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_vb__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_disc__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_disc__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_macro__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_macro__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_vb__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_vb__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_disc__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_disc__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_macro__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_macro__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_vb__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_vb__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_disc__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_disc__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_macro__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_macro__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_vb__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_vb__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_disc__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_disc__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_macro__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_macro__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_vb__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_vb__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_disc__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_disc__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_macro__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_macro__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_vb__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_vb__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_disc__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_disc__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_macro__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_macro__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_vb__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_vb__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_disc__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_disc__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_macro__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_macro__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_vb__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_vb__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_disc__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_disc__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_macro__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_macro__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_vb__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_vb__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_disc__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_disc__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_macro__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_macro__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_vb__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_vb__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_disc__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_disc__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_macro__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_macro__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_vb__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_vb__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_disc__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_disc__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_macro__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_macro__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_vb__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_vb__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_disc__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_disc__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_macro__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_macro__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_vb__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_vb__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_disc__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_disc__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_macro__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_macro__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_vb__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_vb__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_disc__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_disc__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_macro__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_macro__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_vb__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_vb__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_disc__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_disc__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_macro__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_macro__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_vb__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_vb__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_disc__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_disc__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_macro__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_macro__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_vb__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_vb__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_disc__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_disc__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_macro__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_macro__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_vb__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_vb__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_disc__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_disc__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__dice_macro__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__dice_macro__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_vb__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_vb__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_disc__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_disc__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__hd95_macro__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__hd95_macro__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_vb__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_vb__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_disc__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_disc__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_gold_trained__ndsc_macro__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_gold_trained__ndsc_macro__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=sensitivity_gold_trained[0m [90mshape=(91, 9)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=fdr_gold_trained[0m [90mshape=(63, 3)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=dir_bar_gold_trained[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=forest_gold_trained[0m
+[[97mINFO[0m] [[96mfairness.analyze[0m] Loaded silver_trained [90mcases=76[0m [90mcolumns=['case_id', 'series_submitter_id', 'dice_vb', 'hd95_vb', 'dice_disc', 'hd95_disc', 'ndsc_vb', 'ndsc_disc', 'dice_macro', 'hd95_macro', 'ndsc_macro'][0m
+[[97mINFO[0m] [[96mfairness.analyze[0m] Ruler 'silver_trained': joined 76 cases
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_vb__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_vb__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_disc__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_disc__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_macro__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_macro__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_vb__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_vb__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_disc__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_disc__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_macro__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_macro__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_vb__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_vb__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_disc__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_disc__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_macro__sex[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_macro__sex[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_vb__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_vb__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_disc__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_disc__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_macro__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_macro__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_vb__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_vb__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_disc__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_disc__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_macro__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_macro__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_vb__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_vb__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_disc__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_disc__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_macro__race_wb[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_macro__race_wb[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_vb__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_vb__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_disc__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_disc__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_macro__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_macro__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_vb__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_vb__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_disc__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_disc__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_macro__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_macro__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_vb__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_vb__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_disc__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_disc__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_macro__race_wbo[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_macro__race_wbo[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_vb__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_vb__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_disc__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_disc__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_macro__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_macro__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_vb__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_vb__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_disc__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_disc__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_macro__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_macro__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_vb__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_vb__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_disc__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_disc__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_macro__race_wn[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_macro__race_wn[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_vb__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_vb__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_disc__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_disc__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_macro__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_macro__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_vb__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_vb__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_disc__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_disc__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_macro__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_macro__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_vb__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_vb__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_disc__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_disc__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_macro__age_3bin[0m [90mshape=(3, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_macro__age_3bin[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_vb__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_vb__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_disc__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_disc__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_macro__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_macro__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_vb__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_vb__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_disc__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_disc__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_macro__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_macro__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_vb__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_vb__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_disc__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_disc__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_macro__age_median[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_macro__age_median[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_vb__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_vb__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_disc__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_disc__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__dice_macro__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__dice_macro__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_vb__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_vb__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_disc__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_disc__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__hd95_macro__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__hd95_macro__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_vb__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_vb__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_disc__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_disc__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=summary_silver_trained__ndsc_macro__ethnicity[0m [90mshape=(2, 8)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=violin_silver_trained__ndsc_macro__ethnicity[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=sensitivity_silver_trained[0m [90mshape=(91, 9)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=fdr_silver_trained[0m [90mshape=(63, 3)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=dir_bar_silver_trained[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=forest_silver_trained[0m
+[[97mINFO[0m] [[96mfairness.analyze[0m] Running cross-ruler comparison
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=comparison_sex[0m [90mshape=(3, 7)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=comparison_race_wb[0m [90mshape=(3, 7)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=comparison_race_wbo[0m [90mshape=(3, 7)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=comparison_race_wn[0m [90mshape=(3, 7)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=comparison_age_3bin[0m [90mshape=(3, 7)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=comparison_age_median[0m [90mshape=(3, 7)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved table [90mname=comparison_ethnicity[0m [90mshape=(3, 7)[0m
+[[97mINFO[0m] [[96mfairness.fairness_bias_amplification[0m] Saved figure [90mname=cross_ruler_dir[0m
+[[92mSUCCESS[0m] [[96mfairness.fairness_bias_amplification[0m] [92m Report finished [90mstats=3[0m [90mpath=outputs/fairness/fairness_bias_amplification/20260609_163752[0m[0m
+=== Done: bias_amplification ===
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@hpc.dtu.dk>
+Subject: Job 28620483: <fair_bias_amplification> in cluster <dcc> Done
+
+Job <fair_bias_amplification> was submitted from host <n-62-30-3> by user <s225224> in cluster <dcc> at Tue Jun  9 16:34:30 2026
+Job was executed on host(s) <24*n-62-21-83>, in queue <hpc>, as user <s225224> in cluster <dcc> at Tue Jun  9 16:37:21 2026
+</zhome/77/2/187952> was used as the home directory.
+</zhome/77/2/187952/projects/spinal-fairness> was used as the working directory.
+Started at Tue Jun  9 16:37:21 2026
+Terminated at Tue Jun  9 19:17:53 2026
+Results reported at Tue Jun  9 19:17:53 2026
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -J fair_bias_amplification
+#BSUB -q hpc
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=16GB]"
+#BSUB -n 24
+#BSUB -W 12:00
+#BSUB -o jobs/logs/fair_bias_amplification_%J.out
+#BSUB -e jobs/logs/fair_bias_amplification_%J.err
+#
+# One fairness analysis under the binarized (rate-based) DPD/DIR definitions
+# (Parikh et al. / four-fifths rule). STAGE is replaced by submit_fairness.sh.
+# Submit all three in parallel:   bash jobs/submit_fairness.sh
+# Or one directly:                sed 's/bias_amplification/global/g' jobs/fairness_analysis.sh | bsub
+#
+# Per-case metric CSVs are UNCHANGED by the redefinition, so `evaluate` only runs
+# when a CSV is missing (idempotent reuse) — the work is the `analyze` pass
+# (bootstrap + permutation). No GPU; predictions already exist. The stage is
+# GUARDED: if its prediction/reference inputs are not present it skips cleanly
+# (exit 0). Each analyze pass also writes sensitivity_<ruler>.csv (DIR/DPD sweep).
+
+set -euo pipefail
+
+# global | biased_ruler | bias_amplification (replaced by submit_fairness.sh)
+STAGE=bias_amplification
+
+export UV_ENV_FILE=".env"
+# Force unbuffered Python output so a crash leaves its traceback in the log
+# instead of losing buffered stdout/stderr when the process exits abruptly.
+export PYTHONUNBUFFERED=1
+mkdir -p jobs/logs outputs
+uv sync
+source .env
+
+RAW="${nnUNet_raw}"
+RES="${nnUNet_results}"
+MAP="${RAW}/Dataset001_CSpineSeg/case_id_mapping.json"
+METRICS="dice hd95 ndsc"
+WORKERS=24
+
+# Common input locations.
+D1_PP="${RES}/Dataset001_CSpineSeg/predictions_test_pp"
+D2_PP="${RES}/Dataset002_CSpineSeg_Gold/predictions_test_pp"
+LABELS_TS="${RAW}/Dataset001_CSpineSeg/labelsTs"
+LABELS_GOLD="${RAW}/Dataset001_CSpineSeg/labelsTs_gold"
+# Dataset003 predictions on the 76 GOLD test images (NOT its own 138-case silver
+# test set). Produced after Dataset003 finishes training; override if named
+# differently.
+DS3_GOLD_PREDS="${DS3_GOLD_PREDS:-${RES}/Dataset003_CSpineSeg_Silver/predictions_gold_test_pp}"
+
+
+(... more ...)
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   75471.34 sec.
+    Max Memory :                                 1155 MB
+    Average Memory :                             757.17 MB
+    Total Requested Memory :                     393216.00 MB
+    Delta Memory :                               392061.00 MB
+    Max Swap :                                   -
+    Max Processes :                              29
+    Max Threads :                                67
+    Run time :                                   9632 sec.
+    Turnaround time :                            9803 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <jobs/logs/fair_bias_amplification_28620483.err> for stderr output of this job.
+
