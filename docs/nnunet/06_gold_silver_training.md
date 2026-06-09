@@ -356,10 +356,15 @@ The authoritative analysis is the **binarized** rerun in
 Key result: the generated silver ruler **saturates** (Dice ≈ 0.97 on all 76 cases → zero
 failures at threshold 0.8 → DIR ≡ 1.0 for every grouping), so the single-threshold DIR-widening
 table is mechanically −100% and uninformative. The biased-ruler signal lives in the continuous
-tests instead: **silver 11/63 FDR-significant — all age** (`age_3bin`/`age_median`, Dice & nDSC,
-60+ worst), **gold 0/63**. So generated-silver labels manufacture a significant *age* disparity
-(~0.6 Dice points, clinically negligible) that doesn't survive against expert labels. See
-`fairness-runs.md` Run 8 and `dpd-dir-redefinition.md` for the full reasoning.
+tests instead, and it is **age** — on both rulers. Silver: **11/63 FDR-significant — all age**
+(`age_3bin`/`age_median`, Dice & nDSC, 60+ worst). Gold: **0/63 FDR**, but the same-direction age
+trend (60+ worst) is its strongest signal too, just sub-FDR (p_fdr≈0.13). So the silver ruler does
+not *manufacture* the age effect — it lowers the noise floor: the gap is *larger* against gold
+(≈2.7 Dice pts) but noisy, and tiny against silver (≈0.6 pts) but ultra-low-variance (DS001≈DS002
+twins), so only the latter clears FDR. Clinically negligible either way. The encoder probe
+corroborates age as the salient axis (age decodable above null, race at null; see
+`demographic-probing-of-medical-image-encoders/findings.md`). See `fairness-runs.md` Run 8 and
+`dpd-dir-redefinition.md` for the full reasoning.
 
 ### Bias amplification (blocked until Dataset003 training completes)
 

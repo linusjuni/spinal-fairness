@@ -235,12 +235,25 @@ binarized definition can say here:
   0.85 and only cracks at 0.90. **⇒ The single-threshold gold→silver widening cell is
   mechanically −100% and meaningless — do not cite it.** (Itself a finding: the
   disparity hides entirely *above* the "good enough" bar.)
-- **The biased-ruler signal lives in the continuous tests, not the binarized DIR.**
-  Silver ruler: **11/63 FDR-significant, all age** (`age_3bin`/`age_median`, Dice &
-  nDSC; 60+ worst). Gold ruler: **0/63**. Generated-silver labels manufacture a
-  significant *age* disparity that doesn't survive against expert labels — consistent
-  with Parikh et al.'s age-bias work. Magnitude caveat: ~0.6 Dice points
-  (0.974 → 0.980); significant because silver variance is tiny, clinically negligible.
+- **The biased-ruler signal lives in the continuous tests, not the binarized DIR,
+  and it is age — on *both* rulers.** Silver ruler: **11/63 FDR-significant, all age**
+  (`age_3bin`/`age_median`, Dice & nDSC; 60+ worst). Gold ruler: **0/63 FDR**, but the
+  *same-direction* age trend is its strongest signal (60+ worst; `ndsc_*__age` raw
+  p≈0.002–0.008, `dice_*__age` raw p≈0.015–0.030) — it just sits sub-FDR (p_fdr≈0.13).
+  Sex, race, ethnicity show nothing on either ruler at any threshold.
+- **So the silver ruler does not *manufacture* the age effect — it changes the noise
+  floor.** Against gold the age gap is *larger* in magnitude (≈2.7 Dice pts: <40 0.925 →
+  60+ 0.898) but noisier, so it misses FDR. Against silver it is tiny (≈0.6 pts: 0.980 →
+  0.974) yet ultra-low-variance (DS001≈DS002 twins → everyone ~0.97), so it clears FDR.
+  The *significance verdict* flips purely from the choice of reference label. Clinically
+  negligible either way; methodologically the point of the experiment.
+- **Independent corroboration from the encoder probe** (`demographic-probing.../findings.md`,
+  2026-05-07): age is the one axis encoded in Dataset001's bottleneck *above* its random-init
+  null (3-bin BA **0.642 vs 0.476**, +0.166 task contribution), while **race sits at the null**
+  (0.491 vs 0.373) — matching the audit's age-yes / race-no pattern. And **sex is encoded most
+  strongly of all (AUROC 0.957) yet shows no performance gap**, a live instance of "encoding ≠
+  disparity" (Petersen et al.) — so the age trend reflects genuine difficulty in older spines,
+  not mere decodability. Consistent with Parikh et al.'s age-bias work.
 
 **Gold ruler macro Dice DIR / DPD at 0.8 (real structure; success = Dice > 0.8):**
 

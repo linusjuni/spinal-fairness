@@ -133,11 +133,128 @@ grouped into the oldest bin.}
 \end{table}
 
 \subsection{Anatomical Confounders}
-% - Volumetric: sex dominant (~25% larger VB, large effect), race small-on-VB/negligible-on-disc, age medium-on-VB
-% - mm^3 scanner-independence validation
-% - Component-count / annotation-completeness note
-% - Payoff: disc is the cleanest fairness target; volume must be controlled (motivates nDSC)
-% - Categorical confounder checks: race x scanner independent; age x race mild -> control for age
+\label{sec:confounders}
+
+Before we can read any performance gap as bias, we have to know how the groups differ in
+ways that have nothing to do with the model. A score gap can come from two places that
+are not unfairness: the patients' anatomy, and how their scans were acquired. Anatomy can
+make one group genuinely harder to segment: cervical degeneration becomes far more common
+with age~\cite{kato2012cervical}, and the bridging and merging of adjacent vertebrae it
+produces blur the boundaries the model has to trace -- a pattern we observe directly in
+this cohort below. Parikh et al.~\cite{parikh2025labelbias} report the breast-MRI analogue,
+where younger patients' larger and more variable tumours make those cases intrinsically
+harder and open a real, model-independent gap by age. Anatomy can also fool the metric,
+because the overlap scores used to
+evaluate segmentations (such as the Dice score) reward large structures: a fixed boundary
+error costs a smaller fraction of a big
+structure's score than a small one's, so bigger anatomy can score higher at the same true
+quality. Acquisition
+matters too: if one group were mostly scanned on particular hardware
+or protocols, the scanner -- not the model -- could drive the gap. (Imaging site, a major
+confounder for Parikh et al.~\cite{parikh2025whofails} on multi-centre breast MRI, is not
+a concern here, since CSpineSeg comes from a single institution.) Either way, such a
+difference is a confounder, not a finding. 
+
+We start with the anatomy, measuring for every exam in the working set $\mathcal{D}_0$ the physical volume (in
+mm$^3$) of the vertebral bodies (class~$1$) and the discs (class~$2$) in its reference
+segmentation $Y_i$, and comparing those volumes across our three attributes $\mathcal{A}$. For each comparison we report an effect size, which quantifies the
+magnitude of the between-group difference and, unlike a $p$-value, does not grow with
+sample size alone. Each effect size is the standard companion of the rank-based test we
+run for that comparison: the rank-biserial correlation $r_{rb}$~\cite{wendt1972rankbiserial},
+derived from the Mann--Whitney $U$ test~\cite{mann1947test}, for the two-group comparisons
+(sex, race), and $\varepsilon^2$~\cite{tomczak2014effectsize}, derived from the
+Kruskal--Wallis $H$ test~\cite{kruskal1952ranks}, for the three age bins. We read each on the
+conventional negligible / small / medium / large scale~\cite{cohen1988power,tomczak2014effectsize}.
+Because $r_{rb}$ and $\varepsilon^2$ are not on the same numerical scale, we compare these
+magnitude bands rather than the raw effect-size values.\footnote{Cohen's small/medium/large
+bands were derived for the Pearson correlation; we apply them to the rank-biserial $r_{rb}$
+following standard effect-size practice. They are approximate conventions, not hard cut-offs.}
+
+\autoref{tab:volumes} summarises these differences. Sex is the dominant one: men's
+vertebral bodies and discs are both clearly larger than women's, a large effect in each
+structure. Race matters less, and only for bone -- White patients have somewhat larger
+vertebral bodies than Black patients (a small effect), while their discs are the same
+size. Age behaves the same way: the vertebral bodies grow and spread out with age, so
+the $\mathcal{D}_{\text{age}\ge 60}$ group has the largest and most variable bodies
+(\autoref{fig:volumes}), while disc volume barely moves. So across our three axes the
+disc is the only structure whose size stays put for both race and age; only sex shifts
+it.
+
+\begin{table}[t]
+\centering
+\caption{Structure-size differences across the three protected attributes, on the
+working set $\mathcal{D}_0$. ``Gap'' is the difference in median volume between the
+larger group (named in parentheses) and the smaller one; ``Effect'' is the magnitude band
+of the underlying effect size -- the rank-biserial correlation $r_{rb}$ for the two-group
+comparisons (sex, race) and $\varepsilon^2$ for age. At $N_0 = 1{,}254$ every
+comparison is statistically significant (Benjamini--Hochberg corrected~\cite{benjamini1995fdr}) except disc
+volume by race ($p = 0.50$); we therefore read the magnitude rather than the
+significance.}
+\label{tab:volumes}
+\small
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l c c c c}
+\hline\noalign{\smallskip}
+ & \multicolumn{2}{c}{Vertebral body} & \multicolumn{2}{c}{Disc} \\
+\noalign{\smallskip}\cline{2-3}\cline{4-5}\noalign{\smallskip}
+Attribute (larger group) & Gap & Effect & Gap & Effect \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+Sex (Male) & $+24\%$ & large & $+24\%$ & large \\
+Race (White) & $+11\%$ & small & ${\sim}0\%$ & negligible \\
+Age ($\ge$60 vs.\ $<$40) & $+20\%$ & medium & $+7\%$ & negligible \\
+\noalign{\smallskip}\hline
+\end{tabular*}
+\end{table}
+
+A quick sanity check rules out the scanner as the cause of these differences. GE
+machines produce roughly twice the voxel count of Siemens for the same anatomy (median
+$69{,}689$ vs.\ $32{,}401$ voxels per vertebral-body label, a ${\sim}2.15\times$ gap),
+purely from finer in-plane resolution; but once we convert to physical mm$^3$ those
+volumes line up across manufacturers (VB medians $49{,}850$ vs.\ $52{,}956$ mm$^3$, a
+${\sim}6\%$ gap; the disc difference is not even significant). The group
+differences above are real anatomy, not a resolution artefact.
+
+We also counted how many separate connected pieces each label breaks into, as a rough
+proxy for how ``clean'' the structure is. The vertebral-body label splits into fewer
+pieces in older patients -- a median of $9$ in the under-$40$s down to $7$ in the
+$60+$ group (medium effect) -- while the disc piece-count stays flat across age. That
+pattern is the fingerprint of degeneration: neighbouring vertebrae bridge and fuse with
+osteophytes, so the segmentation merges them into single blobs. In plain terms, older
+spines are anatomically more ``merged'' and harder to delineate, and that extra
+difficulty lives in the vertebral bodies, not the discs -- worth keeping in mind, since
+age turns out to be the axis our audit is most sensitive to later on.
+
+Finally, we check whether any attribute is tangled up with the scanner, which could
+otherwise fake a group gap. It is not: race is independent of both manufacturer and
+field strength, and sex is independent of race (all Cram\'er's $V \approx 0.05$--$0.07$,
+none significant). The one mild entanglement is age -- White patients are a little older
+than Black patients (median $58$ vs.\ $54$ years) -- so because age tracks with
+vertebral-body anatomy, we control for age whenever we compare race.
+
+Putting it together: anatomy differs by group, strongly for sex, mildly for race
+(bone only), and with age (bone only, plus the merging). A raw Dice gap could therefore
+reflect structure size rather than model quality, which is exactly the confound we have
+to neutralise before calling anything bias. Two choices follow from this and carry into
+the rest of the paper. First, we always report vertebral bodies and discs separately,
+and treat the disc as our cleanest fairness target, since its anatomy is uniform
+across race and age. Second, we evaluate with a volume-aware score (the normalised Dice
+score, introduced in the Methodology) rather than raw Dice. What we have measured here is
+anatomy, not model behaviour -- the confounders any honest audit must account for before a
+performance gap can be read as bias.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{volume_confounders.png}
+\caption{Segmentation volume (mm$^3$) across age bins, for vertebral bodies (left) and
+discs (right). The vertebral body grows and spreads out with age (Kruskal--Wallis
+$\varepsilon^2 = 0.12$, a medium effect), while disc volume stays essentially flat
+($\varepsilon^2 = 0.01$, negligible) -- so the disc is anatomically uniform across age
+and is the cleaner fairness target. Sex (not shown) drives the largest difference of
+all: men are $\sim$$24\%$ larger in both structures ($r_{rb} = 0.56$ vertebral body,
+$0.58$ disc), and race shifts the vertebral body only ($r_{rb} = 0.29$, small) -- both
+are reported in the text. At this sample size ($N_0 = 1{,}254$) almost every comparison
+is statistically significant, so we read the effect size rather than the $p$-value.}
+\label{fig:volumes}
+\end{figure}
 
 \subsection{Demographic Signal in the Images}
 % - Foundation-model probing: sex strongly recoverable, age moderate, race weak
