@@ -68,9 +68,13 @@ uv run -m src.fairness.evaluate \
 # Compare fairness gaps between the two rulers
 uv run -m src.fairness.analyze \
     --evaluation-csvs outputs/eval_ruler_gold.csv outputs/eval_ruler_silver.csv \
-    --ruler-labels    gold generated_silver \
+    --ruler-labels    gold silver \
     --mapping         ${nnUNet_raw}/Dataset001_CSpineSeg/case_id_mapping.json
 ```
+
+> The labels must be literally `gold` and `silver` — `analyze.py` only computes the
+> gold→silver DIR-widening when both of those exact labels are present. Do not rename
+> the second ruler to `generated_silver`.
 
 Any difference in the fairness gap between the two evaluations is the pure ruler effect: same model, same images, different reference labels. Dataset001 and Dataset002 are independently trained, so Dice != 1.
 

@@ -103,6 +103,17 @@ new DIR automatically.
 - Mann-Whitney / Kruskal-Wallis / OLS — operate on continuous scores; unchanged.
 - `group_summary` still reports continuous mean/median/IQR as descriptive stats.
 
+### Robustness hardening (2026-06-09, not load-bearing for the result)
+Added after the first biased-ruler rerun crashed. The actual cause was a corrupt
+cached CSV (above), not these — they never fired (0 skips) — but they're cheap
+insurance and stay in:
+- `src/eda/stats.py` — `mann_whitney_result` / `kruskal_result` short-circuit to
+  `p=1.0` when input is all-identical (scipy raises on this in some versions;
+  ours warns). Relevant to the saturated silver ruler.
+- `src/fairness/analyze.py` — the per-`(score, grouping)` body is wrapped in
+  `try/except`-continue (mirrors the existing OLS guard), so one degenerate metric
+  can't abort a whole ruler and silently drop the silver ruler + widening.
+
 ---
 
 ## Documentation changes (definitional only)
@@ -137,13 +148,58 @@ reused). Only re-run `src.fairness.analyze` (via the jobs above):
 
 | Analysis | Old run (mean-based) | Status under new definition |
 |---|---|---|
-| Global audit (Dataset001, 228) | Run 5 `20260516_125043` | **rerun** (`fair_global`) |
-| Biased ruler (gold vs gen-silver, 76) | Run 6 `20260605_121654` | **rerun** (`fair_biased_ruler`) |
-| Bias amplification (DS1/2/3 vs gold, 76) | never run | **blocked** — Dataset003 7/10 trained, then must predict on the 76 gold test images |
+| Global audit (Dataset001, 228) | Run 5 `20260516_125043` | **DONE** `fairness_global/20260607_173932` — 0/63 FDR-sig, all DIRs ≥ 0.969 |
+| Biased ruler (gold vs gen-silver, 76) | Run 6 `20260605_121654` | **DONE** `fairness_biased_ruler/20260607_210826` — gold 0/63, silver 11/63 FDR-sig (all age) |
+| Bias amplification (DS1/2/3 vs gold, 76) | never run | **still blocked** — Dataset003 not done, then must predict on the 76 gold test images |
 | HD95 outlier / median-DIR analysis | `hd95-outliers.md` | **superseded** — retire/re-derive, don't simply rerun |
 
-After rerun, update the results docs (`fairness-runs.md`, `06_…`, retire
-`hd95-outliers.md`) with the new numbers.
+Old mean-based runs (`outputs/fairness/fairness/`, `…/biased_ruler/`) are moved to
+`outputs/fairness/archive/` (superseded, do not cite). The first biased-ruler
+rerun `fairness_biased_ruler/20260607_173749/` is a **gold-only partial** (crashed
+on a corrupt reused silver CSV — see gotcha below); the good run is `…_210826`.
+
+Results docs updated (2026-06-09) with the new numbers + silver-saturation framing:
+`fairness-runs.md` (banner + Run 7/Run 8 entries, Run 1–6 marked mean-based/superseded),
+`06_gold_silver_training.md` (status block + biased-ruler subsection), `docs/README.md`
+(index entry for this note + corrected descriptions). `hd95-outliers.md` already carries
+the superseded banner. Also fixed `src/fairness/README.md`, which still used
+`--ruler-labels gold generated_silver` (silently skips the widening) → `gold silver`.
+
+Remaining TODO: the bias-amplification run (Run 9) once Dataset003 finishes.
+
+---
+
+## Update (2026-06-09) — rerun complete + what binarization does to the silver ruler
+
+The reruns landed. The global + gold-ruler results behave exactly as intended
+(real DIR structure at 0.8, four-fifths legitimately applies). **The silver ruler
+is the surprise, and it's a genuine limitation of the binarized definition for
+this comparison:**
+
+- **The silver ruler saturates completely.** Silver scores DS001 against DS002's
+  predictions → Dice ≈ 0.97 for *every* one of the 76 cases. At threshold 0.8
+  there are **zero failures in any group**, so **silver DIR = 1.0000 and DPD =
+  0.0000 for all 7 groupings**. The sweep confirms it: silver DIR stays pinned at
+  1.0 through 0.85 and only cracks at 0.90.
+- **⇒ The single-threshold gold→silver "DIR widening" headline is meaningless
+  here.** It prints "narrowed −100%" for everything, purely because the silver
+  side is mechanically pinned at 1.0. **Do not cite the 0.8 widening table.** (The
+  old mean-based widening was actually *more* informative for the silver ruler.)
+- **The biased-ruler signal lives in the continuous tests, not the binarized DIR.**
+  Silver ruler: **11/63 FDR-significant, all age** (`age_3bin`/`age_median`, Dice
+  & nDSC; 60+ worst). Gold ruler: **0/63**. So generated-silver labels manufacture
+  a significant *age* disparity that doesn't survive correction against expert
+  labels — consistent with Parikh et al.'s age-bias work.
+- **Magnitude caveat:** the age effect is ~0.6 Dice points (0.974 → 0.980) in a
+  regime where everyone scores ~0.97. Significant because silver variance is tiny,
+  not because the gap is large. Statistically real, clinically negligible.
+
+**Recommendation for the write-up:** keep the binarized DIR as the headline for
+global + gold (it works). For the silver ruler, report that it saturates at 0.8
+(DIR = 1.0 — itself a point: the disparity hides entirely *above* the "good
+enough" bar), read its structure off the sweep, and rest the biased-ruler
+*significance* claim on the continuous Mann-Whitney/Kruskal + nDSC tests. We are
+**not** abandoning the new DIR — only the single-cutoff silver widening cell.
 
 ---
 
@@ -151,6 +207,18 @@ After rerun, update the results docs (`fairness-runs.md`, `06_…`, retire
 - **Near-degenerate threshold**: at 0.8 with Dice ~0.89, success rates are near
   1.0, so DIR sits near 1.0 and its bootstrap CI / permutation p-value can be
   unstable (few "failures"). Read `sensitivity_*.csv`, don't trust a single cutoff.
+  **Extreme case — the silver ruler is fully saturated** (Dice ~0.97 → zero
+  failures → DIR ≡ 1.0); its `.err` is full of scipy `DegenerateDataWarning` (BCa
+  CI uncomputable). That's expected, not a regression — see the 2026-06-09 update.
+- **Corrupt reused eval CSV (cost us a whole run)**: `ensure_eval` reuses
+  `outputs/eval_*.csv` if the file exists. A job killed mid-write leaves a
+  truncated CSV that `analyze` then chokes on every rerun. The fix that worked:
+  `rm -f outputs/eval_ruler_silver.csv` before resubmitting to force a fresh
+  evaluate. If a stage fails mysteriously, suspect the cached CSV first.
+- **Capture tracebacks**: the job now sets `PYTHONUNBUFFERED=1` and runs
+  `uv run python -u -m …`. The first failed rerun lost its traceback entirely
+  (empty `.err`) because output was buffered when the process died — don't revert
+  this.
 - **Biased-ruler labels must be `gold` and `silver`**: `analyze` only computes the
   DIR-widening (the headline) when both literal labels are present. Do not rename
   the silver ruler to `generated_silver`.

@@ -1,6 +1,20 @@
 # Fairness Runs
 
-Catalog of fairness evaluation runs in `outputs/fairness/fairness/`. Each run is a timestamped directory produced by the `src.fairness.evaluate` + `src.fairness.analyze` pipeline.
+Catalog of fairness evaluation runs in `outputs/fairness/`. Each run is a timestamped directory produced by the `src.fairness.evaluate` + `src.fairness.analyze` pipeline.
+
+> **⚠️ Definition change (2026-06-07).** DPD/DIR were migrated from a continuous
+> **mean-ratio** to the canonical **binarized rate-based** definition (success =
+> `score > threshold`; DIR = `min/max` success rate). See
+> [`dpd-dir-redefinition.md`](dpd-dir-redefinition.md). Consequently:
+> - **Runs 1–6 below report OLD mean-based DIR/DPD numbers** and are kept only for
+>   provenance — **do not cite their DIR/DPD values.** Their per-case Dice/HD95/nDSC
+>   distributions are unaffected (only the aggregation changed).
+> - The authoritative current numbers are the binarized reruns **Run 7** (global)
+>   and **Run 8** (biased ruler), which reuse the same per-case CSVs.
+> - In particular the old HD95 mean-DIRs of 0.40–0.77 are an outlier artifact; the
+>   binarized HD95 DIR is ~0.88–1.00 (Run 7).
+> - The old mean-based Run 6 gold→silver "DIR widening" table is **invalid** under
+>   the new definition (the silver ruler saturates → DIR ≡ 1.0); see Run 8.
 
 ## Run log
 
@@ -83,7 +97,7 @@ Adds nDSC (Raina et al. 2023) to Run 4. nDSC decorrelates Dice from reference vo
 
 **nDSC**: All DIRs 0.98–1.00, matching Dice within 0.4 percentage points. Same best/worst groups as Dice for every grouping. Volume correction does not change the fairness picture. 0 FDR-significant tests (lowest p_fdr = 0.72).
 
-**Status**: Current global baseline. Supersedes Run 4.
+**Status**: Mean-based DIR/DPD superseded by **Run 7** (binarized rerun on the same per-case CSVs). The qualitative verdict (no significant gaps) is unchanged; only the HD95 DIR numbers move materially (0.40–0.77 → ~0.88–1.00).
 
 ---
 
@@ -101,7 +115,13 @@ Adds nDSC (Raina et al. 2023) to Run 4. nDSC decorrelates Dice from reference vo
 
 The biased ruler experiment: same model, same 76 images, two different reference labels. Ruler A is expert annotations; Ruler B is Dataset002's predictions on those same images (the "generated silver" ruler, mirroring how CSpineSeg's original silver labels were created).
 
-**Macro Dice DIR by grouping:**
+> **⚠️ Mean-based — superseded by Run 8 (below).** The DIR/DPD
+> values and the entire "widening" table in this Run 6 block use the old mean-ratio
+> definition. **Do not cite them.** Under the binarized definition the silver ruler
+> saturates (DIR ≡ 1.0 at 0.8), so the widening column is mechanically −100% and
+> meaningless; the real biased-ruler signal is in the continuous tests (Run 8).
+
+**Macro Dice DIR by grouping (OLD mean-based — do not cite):**
 
 | Grouping | DIR (gold ruler) | DIR (silver ruler) | Widening | Direction |
 |---|---|---|---|---|
@@ -153,9 +173,96 @@ uv run -m src.fairness.analyze \
 
 ---
 
+### Run 7 — `20260607_173932` (global rerun, binarized DIR/DPD)
+
+| | |
+|---|---|
+| **Path** | `outputs/fairness/fairness_global/20260607_173932/` |
+| **Ruler** | `global` (Dataset001 predictions vs `labelsTs`) |
+| **Test cases** | 228 |
+| **Metrics** | Dice + HD95 + nDSC (9 score columns) |
+| **Definition** | **Binarized rate-based** DIR/DPD (Dice/nDSC > 0.8, HD95 < 5 mm) |
+| **FDR significant** | **0 / 63** |
+
+Re-aggregation of Run 5's per-case CSVs under the binarized definition. **The
+authoritative global baseline.** No re-prediction; only the DIR/DPD aggregation changed.
+
+**Macro DIR at threshold (lower = more disparity; 1.0 = parity):**
+
+| Grouping | Dice DIR | nDSC DIR | HD95 DIR |
+|---|---|---|---|
+| sex | 0.9912 | 0.9825 | 0.9907 |
+| race_wb | 0.9760 | 0.9692 | 0.9702 |
+| race_wbo | 0.9692 | 0.9692 | 0.9702 |
+| race_wn | 0.9830 | 0.9762 | 0.9760 |
+| age_3bin | 0.9880 | 0.9778 | 0.9789 |
+| age_median | 0.9903 | 0.9817 | 0.9970 |
+| ethnicity | 0.9858 | 0.9905 | 0.8792 |
+
+All Dice/nDSC DIRs ≥ 0.969. All HD95 DIRs ≥ 0.97 **except ethnicity (0.879, n=12
+Hispanic)** — and even that clears the four-fifths 0.80 line. The old "alarming" HD95
+mean-DIRs of 0.40–0.77 (Runs 4–5) are gone: binarization is outlier-robust by
+construction. 0/63 tests FDR-significant. Read `sensitivity_global.csv` for the
+threshold sweep.
+
+**Status**: Current global baseline. Supersedes Run 5 (same data, new aggregation).
+
+---
+
+### Run 8 — `20260607_210826` (biased ruler rerun, binarized DIR/DPD)
+
+| | |
+|---|---|
+| **Path** | `outputs/fairness/fairness_biased_ruler/20260607_210826/` |
+| **Rulers** | `gold` (Dataset001 vs expert labels, 76) · `silver` (Dataset001 vs Dataset002 predictions, same 76) |
+| **Metrics** | Dice + HD95 + nDSC (9 score columns) |
+| **Definition** | **Binarized rate-based** DIR/DPD |
+| **FDR significant** | gold: **0 / 63** · silver: **11 / 63 (all age)** |
+
+Re-aggregation of Run 6's per-case CSVs under the binarized definition. **Supersedes
+Run 6.**
+
+> **Note:** a sibling directory `fairness_biased_ruler/20260607_173749/` also exists on
+> disk — it is a **gold-only partial** (crashed on a corrupt reused silver CSV, contains
+> no `*_silver*` outputs). Ignore it; `…_210826` is the complete run.
+
+The headline is no longer the DIR-widening table — it reverses what the
+binarized definition can say here:
+
+- **The silver ruler saturates.** Silver scores Dataset001 ≈ 0.97 Dice on all 76
+  cases → zero failures at threshold 0.8 → **silver DIR ≡ 1.0000, DPD ≡ 0.0000 for
+  all 7 groupings.** The sweep (`sensitivity_silver.csv`) stays pinned at 1.0 through
+  0.85 and only cracks at 0.90. **⇒ The single-threshold gold→silver widening cell is
+  mechanically −100% and meaningless — do not cite it.** (Itself a finding: the
+  disparity hides entirely *above* the "good enough" bar.)
+- **The biased-ruler signal lives in the continuous tests, not the binarized DIR.**
+  Silver ruler: **11/63 FDR-significant, all age** (`age_3bin`/`age_median`, Dice &
+  nDSC; 60+ worst). Gold ruler: **0/63**. Generated-silver labels manufacture a
+  significant *age* disparity that doesn't survive against expert labels — consistent
+  with Parikh et al.'s age-bias work. Magnitude caveat: ~0.6 Dice points
+  (0.974 → 0.980); significant because silver variance is tiny, clinically negligible.
+
+**Gold ruler macro Dice DIR / DPD at 0.8 (real structure; success = Dice > 0.8):**
+
+| Grouping | DIR | DPD | worst < best |
+|---|---|---|---|
+| race_wbo | 0.9375 | 0.0625 | Black < Other |
+| age_3bin | 0.9524 | 0.0476 | <40 < 40–60 |
+| race_wb | 0.9555 | 0.0436 | Black < White |
+| ethnicity | 0.9697 | 0.0303 | Non-Hispanic < Hispanic |
+| race_wn | 0.9749 | 0.0246 | Non-White < White |
+| age_median | 0.9978 | 0.0021 | <53 < ≥53 |
+| sex | 1.0000 | 0.0000 | tied — equal rate (0.974) in both |
+
+All gold-ruler DIRs clear 0.80. For silver, all seven are 1.0000 (saturated).
+
+**Status**: Current biased-ruler result. Supersedes Run 6.
+
+---
+
 ## Future runs
 
-### Run 7 — Mixed vs gold + Bias amplification (blocked until Dataset003 completes)
+### Run 9 — Mixed vs gold + Bias amplification (blocked until Dataset003 completes)
 
 Evaluate Dataset001, Dataset002, and Dataset003 on the 76 gold test images against gold labels.
 Compare fairness gaps (DPD, DIR):

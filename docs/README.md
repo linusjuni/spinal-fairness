@@ -56,8 +56,9 @@ then the per-folder tables for individual documents.
 
 | Document | Contents |
 |---|---|
-| [Fairness Runs](fairness/fairness-runs.md) | Chronological catalog of fairness evaluation runs (1–5) — rulers, metrics, test cases, and Dice/HD95/nDSC findings across 7 demographic groupings, plus planned analyses |
-| [HD95 Outliers](fairness/hd95-outliers.md) | Analysis of 13 cases (5.7%) with HD95 > 5mm from disc-localization errors, why HD95 DIR is misleading under right skew, mean-vs-median DIR, and confirmation outliers aren't demographically concentrated |
+| [DPD/DIR Redefinition](fairness/dpd-dir-redefinition.md) | **Migration note (2026-06-07)** — DPD/DIR changed from continuous mean-ratio to the canonical binarized rate-based definition (Parikh et al. / Fairlearn / four-fifths). Read this first: it explains why older mean-based numbers are superseded and what the binarized reruns show (incl. silver-ruler saturation) |
+| [Fairness Runs](fairness/fairness-runs.md) | Chronological catalog of fairness evaluation runs (1–8) — rulers, metrics, test cases, and Dice/HD95/nDSC findings across 7 demographic groupings. Runs 1–6 are the old mean-based definition (superseded); Runs 7–8 are the binarized reruns |
+| [HD95 Outliers](fairness/hd95-outliers.md) | **Superseded (2026-06-07).** The old mean-vs-median HD95 DIR workaround — no longer needed now that binarized HD95 DIR is outlier-robust by construction. Retained for provenance |
 | [Related Work & Novelty](fairness/related-work.md) | Positioning vs prior fairness literature — FairMedFM (the one prior spine-segmentation fairness work, sex-only/lumbar) and how our scope (cervical, sex+race+age, biased ruler) is novel; how to phrase the "first" claim |
 
 ## Demographic Probing of Medical Image Encoders

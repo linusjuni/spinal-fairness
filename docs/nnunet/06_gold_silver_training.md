@@ -3,8 +3,11 @@
 > **Status (2026-06-05):**
 > - **Gold (Dataset002): fully evaluated + biased ruler done.** All 10 folds trained. Ensemble
 >   selected (CV macro Dice 0.8831). Predictions on 76 gold test images: VB 0.914, Disc 0.862,
->   Macro 0.888. Biased ruler experiment (Run 6) complete: silver ruler narrows apparent race/sex
->   gaps by 70–86%; all DIRs remain above 0.80 on both rulers.
+>   Macro 0.888. Biased ruler experiment complete and re-aggregated under the binarized DIR/DPD
+>   definition (Run 8, `20260607_210826`): silver ruler **saturates** (DIR ≡ 1.0 at 0.8 — the
+>   gap hides above the "good enough" bar), so the real signal is in the continuous tests —
+>   **silver 11/63 FDR-significant, all age; gold 0/63.** The old mean-based "70–86% narrowing"
+>   claim is superseded — see `fairness-runs.md` Run 8 and `dpd-dir-redefinition.md`.
 >   *Provenance note:* `2d` fold 1 crashed at epoch 959 (transient `OSError: Stale file handle`)
 >   and was finished via a resume/validation step — it had converged (poly-LR ≈ 0, EMA Dice
 >   plateaued ~0.89), so no effect on results.
@@ -340,16 +343,23 @@ on noisier labels — likely because it has ~2.8× more training cases (798 vs 2
 preliminary result for the mixed vs gold comparison; the fairness gap comparison (DPD, DIR)
 is what matters for the experiment conclusions.
 
-### Biased ruler (done 2026-06-05 — Run 6 in `fairness-runs.md`)
+### Biased ruler (re-aggregated 2026-06-07 — Run 8 in `fairness-runs.md`)
 
 Recomputed Ruler A (Dataset001 vs gold labels) and Ruler B (Dataset001 vs Dataset002 predictions)
-on the same 76 gold test images with `dice hd95 ndsc`. CSVs written to
-`Dataset001_CSpineSeg/predictions_test_pp/eval_ruler_gold.csv` and `eval_ruler_silver.csv`.
-Fairness analysis in `outputs/fairness/biased_ruler/20260605_121654/`.
+on the same 76 gold test images with `dice hd95 ndsc`. Per-case CSVs are written to
+`outputs/eval_ruler_gold.csv` and `outputs/eval_ruler_silver.csv` (by `jobs/fairness_analysis.sh`;
+the old Run 6 manual run wrote them under `Dataset001_CSpineSeg/predictions_test_pp/`).
+The authoritative analysis is the **binarized** rerun in
+`outputs/fairness/fairness_biased_ruler/20260607_210826/` (the earlier mean-based Run 6,
+`.../biased_ruler/20260605_121654/`, is archived — do not cite its DIR-widening table).
 
-Key result: the generated silver ruler narrows apparent race and sex gaps by 70–86% (negative
-DIR widening). All DIRs remain above 0.80 on both rulers. See `fairness-runs.md` Run 6 for full
-numbers.
+Key result: the generated silver ruler **saturates** (Dice ≈ 0.97 on all 76 cases → zero
+failures at threshold 0.8 → DIR ≡ 1.0 for every grouping), so the single-threshold DIR-widening
+table is mechanically −100% and uninformative. The biased-ruler signal lives in the continuous
+tests instead: **silver 11/63 FDR-significant — all age** (`age_3bin`/`age_median`, Dice & nDSC,
+60+ worst), **gold 0/63**. So generated-silver labels manufacture a significant *age* disparity
+(~0.6 Dice points, clinically negligible) that doesn't survive against expert labels. See
+`fairness-runs.md` Run 8 and `dpd-dir-redefinition.md` for the full reasoning.
 
 ### Bias amplification (blocked until Dataset003 training completes)
 
