@@ -13,7 +13,7 @@
 >   plateaued ~0.89), so no effect on results.
 > - **Silver (Dataset003): fully evaluated ✅.** All 10 folds trained. Ensemble selected (CV
 >   macro Dice 0.9745). Predictions on 76 gold test images: VB 0.921, Disc 0.872, Macro 0.897.
->   Bias amplification analysis complete (Run 7, `20260609_163752`): **no bias amplification** —
+>   Bias amplification analysis complete (Run 9, `20260609_163752`): **no bias amplification** —
 >   silver-trained DIRs ≈ mixed-trained across all groupings; gold-trained is sometimes *worse*
 >   on disc fairness (race_wbo disc DIR 0.813 vs silver 0.875). 0 FDR-significant tests on all
 >   three rulers.
@@ -442,7 +442,7 @@ larger training set (450 vs 288) likely compensates.
 CV Dice is high because validation is scored against silver labels (same distribution as
 training). The gold-label test Dice (0.897) is the meaningful number for comparisons.
 
-### Bias amplification (done 2026-06-10 — Run 7 in `fairness-runs.md`)
+### Bias amplification (done 2026-06-10 — Run 9 in `fairness-runs.md`)
 
 Submitted via `sed 's/TPLSTAGE/bias_amplification/g' jobs/fairness_analysis.sh | bsub`.
 Results in `outputs/fairness/fairness_bias_amplification/20260609_163752/`.

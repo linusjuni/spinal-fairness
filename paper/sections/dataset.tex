@@ -1,25 +1,11 @@
 \section{Dataset and Exploratory Analysis}
 
 % TODO:
-% - [ ] Introduce the reader to the dataset (viz for vertebral bodies, inter-vertebral discs are a must), along with cohort analysis (sample count, distribution) (subsection)
-% - [ ] Demographic Probing (subsection)
-% - [ ] Confounders/Intersectional Bias and Volumetric Analysis (subsection)
-
-% SCOPE NOTE: this section describes the DATA only. The experimental USE of the
-% gold/silver split (biased-ruler, bias-amplification)
+% - [x] Introduce the reader to the dataset (viz for vertebral bodies, inter-vertebral discs are a must), along with cohort analysis (sample count, distribution) (subsection)
+% - [x] Confounders and Volumetric Analysis (subsection)
+% - [ ] Ask Aditya whether we need intersectional bias analysis 
 
 \subsection{The CSpineSeg Cohort}
-% - Dataset origin (Duke, Zhou et al.), task (VB + intervertebral disc segmentation), anatomy/overlay figure
-% - Compact cohort table: sex 54/46, White 65% / Black 28%, Siemens 63% / GE 37%, 1.5T/3T, age 55+-17
-% - Viable-axis decision: White+Black, sex, age get statistics; ethnicity/minor races descriptive only
-% - Cohort flow funnel: 1,255 public release -> 1,254 working set (-1 localizer/scout) -> 1,142 analysis cohort (-112 excess female, v3 downsample)
-%   (1,254 = study working set / all valid metadata; 1,142 = analysis cohort = what enters train/val/test)
-% - Gold vs silver as a DATASET PROPERTY ONLY: ~40% expert-annotated (gold); remainder auto-labelled
-%   by Zhou et al.'s own nnU-Net and flagged by them as unreviewed "weakly labelled" data (silver).
-%   Pool sizes in the 1,142 cohort: 448 gold / 694 silver, mutually exclusive (one label type per exam).
-%   -> DEFER to Methodology: the biased-ruler / bias-amplification PURPOSE of this split.
-% - DEFER to Methodology: v3 exam-level 50/50 sex-balancing mechanics (downsample majority, following MAMA-MIA)
-%   and the per-model split composition (D001 Mixed 798(318g+480s)/116/228; D002 Gold 288/44/76; D003 Silver 450/66/138).
 
 We work with CSpineSeg, a public collection of cervical-spine MRI released by
 Zhou et al.~\cite{zhou2025cspineseg}. It provides 1,255 sagittal T2-weighted exams
@@ -27,9 +13,12 @@ from 1,232 patients at Duke University. We drop a single scan -- a localizer
 series with anomalous dimensions, unsuitable for the task -- leaving a working set
 $\mathcal{D}_0$ of $N_0 = 1{,}254$ exams from 1,231 patients. The task we study is
 semantic segmentation: labelling every voxel of a scan as background, vertebral
-body, or intervertebral disc (\autoref{fig:anatomy}). About $40\%$ of the exams come with segmentations
-drawn by expert radiologists; the rest were labelled automatically by the authors'
-own model and never checked by a human.
+body, or intervertebral disc (\autoref{fig:anatomy}). About $40\%$ of the exams carry expert
+reference segmentations, drafted by a team of six radiologists and one researcher
+without medical training and with every final mask reviewed and approved by a
+radiologist; the rest were segmented automatically by the authors' own model, and
+these silver masks were never reviewed by a human -- though the mid-sagittal slice of
+each unannotated scan was checked for image quality.
 
 We use the following notation throughout (\autoref{tab:notation}). We write the
 cohort as a set of exams
@@ -62,7 +51,7 @@ illustration.}
 \centering
 \setlength{\tabcolsep}{12pt}
 \caption{Notation used throughout the paper. Symbols marked $(\ast)$ denote the
-label pools and data splits, which are defined in the Methodology section.}
+label sets and data splits, which are defined in the \nameref{sec:methodology} section.}
 \label{tab:notation}
 \small
 \begin{tabularx}{\textwidth}{l >{\raggedright\arraybackslash}X}
@@ -79,7 +68,7 @@ $\mathcal{A} = \{\text{sex}, \text{race}, \text{age}\}$ & protected attributes a
 $A_i$, value $a$ & exam $i$'s value of $A$; a value $a$ of $A$ \\
 $\mathcal{D}_{A=a} = \{i : A_i = a\}$ & subgroup of exams with $A = a$ \\
 $q_i \in \{\mathsf{g}, \mathsf{s}\}$ & label provenance: gold (expert) or silver (auto) \\
-$\mathcal{D}^{\mathsf{g}}, \mathcal{D}^{\mathsf{s}}$ & gold / silver pools $(\ast)$ \\
+$\mathcal{D}^{\mathsf{g}}, \mathcal{D}^{\mathsf{s}}$ & gold / silver sets $(\ast)$ \\
 $\mathcal{D}_{\mathrm{train}}, \mathcal{D}_{\mathrm{val}}, \mathcal{D}_{\mathrm{test}}$ & train / validation / test split $(\ast)$ \\
 \noalign{\smallskip}\hline
 \end{tabularx}
@@ -184,7 +173,8 @@ it.
 \centering
 \caption{Structure-size differences across the three protected attributes, on the
 working set $\mathcal{D}_0$. ``Gap'' is the difference in median volume between the
-larger group (named in parentheses) and the smaller one; ``Effect'' is the magnitude band
+larger group (named in parentheses) and the smaller one, expressed as a percentage of
+the smaller one (i.e.\ $(\text{larger} - \text{smaller}) / \text{smaller}$); ``Effect'' is the magnitude band
 of the underlying effect size -- the rank-biserial correlation $r_{rb}$ for the two-group
 comparisons (sex, race) and $\varepsilon^2$ for age. At $N_0 = 1{,}254$ every
 comparison is statistically significant (Benjamini--Hochberg corrected~\cite{benjamini1995fdr}) except disc
@@ -198,8 +188,8 @@ significance.}
 \noalign{\smallskip}\cline{2-3}\cline{4-5}\noalign{\smallskip}
 Attribute (larger group) & Gap & Effect & Gap & Effect \\
 \noalign{\smallskip}\hline\noalign{\smallskip}
-Sex (Male) & $+24\%$ & large & $+24\%$ & large \\
-Race (White) & $+11\%$ & small & ${\sim}0\%$ & negligible \\
+Sex (Male) & $+23\%$ & large & $+24\%$ & large \\
+Race (White) & $+12\%$ & small & ${\sim}0\%$ & negligible \\
 Age ($\ge$60 vs.\ $<$40) & $+20\%$ & medium & $+7\%$ & negligible \\
 \noalign{\smallskip}\hline
 \end{tabular*}
@@ -237,7 +227,7 @@ to neutralise before calling anything bias. Two choices follow from this and car
 the rest of the paper. First, we always report vertebral bodies and discs separately,
 and treat the disc as our cleanest fairness target, since its anatomy is uniform
 across race and age. Second, we evaluate with a volume-aware score (the normalised Dice
-score, introduced in the Methodology) rather than raw Dice. What we have measured here is
+score, introduced in the \nameref{sec:methodology}) rather than raw Dice. What we have measured here is
 anatomy, not model behaviour -- the confounders any honest audit must account for before a
 performance gap can be read as bias.
 
@@ -249,15 +239,10 @@ discs (right). The vertebral body grows and spreads out with age (Kruskal--Walli
 $\varepsilon^2 = 0.12$, a medium effect), while disc volume stays essentially flat
 ($\varepsilon^2 = 0.01$, negligible) -- so the disc is anatomically uniform across age
 and is the cleaner fairness target. Sex (not shown) drives the largest difference of
-all: men are $\sim$$24\%$ larger in both structures ($r_{rb} = 0.56$ vertebral body,
-$0.58$ disc), and race shifts the vertebral body only ($r_{rb} = 0.29$, small) -- both
+all: men are $\sim$$23\%$ larger in vertebral bodies and $\sim$$24\%$ larger in discs
+($r_{rb} = 0.56$ vertebral body, $0.58$ disc), and race shifts the vertebral body only
+($r_{rb} = 0.29$, small) -- both
 are reported in the text. At this sample size ($N_0 = 1{,}254$) almost every comparison
 is statistically significant, so we read the effect size rather than the $p$-value.}
 \label{fig:volumes}
 \end{figure}
-
-\subsection{Demographic Signal in the Images}
-% - Foundation-model probing: sex strongly recoverable, age moderate, race weak
-% - Body-extent/FOV caveat stated up front
-% - Conclusion: data carries exploitable demographic signal -> audit warranted
-% - (nnU-Net-encoder probe deferred to Results/Discussion)

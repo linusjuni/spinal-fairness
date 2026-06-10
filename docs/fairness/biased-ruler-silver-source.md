@@ -1,5 +1,15 @@
 # Biased Ruler — Silver-Source Limitation & Options (decision note, 2026-06-09)
 
+> **Update (2026-06-10) — Option 2 executed.** The bias-amplification experiment
+> (Dataset002 gold vs Dataset003 silver, Run 9) is now done and found **no amplification**:
+> silver-trained DIRs match mixed-trained across all groupings, 0/63 FDR on all three models
+> (`fairness-runs.md` Run 9, `06_gold_silver_training.md`). This resolves the "is the gap
+> amplified by *training* on silver" half of the question — it is not, unlike Parikh et al.
+> Exp 4 (our silver is a correlated, high-quality twin, so there is little demographic bias to
+> amplify). The **Options/Recommendation** below are kept as the historical decision record;
+> the only still-open item is whether to also demonstrate *magnitude inflation* with a
+> deliberately biased independent silver (Options 3/4) — a supervisor-meeting call.
+
 ## Context
 
 Our biased-ruler experiment (Run 8, [`fairness-runs.md`](fairness-runs.md)) takes the
@@ -31,7 +41,7 @@ supervisor-meeting item.**
 | Magnitude (gold/true) | large, robust; raw-cohort **DIR → 0.699** | tiny, clinically negligible; all Dice **DIR ≥ 0.94** |
 | **Verdict flip** (gold → silver ruler) | significant → **more** significant (gap +40%, DIR 0.871 → 0.815) | **not significant (0/63) → significant (11/63, all age)** |
 | Biased-ruler mechanism | **false magnitude** — silver inflates the gap's *size* | **false confidence** — silver inflates the gap's *certainty* |
-| Amplification (train on silver) | confirmed: gap +66%, **DIR → 0.79** | **not yet run** (blocked on Dataset003) |
+| Amplification (train on silver) | confirmed: gap +66%, **DIR → 0.79** | **no amplification** — silver-trained DIRs ≈ mixed, 0/63 FDR (Run 9, 2026-06-10) |
 
 **We reproduce the core biased-ruler effect.** Parikh's thesis is "a flawed ruler
 misrepresents true bias." On our 76 images, the *same model* is judged **age-fair against
@@ -172,7 +182,7 @@ worth the compute.
 
 ## Related
 
-- [`fairness-runs.md`](fairness-runs.md) — Run 8 (biased ruler), Run 9 (amplification, planned)
+- [`fairness-runs.md`](fairness-runs.md) — Run 8 (biased ruler), Run 9 (amplification — done, no amplification)
 - [`dpd-dir-redefinition.md`](dpd-dir-redefinition.md) — why the silver ruler saturates under the binarized DIR
 - [`related-work.md`](related-work.md) — novelty positioning
 - [`../nnunet/06_gold_silver_training.md`](../nnunet/06_gold_silver_training.md) — dataset/label flow, amplification design

@@ -150,7 +150,7 @@ reused). Only re-run `src.fairness.analyze` (via the jobs above):
 |---|---|---|
 | Global audit (Dataset001, 228) | Run 5 `20260516_125043` | **DONE** `fairness_global/20260607_173932` — 0/63 FDR-sig, all DIRs ≥ 0.969 |
 | Biased ruler (gold vs gen-silver, 76) | Run 6 `20260605_121654` | **DONE** `fairness_biased_ruler/20260607_210826` — gold 0/63, silver 11/63 FDR-sig (all age) |
-| Bias amplification (DS1/2/3 vs gold, 76) | never run | **still blocked** — Dataset003 not done, then must predict on the 76 gold test images |
+| Bias amplification (DS1/2/3 vs gold, 76) | never run | **DONE** `fairness_bias_amplification/20260609_163752` (Run 9) — 0/63 FDR all three models; silver-trained DIRs ≈ mixed; **no amplification** |
 | HD95 outlier / median-DIR analysis | `hd95-outliers.md` | **superseded** — retire/re-derive, don't simply rerun |
 
 Old mean-based runs (`outputs/fairness/fairness/`, `…/biased_ruler/`) are moved to
@@ -165,7 +165,8 @@ Results docs updated (2026-06-09) with the new numbers + silver-saturation frami
 the superseded banner. Also fixed `src/fairness/README.md`, which still used
 `--ruler-labels gold generated_silver` (silently skips the widening) → `gold silver`.
 
-Remaining TODO: the bias-amplification run (Run 9) once Dataset003 finishes.
+Bias-amplification run (Run 9) complete as of 2026-06-10 — see `fairness-runs.md` Run 9 and
+`06_gold_silver_training.md`. No further reruns outstanding for the binarized migration.
 
 ---
 

@@ -1,30 +1,186 @@
 \section{Methodology}
+\label{sec:methodology}
 
-% TODO:
-% - [ ] Model/Experimental Setup (subsection): nnUnet, parameters, runtime, hardware, reproducibility
-% - [ ] Dataset Setup (subsection): Dataset001 (Mixed labels), 002, 003 (better naming convention expected) -- why do we do that, and what do we get out of this?
-% - [ ] Evaluation (subsection): How do we evaluate? i.e., what does observed performance mean (evaluating with silver labels), etc. And metrics used (Dice, HD95, etc)
+% =============================================================================
+% SECTION SKELETON ONLY -- no prose yet. Each subsection below lists what it
+% must contain. Agreed structure: 4.1 splits/sets -> 4.2 label regimes ->
+% 4.3 model/training -> 4.4 metrics -> 4.5 experimental design -> 4.6 probing.
+% Register: match the formal style of the Dataset section (notation table,
+% explicit definitions). Interpretation (saturation, false-confidence, "which
+% ruler won") is DEFERRED to Results/Discussion -- this section is design only.
+% =============================================================================
 
-% -- DEFERRED FROM DATASET SECTION (keep the Data section data-only) --
-% Dataset Setup subsection should absorb:
-% - v3 sex-balancing mechanics: exam-level 50/50 M/F, downsample the majority sex (female), following
-%   MAMA-MIA (Parikh et al.); seeded/reproducible; operates at exam level (no patient leakage since v2
-%   already confines a patient's exams to one split). 1,254 -> 1,142 (-112 excess female exams).
-% - Per-model split composition table (verified 2026-06-05):
-%     Dataset001 (Mixed)  split_v3        798 (318 gold + 480 silver) / 116 / 228
-%     Dataset002 (Gold)   split_v3_gold   288 / 44 / 76
-%     Dataset003 (Silver) split_v3_silver 450 / 66 / 138
-%   All splits exactly 50/50 M/F. Note D001 gold-train (318) != D002 train (288): independent
-%   sex-stratified downsampling runs; D002 train is a strict subset of D001 gold-train.
-% - WHY three datasets: isolate the effect of TRAINING LABELS (mixed vs gold-only vs silver-only) on
-%   fairness gaps, holding architecture + sex-balance + stratification constant.
-% - Biased-ruler PURPOSE of the gold/silver split (moved out of Data, where gold/silver is described
-%   as a dataset property only): each CSpineSeg image carries gold OR silver, never both (unlike
-%   MAMA-MIA where both co-exist). We therefore GENERATE the second ruler: train D002 (gold-only),
-%   predict on the 76 gold-test images -> "generated silver" labels. D001 is then scored on the same
-%   76 images against (A) expert gold = true performance, (B) generated silver = observed performance;
-%   the difference is the pure ruler effect. (Avoids Zhou et al. weights being unavailable + test-leakage.)
-% Evaluation subsection should absorb:
-% - Bias-amplification design: D002 (gold) vs D003 (silver) on the SAME 76-case gold test set.
-% - Metrics: Dice, HD95, nDSC (nDSC motivated by the volume confound from the Data section);
-%   fairness metrics DPD / DIR + four-fifths-rule caveat (per statistical-testing.md).
+\subsection{Data Splits and Label Sets}
+\label{sec:splits}
+
+The Dataset section left two pieces of notation undefined, marked $(\ast)$ in
+\autoref{tab:notation}: the label sets and the train/validation/test split. We
+close them here, and in doing so account for the drop from the working set
+$\mathcal{D}_0$ ($N_0 = 1{,}254$ exams, whose composition is summarised in
+\autoref{tab:cohort}) to the analysis cohort $\mathcal{D}$ ($N = 1{,}142$), the
+two cohorts introduced in \autoref{tab:notation}.
+
+Every exam carries exactly one reference segmentation, so the provenance flag
+$q_i$ partitions the cohort into two disjoint sets,
+\begin{equation}
+  \mathcal{D}^{\mathsf{g}} = \{\, i : q_i = \mathsf{g} \,\},
+  \qquad
+  \mathcal{D}^{\mathsf{s}} = \{\, i : q_i = \mathsf{s} \,\},
+  \qquad
+  \mathcal{D}^{\mathsf{g}} \cap \mathcal{D}^{\mathsf{s}} = \varnothing,
+\end{equation}
+the expert (gold) set and the machine-generated (silver) set, with
+$\mathcal{D} = \mathcal{D}^{\mathsf{g}} \cup \mathcal{D}^{\mathsf{s}}$. That an
+image carries gold or silver but never both is a structural property of
+CSpineSeg, and it shapes the ``\nameref{sec:design}''; we
+return to it in ``\nameref{sec:regimes}''.
+
+We partition the cohort at the patient level into training, validation, and test
+sets $\mathcal{D}_{\mathrm{train}}, \mathcal{D}_{\mathrm{val}},
+\mathcal{D}_{\mathrm{test}}$ in a $70/10/20$ ratio. Splitting by patient rather
+than by exam keeps all of a patient's exams on the same side of every boundary,
+so the handful of multi-exam patients cannot leak information from training into
+evaluation. The split is stratified by the protected attributes $\mathcal{A}$
+so that each subgroup's share stays roughly constant across
+the three sets.\footnote{White and Black patients, who form the race comparison,
+are stratified on the full race $\times$ age $\times$ sex key; the small
+remaining race groups (\autoref{tab:cohort}) are too sparse to stratify and are
+assigned to splits proportionally at random.}
+
+On top of this we balance the sexes. The working set leans female
+(\autoref{tab:cohort}), and an unequal base rate would confound the sex audit by
+conflating a true performance gap with mere differences in representation, so
+within each split we randomly downsample female exams -- the over-represented sex
+throughout this cohort -- until the two are equal, removing $112$ in total
+($N_0 = 1{,}254 \to N = 1{,}142$) and leaving every split exactly $50/50$
+male/female. This removes representation as an explanation for any residual gap,
+rather than attempting to close it~\cite{parikh2025labelbias}. The downsampling is seeded
+and reproducible, and because it operates at the exam level while the
+patient-level split already fixes which side each patient falls on, it introduces
+no leakage even for the multi-exam patients. We adopt this balance-by-downsampling
+protocol from Parikh et al.~\cite{parikh2025labelbias,parikh2025whofails}, who
+balance their breast-MRI cohort by age to probe representational imbalance; we
+apply the same idea to sex and to this dataset's multi-exam structure.
+Stratification held in every split: race and age proportions match the cohort
+marginals of \autoref{tab:cohort} to within a couple of percentage points, and
+sex is exactly $50/50$ by construction. The
+per-regime breakdown of these splits into gold and silver training cases is given
+in ``\nameref{sec:regimes}''.
+
+\subsection{Three Label Regimes}
+\label{sec:regimes}
+
+% - WHY three datasets: isolate the effect of TRAINING LABELS (mixed vs
+%   gold-only vs silver-only) on fairness gaps, holding architecture +
+%   sex-balance + stratification CONSTANT. This held-constant clause is the
+%   linchpin that licenses attributing any gap difference to the labels.
+% - Structural fact: each CSpineSeg image carries gold XOR silver, never both
+%   (contrast MAMA-MIA, where both co-exist on every image). Set this up here;
+%   it is what forces the generated-silver ruler in 4.5.
+% - Name the three models: M_mix (Dataset001), M_gold (Dataset002),
+%   M_silver (Dataset003).
+% - Per-model split-composition TABLE:
+%       Mixed   (D001)  798 = 318 gold + 480 silver / 116 val / 228 test
+%       Gold    (D002)  288 / 44 / 76
+%       Silver  (D003)  450 / 66 / 138
+%   All splits exactly 50/50 M/F.
+% - One-line caveat so it doesn't read as an inconsistency: D001 gold-train
+%   (318) != D002 train (288) because the two split files were downsampled
+%   independently; the 288 are a strict subset of the 318. Intentional.
+%   WHY (the real mechanism, src: docs/splits/splits.md, verified 2026-06-05):
+%   sex-balance does NOT distribute over the gold/silver partition. D001 is
+%   50/50 over the COMBINED gold+silver train pool (400M/400F of 798), but the
+%   318 gold cases inside it are NOT themselves 50/50 -- gold-train skews female
+%   (174F/144M). D002 re-balances sex WITHIN gold-only, so it must drop the 30
+%   surplus females (174->144), giving 144F/144M = 288. So 318->288 is forced
+%   by the gold pool's own sex skew, not an arbitrary reseed. (Silver mirrors
+%   this: silver-train skews male, drops 30 males.) One-liner framing for prose:
+%   "a set can be 50/50 overall while neither half is, so each regime is
+%   balanced independently."
+% - DO NOT conflate val/test numbers across regimes: 116/228 are the MIXED
+%   model's val/test; D002 has its own 44/76 and D003 has 66/138.
+% - Note the 288 vs 450 gold/silver imbalance is a structural property of
+%   CSpineSeg (fewer expert annotations), not a design choice -- flag as a
+%   limitation here in one clause, expand in Discussion if needed.
+
+\subsection{Model and Training}
+\label{sec:model}
+
+% - nnU-Net v2, ResEncUNet-L planner. Per-case z-score normalisation
+%   (correct default for MRI).
+% - Ensemble = 10 checkpoints: BOTH configs (2d, patch 512x512; 3d_fullres,
+%   patch 15x512x512) x ALL 5 folds, softmax-averaged. Selected by
+%   find_best_configuration over either config alone. Say "10 models" plainly.
+% - IDENTICAL config across all three datasets -> differences attributable to
+%   training labels, not model capacity (echoes 4.2).
+% - No postprocessing: keep-largest-component destroys the multi-vertebra
+%   structure (one clause -- non-obvious choice worth stating).
+% - Hardware: A100-PCIE-40GB + L40S. Reproducibility: seeded splits, custom
+%   W&B trainer, public release (HF) if mentioned elsewhere.
+% - ONE closing sentence on compute footprint: ~1,105 GPU-h, ~53-74 kg CO2e
+%   (Danish grid, ML-CO2 methodology). NOT a footnote, just the line.
+
+\subsection{Evaluation Metrics}
+\label{sec:metrics}
+
+% - Overlap/distance metrics: Dice and HD95 (95th-percentile Hausdorff, mm).
+% - nDSC: define as the class-imbalance-normalised Dice of Raina et al. (2023)
+%   -- normalises the false-positive penalty by a reference class/lesion load
+%   so the score stops rewarding large structures. EXPLICIT tie-back: this is
+%   the "volume-aware score introduced in the Methodology" that the Dataset
+%   section (sec:confounders) promised as the volume-confound fix; name it.
+% - Fairness metrics, binarized rate-based (canonical Parikh / Fairlearn /
+%   EEOC): per-case beneficial outcome (success), per-group success rate
+%   P(yhat=1 | group); DPD = max(rate) - min(rate); DIR = min/max.
+%   Thresholds: Dice/nDSC 0.8, HD95 5 mm (configurable). Four-fifths rule
+%   (DIR < 0.8 flags adverse impact). Sensitivity sweep emitted per run.
+%   Portability caveat ("four-fifths from US employment law; adopted as field
+%   convention + for comparability, not a legal claim").
+% - Significance backbone: Mann-Whitney U (sex, race; effect size r_rb) and
+%   Kruskal-Wallis H (age 3-bin; eps^2) on the CONTINUOUS scores; BH-FDR across
+%   the family.
+% - A-PRIORI primacy argument (do NOT justify via saturation -- that leaks a
+%   result): at macro Dice ~0.89, well above the 0.8 beneficial-outcome cutoff,
+%   the binarized DIR is near-degenerate by construction (few failures per
+%   group -> low power), so the continuous tests are the more sensitive
+%   instrument BY DESIGN, and the sweep guards the DIR reading. Frame as: we
+%   report DIR for field-comparability + four-fifths, but the high-Dice regime
+%   makes the continuous tests primary. (This also pre-motivates the sweep.)
+
+\subsection{Experimental Design}
+\label{sec:design}
+
+% - Generated-silver ruler MECHANISM: train M_gold (D002), predict on the 76
+%   gold-test images -> those predictions ARE the "silver ruler" (Ruler B);
+%   expert labels are the "gold ruler" (Ruler A). Mirrors how the original
+%   silver labels were made (gold-trained nnU-Net applied to unseen cases).
+% - WHY generate it / why not reuse Zhou et al.'s silver model: (a) weights
+%   unavailable; (b) their split may overlap our gold test cases (leakage). Our
+%   M_gold is trained on our split, which excludes the test cases by design.
+% - Note: scoring M_mix against its OWN predictions is degenerate (Dice = 1);
+%   rejected. M_mix and M_gold are independently trained, so Dice != 1.
+% - E1-E4 design TABLE, stated NEUTRALLY (no saturation / false-confidence /
+%   "which ruler won" -- those are Results/Discussion):
+%       E1 Global audit       M_mix          | full 228 test, mixed labels
+%       E2 Biased ruler       M_mix          | 76 gold test, gold vs gen-silver
+%       E3 Bias amplification M_gold vs M_silver | 76 gold test, gold labels
+%       E4 Mixed vs gold      M_mix vs M_gold     | 76 gold test, gold labels
+% - MAKE THE TEST-SET DISTINCTION EXPLICIT: E1 is on the full 228 against mixed
+%   labels; E2-E4 all sit on the SAME 76-case gold test set with expert labels
+%   (apples-to-apples; differences attributable to labels/training, not data).
+% - E4 is the production-realistic companion to E3 (same axis: does silver in
+%   training degrade fairness?). Keep it as a row here for design transparency;
+%   Results folds it into the E3 narrative rather than a standalone finding.
+
+\subsection{Encoder Probing}
+\label{sec:probing}
+
+% - Short, last on purpose: diagnostic, not part of the core train/eval loop.
+% - Setup: extract features from M_mix's bottleneck vs a generic medical-image
+%   encoder (MRI-CORE); PCA + UMAP for visualisation; linear probe reporting
+%   balanced accuracy / AUROC for each protected attribute.
+% - CONTROLS (name what they control for, not just that they exist): the
+%   random-init baseline and the permutation null separate genuine task-learned
+%   demographic signal from trivial confounds -- chiefly body extent (the
+%   generic encoder's ~90% body-extent confound). Report the probe relative to
+%   these baselines.
