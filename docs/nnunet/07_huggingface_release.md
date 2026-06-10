@@ -1,8 +1,7 @@
 # 07 — Hugging Face Release Plan
 
-> **Status (2026-06-05):** Plan only — nothing uploaded yet. Dataset001 (mixed) and
-> Dataset002 (gold) are fully trained and exportable. Dataset003 (silver) is 7/10
-> (3d_fullres folds 0/1/4 pending) — ship it once those finish, or release 001+002 first.
+> **Status (2026-06-10):** Plan only — nothing uploaded yet. All three datasets fully
+> trained and evaluated: Dataset001 ✅ Dataset002 ✅ Dataset003 ✅. All three are exportable.
 
 Goal: get the trained nnU-Net models off the DTU HPC and onto Hugging Face so others can
 install and run inference, with enough documentation that an outside user can reproduce the
@@ -39,8 +38,8 @@ All HPC steps run on a **login node**: export is CPU-only and the upload needs i
    License the model **non-commercial** (CC-BY-NC-4.0) to match the MIDRC DUA track.
    See the DUA: <https://www.midrc.org/midrc-data-use-agreement>.
 
-2. **What's ready.** Dataset001 ✅ and Dataset002 ✅ fully trained. Dataset003 = 7/10
-   (3d_fullres folds 0/1/4 pending, see `06_gold_silver_training.md`).
+2. **What's ready.** Dataset001 ✅ Dataset002 ✅ Dataset003 ✅ — all three fully trained
+   and evaluated (see `06_gold_silver_training.md`).
 
 3. **Verify the custom trainer is inference-neutral.** Open the `nnUNetTrainerWandB` source
    and confirm it only adds W&B logging and does **not** override `build_network_architecture`.

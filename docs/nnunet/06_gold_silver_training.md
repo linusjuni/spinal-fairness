@@ -1,6 +1,6 @@
 # 06 — Gold / Silver Label Experiment
 
-> **Status (2026-06-05):**
+> **Status (2026-06-10):**
 > - **Gold (Dataset002): fully evaluated + biased ruler done.** All 10 folds trained. Ensemble
 >   selected (CV macro Dice 0.8831). Predictions on 76 gold test images: VB 0.914, Disc 0.862,
 >   Macro 0.888. Biased ruler experiment complete and re-aggregated under the binarized DIR/DPD
@@ -11,14 +11,14 @@
 >   *Provenance note:* `2d` fold 1 crashed at epoch 959 (transient `OSError: Stale file handle`)
 >   and was finished via a resume/validation step — it had converged (poly-LR ≈ 0, EMA Dice
 >   plateaued ~0.89), so no effect on results.
-> - **Silver (Dataset003): 7/10 trained.** `2d` complete (5/5). `3d_fullres`: folds 2–3 done;
->   fold 0 has `checkpoint_final` but needs a validation-only pass (`--val`); fold 1 training in
->   progress (job 28602550, ~44 h); fold 4 had no checkpoint and needs a fresh retrain. Folds 0
->   and 4 are submitted via `jobs/finish_silver.sh`. `find_best_configuration` for Dataset003 is
->   blocked until folds 0/1/4 finish.
->
-> Both 3d_fullres retrains use `nnUNet_n_proc_DA=1` to avoid the recurring glibc/DA-worker crash
-> ("background workers are no longer alive") that killed the original fold-1 and fold-4 runs.
+> - **Silver (Dataset003): fully evaluated ✅.** All 10 folds trained. Ensemble selected (CV
+>   macro Dice 0.9745). Predictions on 76 gold test images: VB 0.921, Disc 0.872, Macro 0.897.
+>   Bias amplification analysis complete (Run 7, `20260609_163752`): **no bias amplification** —
+>   silver-trained DIRs ≈ mixed-trained across all groupings; gold-trained is sometimes *worse*
+>   on disc fairness (race_wbo disc DIR 0.813 vs silver 0.875). 0 FDR-significant tests on all
+>   three rulers.
+>   *Provenance note:* 3d_fullres folds 1 and 4 originally crashed (glibc/DA-worker crash) and
+>   were retrained with `nnUNet_n_proc_DA=1`.
 
 ## Pipeline at a Glance
 
@@ -38,7 +38,7 @@ flowchart TD
       direction LR
       DS1["Dataset001 — Mixed<br/>798 train = 318 gold + 480 silver<br/>(production-realistic)"]:::mixed
       DS2["Dataset002 — Gold<br/>288 train, expert only"]:::gold
-      DS3["Dataset003 — Silver<br/>450 train, auto only<br/>(training 7/10)"]:::silver
+      DS3["Dataset003 — Silver<br/>450 train, auto only"]:::silver
     end
 
     GOLD --> DS1
@@ -134,7 +134,7 @@ flowchart TB
 |---|---|---|---|---|---|
 | `Dataset001_CSpineSeg` | 798 (318 gold + 480 silver) | Mixed | `split_v3` | **Global fairness audit** | Trained |
 | `Dataset002_CSpineSeg_Gold` | 288 | Expert (gold) | `split_v3_gold` | **Bias amplification baseline** + **biased ruler** (predictions on gold test images serve as generated silver labels) | **Evaluated ✅** |
-| `Dataset003_CSpineSeg_Silver` | 450 | Auto-generated (silver) | `split_v3_silver` | **Bias amplification** — compare against gold-trained | **Training (7/10)** — 3d_fullres f0/f1/f4 pending |
+| `Dataset003_CSpineSeg_Silver` | 450 | Auto-generated (silver) | `split_v3_silver` | **Bias amplification** — compare against gold-trained | **Evaluated ✅** |
 
 All three use sex-balanced cohorts (50/50 M/F in every split).
 
@@ -288,7 +288,9 @@ Or add a `--dataset-id` parameter to `train.sh` and create a `submit_gold_silver
 
 ---
 
-## Step 5 — Predict, Ensemble, Postprocess (done 2026-06-05)
+## Step 5 — Predict, Ensemble, Postprocess (done 2026-06-05 for DS002; 2026-06-10 for DS003)
+
+### Dataset002
 
 Predictions run on interactive GPU node (`a100sh`), both configs in parallel. Ensemble and
 postprocessing run on login node.
@@ -314,6 +316,43 @@ bash jobs/ensemble_and_postprocess.sh 2
 structures, same as Dataset001).
 
 Output: `$nnUNet_results/Dataset002_CSpineSeg_Gold/predictions_test_pp/` (76 files)
+
+### Dataset003
+
+Dataset003 predicts on Dataset002's `imagesTs` (the same 76 gold test images), not its own
+138-case silver test set. This keeps the bias amplification comparison on identical cases.
+Output dirs use `predictions_gold_test_*` to distinguish from any future silver-test-set run.
+
+```bash
+# GPU: interactive node (two sessions in parallel)
+uv run nnUNetv2_predict -d Dataset003_CSpineSeg_Silver \
+    -i "${nnUNet_raw}/Dataset002_CSpineSeg_Gold/imagesTs" \
+    -o "${nnUNet_results}/Dataset003_CSpineSeg_Silver/predictions_gold_test_2d" \
+    -f 0 1 2 3 4 -tr nnUNetTrainerWandB -c 2d -p nnUNetResEncUNetLPlans --save_probabilities
+
+uv run nnUNetv2_predict -d Dataset003_CSpineSeg_Silver \
+    -i "${nnUNet_raw}/Dataset002_CSpineSeg_Gold/imagesTs" \
+    -o "${nnUNet_results}/Dataset003_CSpineSeg_Silver/predictions_gold_test_3d_fullres" \
+    -f 0 1 2 3 4 -tr nnUNetTrainerWandB -c 3d_fullres -p nnUNetResEncUNetLPlans --save_probabilities
+
+# CPU: ensemble → postprocess (find_best_config already run separately)
+ENS="${nnUNet_results}/Dataset003_CSpineSeg_Silver/ensembles/ensemble___nnUNetTrainerWandB__nnUNetResEncUNetLPlans__2d___nnUNetTrainerWandB__nnUNetResEncUNetLPlans__3d_fullres___0_1_2_3_4"
+uv run nnUNetv2_ensemble \
+    -i "${nnUNet_results}/Dataset003_CSpineSeg_Silver/predictions_gold_test_2d" \
+       "${nnUNet_results}/Dataset003_CSpineSeg_Silver/predictions_gold_test_3d_fullres" \
+    -o "${nnUNet_results}/Dataset003_CSpineSeg_Silver/predictions_gold_test_ensemble" -np 8
+uv run nnUNetv2_apply_postprocessing \
+    -i  "${nnUNet_results}/Dataset003_CSpineSeg_Silver/predictions_gold_test_ensemble" \
+    -o  "${nnUNet_results}/Dataset003_CSpineSeg_Silver/predictions_gold_test_pp" \
+    -pp_pkl_file "${ENS}/postprocessing.pkl" -plans_json "${ENS}/plans.json" -np 8
+```
+
+`find_best_configuration` result: ensemble (2d + 3d_fullres) wins (CV macro Dice 0.9745 vs
+0.9728 for 2d alone). No postprocessing applied (same reason as DS001/DS002). Note: CV Dice
+is high because the model is trained and validated on silver labels; test Dice against gold
+labels is ~0.897 (see Step 6).
+
+Output: `$nnUNet_results/Dataset003_CSpineSeg_Silver/predictions_gold_test_pp/` (76 files)
 
 ## Step 6 — Evaluate
 
@@ -366,10 +405,52 @@ corroborates age as the salient axis (age decodable above null, race at null; se
 `demographic-probing-of-medical-image-encoders/findings.md`). See `fairness-runs.md` Run 8 and
 `dpd-dir-redefinition.md` for the full reasoning.
 
-### Bias amplification (blocked until Dataset003 training completes)
+### Dataset003 on gold test set (done 2026-06-10)
 
-1. Predict with Dataset003 on the gold test set (76 cases).
-2. Evaluate against gold labels. Compare fairness gaps against Dataset002.
+Evaluation run via `bias_amplification` stage of `jobs/fairness_analysis.sh` (job 28620483,
+~2h40m). Per-case CSV written to `outputs/eval_ds3_on_gold.csv`.
+
+Results (76 gold test cases, expert labels):
+
+| Model | VB Dice | Disc Dice | Macro Dice |
+|---|---|---|---|
+| Dataset001 (mixed-trained) | 0.9216 | 0.8721 | 0.8969 |
+| Dataset002 (gold-trained) | 0.9141 | 0.8623 | 0.8882 |
+| **Dataset003 (silver-trained)** | **0.9212** | **0.8721** | **0.8966** |
+
+DS003 scores essentially identically to DS001 and ~0.8 points above DS002 on macro Dice.
+The silver-trained model is not degraded by noisy training labels in absolute terms — the
+larger training set (450 vs 288) likely compensates.
+
+### CV Validation Dice (not test — scored against silver labels)
+
+| Config | Fold | VB Dice | Disc Dice | Macro |
+|---|---|---|---|---|
+| 2d | 0 | 0.9796 | 0.9679 | 0.9737 |
+| 2d | 1 | 0.9785 | 0.9661 | 0.9723 |
+| 2d | 2 | 0.9795 | 0.9687 | 0.9741 |
+| 2d | 3 | 0.9779 | 0.9656 | 0.9718 |
+| 2d | 4 | 0.9782 | 0.9662 | 0.9722 |
+| **2d mean** | | **0.9787** | **0.9669** | **0.9728** |
+| 3d_fullres | 0 | 0.9776 | 0.9675 | 0.9725 |
+| 3d_fullres | 1 | 0.9762 | 0.9646 | 0.9704 |
+| 3d_fullres | 2 | 0.9786 | 0.9678 | 0.9732 |
+| 3d_fullres | 3 | 0.9761 | 0.9638 | 0.9700 |
+| 3d_fullres | 4 | 0.9758 | 0.9659 | 0.9709 |
+| **3d_fullres mean** | | **0.9768** | **0.9659** | **0.9714** |
+
+CV Dice is high because validation is scored against silver labels (same distribution as
+training). The gold-label test Dice (0.897) is the meaningful number for comparisons.
+
+### Bias amplification (done 2026-06-10 — Run 7 in `fairness-runs.md`)
+
+Submitted via `sed 's/TPLSTAGE/bias_amplification/g' jobs/fairness_analysis.sh | bsub`.
+Results in `outputs/fairness/fairness_bias_amplification/20260609_163752/`.
+
+**0 FDR-significant tests across all three rulers.** Silver-trained DIRs match mixed-trained
+almost exactly; gold-trained is occasionally worse on disc fairness (race_wbo disc DIR 0.813
+vs silver/mixed 0.875 — only group approaching the 0.80 four-fifths threshold). No evidence
+of bias amplification from silver training labels in this dataset.
 
 ---
 

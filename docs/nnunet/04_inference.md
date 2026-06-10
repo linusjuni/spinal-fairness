@@ -1,6 +1,6 @@
 # 04 — Inference & Evaluation
 
-> **Status: Blocked on training completion.**
+> **Status: Done — see `05_model_selection.md` for results.**
 
 ## Step 1: Find Best Configuration
 

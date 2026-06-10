@@ -273,14 +273,64 @@ All gold-ruler DIRs clear 0.80. For silver, all seven are 1.0000 (saturated).
 
 ---
 
+### Run 9 — `20260609_163752` (bias amplification, binarized DIR/DPD)
+
+| | |
+|---|---|
+| **Path** | `outputs/fairness/fairness_bias_amplification/20260609_163752/` |
+| **Rulers** | `mixed` (Dataset001) · `gold_trained` (Dataset002) · `silver_trained` (Dataset003), all on 76 gold test cases |
+| **Metrics** | Dice + HD95 + nDSC (9 score columns) |
+| **Definition** | **Binarized rate-based** DIR/DPD |
+| **FDR significant** | mixed: **0 / 63** · gold_trained: **0 / 63** · silver_trained: **0 / 63** |
+
+Submitted via `sed 's/TPLSTAGE/bias_amplification/g' jobs/fairness_analysis.sh | bsub`
+(job 28620483, run time ~2h40m). Per-case CSVs: `outputs/eval_ds1_on_gold.csv`,
+`outputs/eval_ds2_on_gold.csv`, `outputs/eval_ds3_on_gold.csv`.
+
+**Key result: no bias amplification.** Silver-trained (DS003) DIRs match mixed-trained (DS001)
+almost exactly across all groupings. Gold-trained (DS002) is occasionally *worse* on disc
+fairness, not better.
+
+**Macro Dice DIR — all three models:**
+
+| Grouping | Mixed | Gold-trained | Silver-trained |
+|---|---|---|---|
+| sex | 1.0000 | 0.9459 | 1.0000 |
+| race_wb | 0.9555 | 0.9938 | 0.9555 |
+| race_wbo | 0.9375 | 0.9375 | 0.9375 |
+| race_wn | 0.9749 | 0.9863 | 0.9749 |
+| age_3bin | 0.9524 | 0.9560 | 0.9524 |
+| age_median | 0.9978 | 0.9955 | 0.9978 |
+| ethnicity | 0.9697 | 0.9545 | 0.9697 |
+
+**Disc Dice DIR (most sensitive):**
+
+| Grouping | Mixed | Gold-trained | Silver-trained |
+|---|---|---|---|
+| sex | 1.0000 | 0.9429 | 0.9444 |
+| race_wb | 0.9464 | 0.8971 | 0.9464 |
+| race_wbo | 0.8750 | **0.8125** | 0.8750 |
+| race_wn | 0.9876 | 0.9601 | 0.9876 |
+| age_3bin | 0.8764 | 0.8885 | 0.8764 |
+| age_median | 0.9502 | 0.8959 | 0.9502 |
+| ethnicity | 0.9242 | 0.8939 | 0.9242 |
+
+Gold-trained race_wbo disc DIR (0.813) is the only value approaching but still above the
+four-fifths 0.80 threshold. Mixed and silver-trained both sit at 0.875. All other DIRs
+comfortably above 0.80.
+
+**Interpretation:** Silver training labels do not amplify demographic bias — contrary to
+the MAMA-MIA finding (Parikh et al., 66% gap widening). The likely explanation is that
+silver labels in CSpineSeg are high-quality (Zhou et al. trained on expert labels, applied
+to the same scanner/acquisition distribution), so the noise introduced is insufficient to
+differentially harm any demographic group. The larger silver training set (450 vs 288 gold
+cases) may also help. This null result is itself a finding worth reporting.
+
+**Status**: Current bias amplification result.
+
+---
+
 ## Future runs
-
-### Run 9 — Mixed vs gold + Bias amplification (blocked until Dataset003 completes)
-
-Evaluate Dataset001, Dataset002, and Dataset003 on the 76 gold test images against gold labels.
-Compare fairness gaps (DPD, DIR):
-- Dataset002 vs Dataset003 → does silver training widen gaps? (bias amplification)
-- Dataset001 vs Dataset002 → does mixing silver into training hurt fairness? (mixed vs gold)
 
 ## Outputs per run
 
