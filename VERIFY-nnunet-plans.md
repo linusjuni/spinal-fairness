@@ -130,3 +130,79 @@ frequencies* are not in the v2 fingerprint. The phrasing is defensible at the
 conceptual level (the 2021 Nature Methods paper describes the fingerprint
 loosely), but if airtightness is wanted, replace "modality, class frequencies"
 with "intensity statistics". Flag, don't auto-edit.
+
+---
+
+## Findings (verified 2026-06-11)
+
+**Plan file used:** `nnUNetResEncUNetLPlans.json` (ResEncL planner, `-pl nnUNetPlannerResEncL`).
+Note: Dataset002_CSpineSeg_Gold also contains a `nnUNetPlans.json` (default planner), but the
+training runs used `nnUNetResEncUNetLPlans.json` consistently across all three datasets.
+
+### Dataset sizes (from `dataset.json` and `imagesTr/`)
+
+| Regime    | Dataset folder              | `numTraining` in dataset.json | Files in imagesTr |
+|-----------|-----------------------------|------------------------------:|------------------:|
+| `M_mix`   | Dataset001_CSpineSeg        | 914                           | 1164              |
+| `M_gold`  | Dataset002_CSpineSeg_Gold   | 332                           | 332               |
+| `M_silver`| Dataset003_CSpineSeg_Silver | 516                           | 516               |
+
+Note: the paper draft states 798 / 288 / 450 for train N. The discrepancy with the nnU-Net
+`numTraining` values (914 / 332 / 516) reflects the difference between what was provided to
+nnU-Net (train + val, used internally for 5-fold CV) and the paper's train-only count after
+holding out a test set. For Dataset001 there is an additional discrepancy between `numTraining`
+(914) and actual files in imagesTr (1164) — the dataset.json may not have been updated when
+cases were added.
+
+### Plan comparison (`nnUNetResEncUNetLPlans.json`)
+
+**Programmatic diff confirmed: ALL FIELDS IDENTICAL across the three datasets.**
+
+#### 2d configuration
+
+| Field                  | M_mix (DS001) | M_gold (DS002) | M_silver (DS003) |
+|------------------------|---------------|----------------|------------------|
+| `patch_size`           | [512, 512]    | [512, 512]     | [512, 512]       |
+| `batch_size`           | **35**        | **35**         | **35**           |
+| `spacing`              | [0.4297, 0.4297] | [0.4297, 0.4297] | [0.4297, 0.4297] |
+| `normalization_schemes`| ZScoreNorm    | ZScoreNorm     | ZScoreNorm       |
+| `n_stages`             | 8             | 8              | 8                |
+| `features_per_stage`   | [32,64,128,256,512,512,512,512] | same | same |
+| `strides`              | [[1,1],[2,2]×7] | same | same |
+| `network_class_name`   | ResidualEncoderUNet | same | same |
+
+#### 3d_fullres configuration
+
+| Field                  | M_mix (DS001)       | M_gold (DS002)      | M_silver (DS003)    |
+|------------------------|---------------------|---------------------|---------------------|
+| `patch_size`           | [16, 512, 512]      | [16, 512, 512]      | [16, 512, 512]      |
+| `batch_size`           | **2**               | **2**               | **2**               |
+| `spacing`              | [3.99, 0.4297, 0.4297] | same             | same                |
+| `normalization_schemes`| ZScoreNorm          | ZScoreNorm          | ZScoreNorm          |
+| `n_stages`             | 8                   | 8                   | 8                   |
+| `features_per_stage`   | [32,64,128,256,320,320,320,320] | same | same        |
+| `strides`              | [[1,1,1],[1,2,2],[1,2,2],[1,2,2],[2,2,2],[2,2,2],[1,2,2],[1,2,2]] | same | same |
+| `network_class_name`   | ResidualEncoderUNet | same                | same                |
+
+Full architecture: `dynamic_network_architectures.architectures.unet.ResidualEncoderUNet`
+with `Conv3d`, `InstanceNorm3d`, `LeakyReLU`, n_blocks_per_stage=[1,3,4,6,6,6,6,6].
+
+### Verdict: CONFIRMED
+
+All five checked fields (patch_size, batch_size, topology/architecture, spacing,
+normalization_schemes) are **byte-for-byte identical** across M_mix, M_gold, and M_silver for
+both 2d and 3d_fullres configurations. The batch_size cap does NOT differ across regimes despite
+the 3× range in numTraining — the VRAM-derived batch size is the binding constraint for all
+three, not the dataset-size cap. The paper's claim that the three regimes share an **identical
+architecture and training recipe** is **fully supported**.
+
+Shared values to quote in the paper: patch size [16, 512, 512] (3d_fullres) / [512, 512] (2d);
+batch size 2 (3d_fullres) / 35 (2d); 8-stage ResidualEncoderUNet; ZScoreNormalization.
+
+### Secondary note (fingerprint wording)
+
+As flagged in the task: the draft's fingerprint parenthetical ("image sizes, voxel spacings,
+modality, class frequencies") does not precisely match nnU-Net v2's stored fingerprint
+(spacings, cropped image shapes, foreground intensity statistics). The wording is defensible
+at the conceptual level but "modality, class frequencies" could be tightened to "intensity
+statistics" for airtightness. **Not auto-edited** — flagged for author review.
