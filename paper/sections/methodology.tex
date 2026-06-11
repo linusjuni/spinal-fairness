@@ -10,6 +10,15 @@
 % ruler won") is DEFERRED to Results/Discussion -- this section is design only.
 % =============================================================================
 
+Our experimental methodology builds on the label-bias and biased-ruler framework
+that Parikh et al.~\cite{parikh2025labelbias,parikh2025whofails} developed for
+breast DCE-MRI, carried over here to cervical-spine segmentation. We adopt
+several of their design choices -- balancing the cohort by downsampling,
+comparing expert (gold) against machine-generated (silver) reference labels, and
+quantifying performance gaps with binarized rate-based fairness metrics -- and we
+note throughout where the structure of CSpineSeg forces us to adapt them, chiefly
+that each exam carries a gold or a silver label but never both.
+
 \subsection{Data Splits and Label Sets}
 \label{sec:splits}
 
@@ -67,58 +76,204 @@ sex is exactly $50/50$ by construction. The
 per-regime breakdown of these splits into gold and silver training cases is given
 in ``\nameref{sec:regimes}''.
 
+We keep the conventional $70/10/20$ split rather than a bare train/test partition, which
+keeps the cohort partition portable across modelling choices. nnU-Net is
+cross-validation-native -- it selects its configuration and post-processing through an
+internal five-fold cross-validation rather than a held-out tuning
+set~\cite{isensee2021nnunet} -- so for our segmentation models $\mathcal{D}_{\mathrm{train}}$
+and $\mathcal{D}_{\mathrm{val}}$ are pooled into the single development set that the
+cross-validation runs over, leaving none of the scarce expert annotations idle (most
+valuable in the gold-only regime, ``\nameref{sec:regimes}''). The validation tier still
+earns its place: a model that is not cross-validation-native -- a transformer baseline, or
+any architecture used to extend this audit -- needs a held-out set for early stopping and
+hyperparameter selection, so defining $\mathcal{D}_{\mathrm{val}}$ now lets such work tune
+and report on the identical partition while $\mathcal{D}_{\mathrm{test}}$ remains the single
+fully held-out test set for every method.
+
 \subsection{Three Label Regimes}
 \label{sec:regimes}
 
-% - WHY three datasets: isolate the effect of TRAINING LABELS (mixed vs
-%   gold-only vs silver-only) on fairness gaps, holding architecture +
-%   sex-balance + stratification CONSTANT. This held-constant clause is the
-%   linchpin that licenses attributing any gap difference to the labels.
-% - Structural fact: each CSpineSeg image carries gold XOR silver, never both
-%   (contrast MAMA-MIA, where both co-exist on every image). Set this up here;
-%   it is what forces the generated-silver ruler in 4.5.
-% - Name the three models: M_mix (Dataset001), M_gold (Dataset002),
-%   M_silver (Dataset003).
-% - Per-model split-composition TABLE:
-%       Mixed   (D001)  798 = 318 gold + 480 silver / 116 val / 228 test
-%       Gold    (D002)  288 / 44 / 76
-%       Silver  (D003)  450 / 66 / 138
-%   All splits exactly 50/50 M/F.
-% - One-line caveat so it doesn't read as an inconsistency: D001 gold-train
-%   (318) != D002 train (288) because the two split files were downsampled
-%   independently; the 288 are a strict subset of the 318. Intentional.
-%   WHY (the real mechanism, src: docs/splits/splits.md, verified 2026-06-05):
-%   sex-balance does NOT distribute over the gold/silver partition. D001 is
-%   50/50 over the COMBINED gold+silver train pool (400M/400F of 798), but the
-%   318 gold cases inside it are NOT themselves 50/50 -- gold-train skews female
-%   (174F/144M). D002 re-balances sex WITHIN gold-only, so it must drop the 30
-%   surplus females (174->144), giving 144F/144M = 288. So 318->288 is forced
-%   by the gold pool's own sex skew, not an arbitrary reseed. (Silver mirrors
-%   this: silver-train skews male, drops 30 males.) One-liner framing for prose:
-%   "a set can be 50/50 overall while neither half is, so each regime is
-%   balanced independently."
-% - DO NOT conflate val/test numbers across regimes: 116/228 are the MIXED
-%   model's val/test; D002 has its own 44/76 and D003 has 66/138.
-% - Note the 288 vs 450 gold/silver imbalance is a structural property of
-%   CSpineSeg (fewer expert annotations), not a design choice -- flag as a
-%   limitation here in one clause, expand in Discussion if needed.
+We want to know whether the provenance of the training labels -- expert
+or machine-generated -- changes the fairness of the resulting model. To isolate
+that effect we train three models that differ only in the labels they are given,
+holding everything else fixed: the same architecture and training recipe
+(``\nameref{sec:model}''), the same patient-level split of
+``\nameref{sec:splits}'', and the same sex balance and stratification. Any
+difference in their fairness behaviour is then attributable to the training
+labels alone, and not to model capacity or cohort composition -- the assumption
+that justifies every model-to-model comparison in this paper.
+
+The three regimes follow directly from the disjoint gold/silver partition
+$\mathcal{D} = \mathcal{D}^{\mathsf{g}} \cup \mathcal{D}^{\mathsf{s}}$ introduced
+in ``\nameref{sec:splits}''. The mixed model $M_{\mathrm{mix}}$ trains on the
+full training split $\mathcal{D}_{\mathrm{train}}$, taking each exam with
+whichever label it carries; combining a small pool of expert labels with a
+larger pool of automated ones is a standard response to the cost of expert
+annotation in medical image segmentation~\cite{tajbakhsh2020embracing}, so
+$M_{\mathrm{mix}}$ is the deployment-realistic model that a typical pipeline
+would train. The
+gold model $M_{\mathrm{gold}}$ and the silver model $M_{\mathrm{silver}}$
+restrict training to only the expert or only the machine-generated exams, drawn
+from $\mathcal{D}_{\mathrm{train}} \cap \mathcal{D}^{\mathsf{g}}$ and
+$\mathcal{D}_{\mathrm{train}} \cap \mathcal{D}^{\mathsf{s}}$ respectively.
+\autoref{fig:regimes} shows how the three regimes are drawn from the gold/silver
+partition, and \autoref{tab:regimes} gives their full composition.
+
+That the gold-only and silver-only regimes can be built at all rests on the
+structural property of CSpineSeg flagged above: each exam carries a gold or a
+silver label, never both ($\mathcal{D}^{\mathsf{g}} \cap \mathcal{D}^{\mathsf{s}}
+= \varnothing$). This single-label structure is the chief way our setting departs
+from the breast-MRI biased-ruler work we build on, and it shapes the experimental
+design (``\nameref{sec:design}'').
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+  \node[regnode=regimeCohort, text width=64mm] (D) at (0,2.5)
+    {Analysis cohort $\mathcal{D}$\\ $1{,}142$ exams ($50/50$ M/F)\\[2pt]
+     {\scriptsize each exam carries gold \emph{or} silver, never both}};
+
+  \node[regnode=regimeGold,   text width=30mm] (DG) at (-2.7,0.7)
+    {Gold set $\mathcal{D}^{\mathsf{g}}$\\[1pt] {\scriptsize expert annotation}};
+  \node[regnode=regimeSilver, text width=32mm] (DS) at ( 2.7,0.7)
+    {Silver set $\mathcal{D}^{\mathsf{s}}$\\[1pt] {\scriptsize machine-generated}};
+
+  \node[regnode=regimeGold,   text width=22mm] (MG) at (-4.6,-1.8)
+    {$M_{\mathrm{gold}}$\\[1pt] train $288$\\ {\scriptsize gold only}\\
+     {\scriptsize ($50/50$ M/F)}};
+  \node[regnode=regimeMix,    text width=38mm] (MM) at ( 0,  -1.8)
+    {$M_{\mathrm{mix}}$\\ train $798$\\ {\scriptsize $318$ gold $+$ $480$ silver}\\
+     {\scriptsize ($50/50$ M/F)}};
+  \node[regnode=regimeSilver, text width=22mm] (MS) at ( 4.6,-1.8)
+    {$M_{\mathrm{silver}}$\\[1pt] train $450$\\ {\scriptsize silver only}\\
+     {\scriptsize ($50/50$ M/F)}};
+
+  \draw[regedge=regimeCohort] (D)  -- (DG);
+  \draw[regedge=regimeCohort] (D)  -- (DS);
+  \draw[regedge=regimeGold]   (DG) -- (MG);
+  \draw[regedge=regimeGold]   (DG) -- (MM);
+  \draw[regedge=regimeSilver] (DS) -- (MS);
+  \draw[regedge=regimeSilver] (DS) -- (MM);
+\end{tikzpicture}
+\caption{The three label regimes. The provenance flag $q_i$ partitions the
+analysis cohort $\mathcal{D}$ into a disjoint gold (expert) set
+$\mathcal{D}^{\mathsf{g}}$ and silver (machine-generated) set
+$\mathcal{D}^{\mathsf{s}}$; the mixed model $M_{\mathrm{mix}}$ trains on both,
+while $M_{\mathrm{gold}}$ and $M_{\mathrm{silver}}$ each train on one. Counts are
+training exams and do not add up across regimes ($798 \neq 288 + 450$) because
+each regime is sex-balanced independently; the full per-split composition is in
+\autoref{tab:regimes}.}
+\label{fig:regimes}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{The three label regimes. All three share the architecture, training
+recipe, patient-level split, stratification, and exact $50/50$ sex balance, and
+differ only in the provenance of their training labels. Counts are exams; every
+split in every regime is exactly $50/50$ male/female. Validation and test counts
+are regime-specific and are not comparable across rows.}
+\label{tab:regimes}
+\small
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l l r r r}
+\hline\noalign{\smallskip}
+Model & Training labels & Train & Val & Test \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+$M_{\mathrm{mix}}$    & gold $+$ silver & 798 (318 gold $+$ 480 silver) & 116 & 228 \\
+$M_{\mathrm{gold}}$   & gold only       & 288                            &  44 &  76 \\
+$M_{\mathrm{silver}}$ & silver only     & 450                            &  66 & 138 \\
+\noalign{\smallskip}\hline
+\end{tabular*}
+\end{table}
+
+Because the gold and silver sets are disjoint, each regime is sex-balanced on
+its own, and the counts do not add up across regimes. The principle is that a
+set can be exactly $50/50$ male/female while neither of its two parts is. The
+mixed training split is balanced across all $798$ of its exams ($399$ female and
+$399$ male), but that balance is a cancellation: its $318$ gold exams lean female
+($174$ versus $144$) while its $480$ silver exams lean male ($255$ versus $225$),
+so the $30$-exam female surplus on the gold side exactly offsets the $30$-exam
+male surplus on the silver side. Re-balancing sex within the gold pool alone
+therefore drops those $30$ surplus female exams, which is why $M_{\mathrm{gold}}$
+trains on $288$ gold exams ($144$ of each sex) rather than the $318$ that appear
+in the mixed split -- a balanced subset of the very same cases, not a different
+draw. The silver regime mirrors it, dropping the $30$ surplus male exams to reach
+$450$ ($225$ of each sex). The regimes consequently do not sum --
+$288 + 450 \neq 798$ -- because each discards its own surplus sex independently.
+Validation and test counts are likewise regime-specific (\autoref{tab:regimes})
+and should not be compared across rows.
+
+One asymmetry remains by construction: the gold training set ($288$ exams) is
+smaller than the silver one ($450$), simply because fewer CSpineSeg exams were
+expertly annotated in the first place. This reflects the dataset's structure
+rather than a design choice, and we flag it as a limitation of the
+gold-versus-silver comparison.
+
+A second concern is subtler. Because $M_{\mathrm{gold}}$ and $M_{\mathrm{silver}}$
+train on disjoint exams, a demographic imbalance between the gold and silver sets
+would reintroduce cohort composition as an explanation for any fairness difference
+between them. It does not arise here: Zhou et al.~chose which exams to
+expert-annotate pseudo-randomly -- by medical-record number rather than by any
+demographic criterion~\cite{zhou2025cspineseg} -- so the gold and silver sets are
+demographically comparable, and label provenance is the only variable that
+separates them.
 
 \subsection{Model and Training}
 \label{sec:model}
 
-% - nnU-Net v2, ResEncUNet-L planner. Per-case z-score normalisation
-%   (correct default for MRI).
-% - Ensemble = 10 checkpoints: BOTH configs (2d, patch 512x512; 3d_fullres,
-%   patch 15x512x512) x ALL 5 folds, softmax-averaged. Selected by
-%   find_best_configuration over either config alone. Say "10 models" plainly.
-% - IDENTICAL config across all three datasets -> differences attributable to
-%   training labels, not model capacity (echoes 4.2).
-% - No postprocessing: keep-largest-component destroys the multi-vertebra
-%   structure (one clause -- non-obvious choice worth stating).
-% - Hardware: A100-PCIE-40GB + L40S. Reproducibility: seeded splits, custom
-%   W&B trainer, public release (HF) if mentioned elsewhere.
-% - ONE closing sentence on compute footprint: ~1,105 GPU-h, ~53-74 kg CO2e
-%   (Danish grid, ML-CO2 methodology). NOT a footnote, just the line.
+We segment every regime with nnU-Net~\cite{isensee2021nnunet}, the self-configuring
+framework that has become the standard baseline for biomedical segmentation. Rather
+than fix an architecture by hand, nnU-Net derives the whole pipeline -- patch and
+batch size, network depth, resampling, and intensity normalisation -- from a
+fingerprint of the dataset (image sizes, voxel spacings, modality, class
+frequencies) through a set of rule-based heuristics. Two properties make it the right
+backbone for a fairness audit. First, it is a genuinely strong baseline: under
+controlled, equal-resource validation a well-scaled nnU-Net still matches or exceeds
+the transformer and state-space architectures that claim to surpass
+it~\cite{isensee2024revisited}, so any performance gap we report is a property of the
+data and its labels, not an artefact of a weak model. Second, because the
+configuration is derived from the fingerprint rather than chosen per run,
+holding the framework fixed across the three regimes guarantees that
+$M_{\mathrm{mix}}$, $M_{\mathrm{gold}}$, and $M_{\mathrm{silver}}$ share an identical
+architecture and training recipe -- the assumption that justifies every model-to-model
+comparison in ``\nameref{sec:regimes}''.
+
+We use nnU-Net v2 with the residual-encoder ``L'' preset (ResEnc-L), the framework's
+current recommended default, which devotes a larger GPU-memory budget to a
+residual-encoder U-Net~\cite{isensee2024revisited}. Because CSpineSeg is MRI, the planner
+selects per-case $z$-score intensity normalisation. Following nnU-Net's standard protocol
+we train two configurations for every regime -- a 2D model and a full-resolution 3D model
+(patches $512\times512$ and $15\times512\times512$, the latter's shallow depth matching
+the thin, few-slice sagittal stacks of CSpineSeg) -- each as a five-fold
+cross-validation over the pooled development set
+($\mathcal{D}_{\mathrm{train}}\cup\mathcal{D}_{\mathrm{val}}$) defined in
+``\nameref{sec:splits}''. nnU-Net's own
+configuration search then selects, for each regime, the softmax-averaged ensemble of
+both configurations across all five folds -- ten trained models -- as the final
+predictor. The same recipe runs for all three regimes, changing only the training
+labels.
+
+Two choices depart from nnU-Net's defaults, both to serve the audit. We replace the
+framework's random cross-validation folds with demographically stratified ones, so that
+each fold preserves the joint race~$\times$~age~$\times$~sex composition of the cohort;
+together with the patient-level, sex-balanced split of ``\nameref{sec:splits}'' this
+keeps subgroup representation constant through training and validation. And we apply no
+per-structure largest-component post-processing: nnU-Net's default ``keep largest
+component'' heuristic is built for single-object targets and would collapse the
+multi-vertebra, multi-disc anatomy of a cervical spine into a single blob -- on our
+validation folds it cut vertebral-body Dice from $0.96$ to $0.49$ -- so we keep the raw
+network output. Training otherwise uses the stock nnU-Net trainer; our only addition is
+experiment logging, leaving the loss, optimiser, and augmentation untouched. The splits
+and the sex-balancing downsample are seeded and reproducible.
+% TODO: models not yet released -- add public-model link here once the Hugging Face
+% repo is live (see docs/nnunet/07_huggingface_release.md). E.g.: ", and the trained
+% models are released publicly at \url{...}." Do NOT claim release until it is public.
+Training all thirty
+model-folds consumed roughly $1{,}105$ GPU-hours
+on A100 and L40S hardware; under the standard ML~CO$_2$
+accounting~\cite{lacoste2019quantifying,strubell2019energy,patterson2021carbon} and the
+2023 Danish grid intensity~\cite{dea_keyfigures2023} this corresponds to an estimated
+$53$--$74$\,kg~CO$_2$e.
 
 \subsection{Evaluation Metrics}
 \label{sec:metrics}

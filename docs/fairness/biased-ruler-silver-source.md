@@ -10,6 +10,14 @@
 > the only still-open item is whether to also demonstrate *magnitude inflation* with a
 > deliberately biased independent silver (Options 3/4) — a supervisor-meeting call.
 
+> **Framing note (2026-06-11, per Aditya).** The contribution is to *open* the conversation
+> about fairness in spine-segmentation studies, not to replicate or line up with any prior
+> paper. The Parikh et al. comparisons throughout this note are *context* for situating the
+> result, not the thesis. In particular, the no-amplification result (Run 9) is the *expected*
+> outcome given clean, well-stratified labels, not a surprising departure from MAMA-MIA. Read
+> the Parikh parallels below as "here is the contrasting case where the preconditions held,"
+> not as a replication scorecard.
+
 ## Context
 
 Our biased-ruler experiment (Run 8, [`fairness-runs.md`](fairness-runs.md)) takes the
@@ -82,6 +90,56 @@ inflation — for **two** reasons, both worth stating before spending compute:
 This is partly a genuine limitation of our setup (CSpineSeg images carry *either* gold *or*
 silver, never both, forcing us to *generate* the second ruler with a too-similar model) and
 partly a property of the high-Dice regime.
+
+## Why we see this – two hypotheses (cite, do not over-claim)
+
+Per Aditya (2026-06-11): these explanations are *hypotheses* for the discussion. They cannot
+be proven with the experiments we have, so they must be written as hypotheses, each backed by
+cited work on why the mechanism is plausible. Both reduce to one root cause: **silver ≈ gold ≈
+easy.** They are the same cause seen through two experiments – it makes the silver ruler
+saturate (false confidence, biased-ruler experiment) *and* leaves nothing to amplify (Run 9).
+
+**H1 – Twin-label / correlated errors (why the silver ruler saturates).** The generated silver
+labels are Dataset002's predictions, and Dataset002 is the same architecture (ResEncUNetL)
+trained on a split that overlaps Dataset001's gold cases and shares the scanner/acquisition
+distribution. The two models therefore make *correlated* systematic deviations from truth: they
+agree with each other (≈0.97) far more than either agrees with the gold reference (≈0.89).
+Evaluating Dataset001 against Dataset002's labels measures inter-model agreement, not accuracy,
+which is what collapses the variance and manufactures false confidence. Candidate references:
+self-training / confirmation bias (Arazo et al. 2020; Lee 2013) and teacher–student coupling
+(Tarvainen & Valpola 2017; Hinton et al. 2015), where an automated labeler propagates its own
+error structure so a sibling model scores high against it. *Falsifiable:* if this is the cause,
+making the silver generator more independent or biased (Options 3/4 below) should re-expand the
+variance and weaken the verdict flip.
+
+**H2 – Task simplicity (why there is little bias to amplify).** Cervical vertebral bodies and
+discs are large, regular, high-contrast structures with well-defined boundaries, unlike the
+sparse, fragmented, low-contrast masks (e.g. breast tumour in MAMA-MIA) where label noise is
+large and demographically uneven. When boundaries are easy, even a silver-trained model recovers
+the true edge, so residual label noise is small and roughly uniform across groups, leaving
+nothing to differentially harm a subgroup. Candidate references: metric behaviour as a function
+of structure size and sparsity (Maier-Hein et al. 2024, *Metrics Reloaded*; Reinke et al. 2024),
+plus our own volume-decorrelated nDSC (Raina et al. 2023), which shows the volume correction does
+not change the fairness picture.
+
+**Credit the dataset authors (precisely).** We choose our own train/val/test splits (v3) and our
+own gold/silver *training* partitions (Dataset002/003), but the gold-vs-silver *identity* of each
+exam – whether it carries an expert or a machine annotation – is inherited from Zhou et al., fixed
+by the dataset's `annotation_quality` column; we can only filter on it, not reassign it. Zhou et
+al. selected which exams to expert-annotate **pseudo-randomly** (by medical record number in
+alphabetical order) and split their development/test sets **at random** (paper, Methods). They did
+*not* demographically stratify – so the right credit is for the **pseudo-random selection that
+leaves the gold and silver pools demographically comparable**, with no systematic demographic
+difference between label types. That is why our biased-ruler and amplification comparisons are not
+confounded by "silver cases happen to be older / more of one group"; had annotation effort been
+demographically selective, that confound would persist no matter how we split. (The silver labels
+are also high-quality because the generator was trained on a representative random development set
+from the same institution and scanner distribution.) Write this as explicit credit, and say
+*pseudo-random selection*, not *stratification*. The representational-source half of Parikh et
+al.'s framework is simply not triggered here.
+
+All references above are *candidates* and must be verified before they enter the paper (see
+also the open citation-verification step). The falsifiable test for H1 is Options 3/4 below.
 
 ## A strength, not just a caveat: the age effect is intrinsic
 

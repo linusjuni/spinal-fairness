@@ -319,12 +319,17 @@ Gold-trained race_wbo disc DIR (0.813) is the only value approaching but still a
 four-fifths 0.80 threshold. Mixed and silver-trained both sit at 0.875. All other DIRs
 comfortably above 0.80.
 
-**Interpretation:** Silver training labels do not amplify demographic bias — contrary to
-the MAMA-MIA finding (Parikh et al., 66% gap widening). The likely explanation is that
-silver labels in CSpineSeg are high-quality (Zhou et al. trained on expert labels, applied
-to the same scanner/acquisition distribution), so the noise introduced is insufficient to
-differentially harm any demographic group. The larger silver training set (450 vs 288 gold
-cases) may also help. This null result is itself a finding worth reporting.
+**Interpretation:** Silver training labels do not amplify demographic bias, as expected
+here: the preconditions for amplification are absent. The global audit already found no
+demographic bias to amplify (Run 7, 0/63), and the gold and silver labels are highly similar.
+This differs from the MAMA-MIA finding (Parikh et al., 66% gap widening), but the difference
+is in dataset properties, not a failed replication. Parikh et al.'s silver was an independent,
+genuinely biased annotator acting on a task with a real underlying disparity; in CSpineSeg the
+silver labels are high-quality (Zhou et al. trained on expert labels, applied to the same
+scanner/acquisition distribution), so the noise introduced is insufficient to differentially
+harm any demographic group. The larger silver training set (450 vs 288 gold cases) may also
+help. The null result is expected, but still worth reporting: amplification requires an
+underlying bias to act on, and there is none here.
 
 **Status**: Current bias amplification result.
 

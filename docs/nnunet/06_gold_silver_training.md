@@ -13,7 +13,8 @@
 >   plateaued ~0.89), so no effect on results.
 > - **Silver (Dataset003): fully evaluated ✅.** All 10 folds trained. Ensemble selected (CV
 >   macro Dice 0.9745). Predictions on 76 gold test images: VB 0.921, Disc 0.872, Macro 0.897.
->   Bias amplification analysis complete (Run 9, `20260609_163752`): **no bias amplification** —
+>   Bias amplification analysis complete (Run 9, `20260609_163752`): **no bias amplification**
+>   (expected, since the audit finds no underlying bias to amplify) —
 >   silver-trained DIRs ≈ mixed-trained across all groupings; gold-trained is sometimes *worse*
 >   on disc fairness (race_wbo disc DIR 0.813 vs silver 0.875). 0 FDR-significant tests on all
 >   three rulers.
@@ -187,7 +188,10 @@ Dataset002 is trained on gold (expert) labels only. It has two roles:
 Dataset003 is trained on silver (auto-generated) labels only. It is compared against
 Dataset002 on the **same gold test set** (76 cases) to isolate whether silver training
 labels widen demographic performance gaps (cf. Parikh et al. MAMA-MIA Experiment 4:
-66% fairness gap widening, DIR dropping below 0.80).
+66% fairness gap widening, DIR dropping below 0.80). Unlike MAMA-MIA, we do not *expect*
+amplification here: the global audit (Run 7) finds no demographic bias for silver training
+to amplify, and CSpineSeg's silver labels are high-quality and demographically balanced. The
+experiment confirms this rather than replicating Parikh et al.
 
 ## Evaluation Design
 

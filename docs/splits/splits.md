@@ -54,7 +54,7 @@ Dropped: 80 train / 7 val / 25 female exams (1254 → 1142 exams total).
 
 | Split | Female | Male | F% |
 |-------|--------|------|----|
-| Train | 400 | 400 | 50.0% |
+| Train | 399 | 399 | 50.0% |
 | Val | 58 | 58 | 50.0% |
 | Test | 114 | 114 | 50.0% |
 

@@ -27,6 +27,24 @@
 \renewcommand\UrlFont{\color{blue}\rmfamily}
 \urlstyle{rm}
 %
+% --- TikZ setup for the three-label-regime schematic (sec:regimes) -----------
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
+\definecolor{regimeGold}{HTML}{B8941F}
+\definecolor{regimeSilver}{HTML}{6E7782}
+\definecolor{regimeMix}{HTML}{3D6FA5}
+\definecolor{regimeCohort}{HTML}{8A8A8A}
+\tikzset{
+  regnode/.style={
+    rectangle, rounded corners=4pt, draw=#1, line width=0.9pt, fill=#1!12,
+    align=center, inner sep=6pt, minimum height=10mm, font=\footnotesize,
+  },
+  regedge/.style={
+    draw=#1, line width=0.9pt, -{Stealth[length=4.5pt, width=4pt]},
+    shorten >=1.5pt, shorten <=1.5pt,
+  },
+}
+%
 \begin{document}
 %
 \title{Fairness in Cervical Spine MRI Segmentation}
