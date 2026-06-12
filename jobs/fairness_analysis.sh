@@ -118,8 +118,21 @@ bias_amplification)
         --report-name     fairness_bias_amplification
     ;;
 
+biased_ruler_v2)
+    echo "=== Biased ruler v2 (M_gold audited, M_silver as ruler, 76 cases) ==="
+    require_paths "${D2_PP}" "${DS3_GOLD_PREDS}" "${LABELS_GOLD}" \
+        || { echo "  SKIP: inputs not ready."; exit 0; }
+    ensure_eval outputs/eval_ds2_on_gold.csv "${D2_PP}" "${LABELS_GOLD}"
+    ensure_eval outputs/eval_ds2_vs_ds3.csv  "${D2_PP}" "${DS3_GOLD_PREDS}"
+    uv run python -u -m src.fairness.analyze \
+        --evaluation-csvs outputs/eval_ds2_on_gold.csv outputs/eval_ds2_vs_ds3.csv \
+        --ruler-labels    gold silver \
+        --mapping         "${MAP}" \
+        --report-name     fairness_biased_ruler_v2
+    ;;
+
 *)
-    echo "Unknown STAGE='${STAGE}' (expected: global | biased_ruler | bias_amplification)" >&2
+    echo "Unknown STAGE='${STAGE}' (expected: global | biased_ruler | biased_ruler_v2 | bias_amplification)" >&2
     exit 1
     ;;
 esac
