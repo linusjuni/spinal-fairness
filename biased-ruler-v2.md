@@ -81,8 +81,25 @@ uv run python -u -m src.fairness.analyze \
    ruler to produce meaningful binarized-DIR movement. The contribution stays
    as the false-confidence mechanism (current E2).
 
+## Results (2026-06-12)
+
+Step 1 diagnostic run on gold test set (76 cases, M_gold vs M_silver):
+
+| | vb | disc | macro |
+|---|---|---|---|
+| Mean Dice | 0.977 | 0.964 | **0.970** |
+| Min Dice | 0.904 | 0.880 | 0.892 |
+| Cases < τ=0.8 | 0 | 0 | **0** |
+
+Macro Dice mean 0.970 — above the 0.95 degenerate threshold, zero failures at τ=0.8.
+Output: `outputs/eval_ds2_vs_ds3.csv`
+
+**Outcome 2 confirmed.** Even with fully disjoint training data, M_gold and M_silver agree at
+~0.97 inter-model Dice. The DIR saturates at 1.0 for the same reason as E2: cervical spine
+segmentation is too easy for any silver model to produce binarized-DIR movement.
+
 ## Decision
 
-- [ ] Run Step 1 diagnostic on HPC
-- [ ] Review agreement numbers
-- [ ] Decide whether to run full analysis or keep current E2
+- [x] Run Step 1 diagnostic on HPC
+- [x] Review agreement numbers — degenerate (macro Dice 0.970, zero failures at τ=0.8)
+- [x] Do not run Step 2; keep current E2 (false-confidence / variance-collapse mechanism)
