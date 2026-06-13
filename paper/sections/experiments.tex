@@ -1,10 +1,384 @@
 \section{Experiments and Results}
 
-% TODO:
-% - [ ] Not sure about the progress on these experiments
-% - [ ] Biased Ruler Effect (Global and True Evaluation)
-% - [ ] Bias Amplification
-% - [ ] Demographic probing (moved here from EDA): present BOTH encoders side by
-%       side -- generic (MRI-CORE) ~90% body-extent confound vs trained nnU-Net
-%       genuine task amplification (+0.186 sex, +0.166 age over null). The
-%       contrast is the result. Interpretation (encoding != disparity) -> Discussion.
+nnU-Net's automatic configuration search selected the softmax-averaged ensemble of
+the 2D and 3D full-resolution configurations for all three label regimes, yielding
+ten trained model-folds per regime (thirty in total). The four subsections below
+report results for each experiment defined in ``\nameref{sec:design}''
+(\autoref{tab:experiments}).
+
+\subsection{Global Fairness Audit}
+\label{sec:global}
+
+We first evaluate $M_{\mathrm{mix}}$ on the full $228$-case test set
+$\mathcal{D}_{\mathrm{test}}$, scoring each exam against whichever reference label
+it carries.
+
+\paragraph{Segmentation quality.}
+$M_{\mathrm{mix}}$ achieves mean Dice of $0.959$ (vertebral body), $0.935$ (disc),
+and $0.947$ (macro average) on the $228$ test cases. The median HD95 is
+$0.34$\,mm (macro), and nDSC tracks Dice closely (macro $0.949$), confirming that
+the volume correction of ``\nameref{sec:confounders}'' does not materially change
+scores in this cohort. Restricting to the $76$ gold-labelled test cases -- the only
+ones scored against expert references -- gives a macro Dice of $0.897$, comparable
+to the $0.916$ Zhou et al.~\cite{zhou2025cspineseg} report on their $100$-case gold
+test set with a different split and smaller training pool ($391$ expert-annotated
+cases versus our $798$ mixed).
+
+\paragraph{Fairness verdict.}
+\autoref{tab:global_dir} reports the disparate impact ratio for the three attributes
+in $\mathcal{A}$ across all three metrics.
+Every DIR exceeds $0.96$ and all lower confidence bounds sit above the four-fifths
+threshold of $0.80$ -- no grouping approaches adverse impact on any metric. Across
+all seven demographic groupings and nine score columns ($63$ tests), zero reach
+significance after Benjamini--Hochberg correction (smallest
+$p_{\mathrm{fdr}} = 0.72$). Effect sizes are negligible throughout: the
+rank-biserial correlation $|r_{rb}| \le 0.14$ for sex and race on the macro
+scores, and $\varepsilon^2 < 0.01$ for age. A multivariable OLS regression of macro Dice on
+sex, race, and age jointly yields $R^2 = 0.013$ ($F$-test $p = 0.43$), with no
+covariate reaching significance (sex $p = 0.22$, race $p = 0.94$, age $p = 0.24$)
+-- the protected attributes collectively explain $1.3\%$ of performance variance.
+The sensitivity sweep confirms that the verdict is robust across a range of
+beneficial-outcome thresholds. In short, $M_{\mathrm{mix}}$ is fair across
+all three protected attributes: no demographic group is disadvantaged by any
+practical measure.
+
+\autoref{fig:global_audit} (left) visualises the DIRs with their bootstrap confidence
+intervals: all estimates cluster near $1.0$, with every lower bound clearing
+$0.80$. \autoref{fig:global_audit} (right) shows the score distribution that later
+experiments are most sensitive to -- macro Dice by age bin. The three groups have
+nearly identical medians (${\sim}0.974$), but the youngest bin ($<40$) carries a
+fat lower tail driven by a handful of difficult cases; the age gradient itself
+is negligible.
+
+\begin{table}[t]
+\centering
+\caption{Disparate impact ratio (DIR) and demographic parity difference (DPD) with
+BCa bootstrap $95\%$ confidence intervals on DIR, for $M_{\mathrm{mix}}$ on the
+full $228$-case test set. DIR $= 1.0$ and DPD $= 0$ denote parity; the four-fifths
+threshold ($0.80$) is the conventional adverse-impact line. All DIR lower bounds
+exceed $0.80$.}
+\label{tab:global_dir}
+\small
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l c c c c c c}
+\hline\noalign{\smallskip}
+ & \multicolumn{2}{c}{Dice} & \multicolumn{2}{c}{nDSC} & \multicolumn{2}{c}{HD95} \\
+\noalign{\smallskip}\cline{2-3}\cline{4-5}\cline{6-7}\noalign{\smallskip}
+Grouping & DIR & DPD & DIR & DPD & DIR & DPD \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+Sex          & $0.991\;[0.97,\,1.00]$ & $0.009$ & $0.983\;[0.94,\,1.00]$ & $0.018$ & $0.991\;[0.97,\,1.00]$ & $0.009$ \\
+Race (W/B)   & $0.976\;[0.90,\,1.00]$ & $0.024$ & $0.969\;[0.89,\,1.00]$ & $0.031$ & $0.970\;[0.89,\,1.00]$ & $0.028$ \\
+Age (3 bins) & $0.988\;[0.98,\,1.00]$ & $0.012$ & $0.978\;[0.92,\,1.00]$ & $0.022$ & $0.979\;[0.96,\,1.00]$ & $0.020$ \\
+\noalign{\smallskip}\hline
+\end{tabular*}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.525\textwidth]{dir_forest_global.png}\hfill
+\includegraphics[width=0.455\textwidth]{violin_dice_macro_age.png}
+\caption{Global fairness audit of $M_{\mathrm{mix}}$ on the full $228$-case test
+set. \textbf{Left:} Forest plot of disparate impact ratios across all seven
+demographic groupings and three metrics; point estimates (dots) with BCa $95\%$
+bootstrap confidence intervals (whiskers). The dashed line marks the four-fifths
+adverse-impact threshold ($0.80$); every lower bound clears it comfortably.
+\textbf{Right:} Distribution of macro Dice by age bin ($n = 45$, $86$, $97$).
+Medians are nearly identical (${\sim}0.974$); the youngest bin carries a wider
+lower tail (a handful of difficult cases), but the overall age effect is negligible
+($\varepsilon^2 < 0.01$, $p_{\mathrm{fdr}} = 0.98$).}
+\label{fig:global_audit}
+\end{figure}
+
+\subsection{Biased Ruler Effect}
+\label{sec:biased_ruler}
+
+We now ask whether the choice of reference label can change a fairness verdict.
+The global audit of ``\nameref{sec:global}'' found $M_{\mathrm{mix}}$ fair across
+all three attributes ($0/63$ FDR-significant tests, all DIRs $> 0.96$) -- but that
+verdict rests on expert labels. What happens if we replace the ruler?
+We take the same model, the same $76$ gold-test images, and
+score them twice: once against the expert (gold) labels -- the ground truth --
+and once against $M_{\mathrm{gold}}$'s predictions on those same images, which
+serve as the generated-silver ruler described in ``\nameref{sec:design}''.
+Because the predictions are identical and only the reference label changes, any
+difference in the fairness verdict is a pure ruler effect.
+
+\paragraph{Performance gap between rulers.}
+Against the gold ruler, $M_{\mathrm{mix}}$ achieves a macro Dice of $0.897$
+(vertebral body $0.922$, disc $0.872$). Against the silver ruler the same
+predictions score $0.973$ (vertebral body $0.979$, disc $0.968$) -- an inflation
+of nearly $8$ percentage points. The gap itself is a first signal: the silver
+ruler is far more lenient than the expert, because it shares systematic errors
+with the model under test.
+
+\paragraph{The verdict flip.}
+Under the gold ruler, zero of the $63$ statistical tests reach significance after
+Benjamini--Hochberg correction (smallest $p_{\mathrm{fdr}} = 0.13$) -- the model
+is judged fair. Under the silver ruler, $11$ of $63$ tests are FDR-significant at
+$\alpha = 0.05$, and every one of them is an age comparison (the three-bin and
+median-split groupings, across Dice and nDSC for both structures and the macro
+score). HD95 tells the same inflation story (gold mean $2.50$\,mm vs silver
+$0.40$\,mm) but contributes no significant tests on either ruler, because its
+heavy-tailed variance overwhelms the age signal on both.
+The significance verdict reverses purely from the choice of reference
+label. \autoref{tab:biased_ruler} summarises the two rulers side by side.
+
+\begin{table}[t]
+\centering
+\caption{Biased-ruler comparison on the $76$ gold-test images (macro Dice).
+The same predictions of $M_{\mathrm{mix}}$ are scored against two rulers: expert
+labels (gold) and $M_{\mathrm{gold}}$'s predictions (silver). DIR and DPD are
+rate-based (threshold $\tau = 0.8$); $p_{\mathrm{fdr}}$ is the Kruskal--Wallis
+test after Benjamini--Hochberg correction. The silver ruler saturates
+(DIR~$\equiv 1.0$, zero failures above $\tau$) while simultaneously producing
+significance on the continuous test for age.}
+\label{tab:biased_ruler}
+\small
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l c c c c c c}
+\hline\noalign{\smallskip}
+ & \multicolumn{3}{c}{Gold ruler} & \multicolumn{3}{c}{Silver ruler} \\
+\noalign{\smallskip}\cline{2-4}\cline{5-7}\noalign{\smallskip}
+Grouping & DIR & DPD & $p_{\mathrm{fdr}}$ & DIR & DPD & $p_{\mathrm{fdr}}$ \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+Sex          & $1.000$ & $0.000$ & $0.997$ & $1.000$ & $0.000$ & $0.718$ \\
+Race (W/B)   & $0.956$ & $0.044$ & $0.997$ & $1.000$ & $0.000$ & $0.328$ \\
+Age (3 bins) & $0.952$ & $0.048$ & $0.270$ & $1.000$ & $0.000$ & $0.026^{\ast}$ \\
+\noalign{\smallskip}\hline
+\end{tabular*}
+
+\smallskip
+{\footnotesize $^{\ast}$\,Significant after FDR correction at $\alpha = 0.05$.
+All $11$ significant tests on the silver ruler are age groupings (three-bin and
+median split, Dice and nDSC).}
+\end{table}
+
+\paragraph{Mechanism: false confidence via variance collapse.}
+The verdict flip does not arise because the silver ruler reveals a larger gap --
+it does the opposite. The age trend is smaller against silver than against
+gold: median macro Dice drops from $0.925$ ($<$40) to $0.898$ (60+) on the gold
+ruler (a $2.7$-point spread) but only from $0.980$ to $0.974$ on silver (a
+$0.6$-point spread). What changes is the within-group variance. Recall that the
+silver ruler is $M_{\mathrm{gold}}$'s predictions -- so scoring against it
+measures inter-model agreement rather than accuracy. That agreement sits at
+${\sim}0.97$ Dice, far above the ${\sim}0.89$ that the same predictions achieve
+against the expert labels, and the standard deviation across the $76$ cases drops
+from $0.058$ (gold) to $0.014$ (silver) -- a ${\sim}4\times$ reduction. We attribute
+this high agreement to the inherent simplicity of cervical-spine segmentation --
+vertebral bodies and discs are large, high-contrast structures with well-defined
+boundaries -- combined with the shared architecture and training recipe, which
+lead both models to converge on similar solutions regardless of the specific
+training cases.\footnote{$M_{\mathrm{mix}}$ and $M_{\mathrm{gold}}$ do share $288$
+training cases, but this is not the primary driver: even
+$M_{\mathrm{gold}}$ and $M_{\mathrm{silver}}$, trained on fully disjoint data
+(zero case overlap), still agree at $0.97$ macro Dice on the same $76$ images.
+The high inter-model agreement is a property of the task, not of shared
+training data.} The Kruskal--Wallis test's power
+scales with signal-to-noise, so the same clinically negligible age gradient that
+is buried in gold's noise ($H = 7.0$, $p = 0.030$,
+$p_{\mathrm{fdr}} = 0.27$) clears correction once silver's collapsed variance
+sharpens the ranks ($H = 11.4$, $p = 0.003$, $p_{\mathrm{fdr}} = 0.026$). The
+ruler did not change the patient; it changed the test's power.
+A threshold sensitivity sweep confirms the saturation: the silver DIR remains
+pinned at $1.0$ for all groupings through $\tau = 0.85$ and only drops (to
+$0.97$) at $\tau = 0.90$, whereas the gold DIR already flags age disparity at
+$\tau = 0.70$ and collapses to $0.57$ at $\tau = 0.90$.
+\autoref{fig:biased_ruler} visualises the variance collapse: the same downward
+staircase appears on both rulers, but gold's wide boxes bury the signal while
+silver's razor-thin boxes expose it.
+
+\paragraph{Comparison with Parikh et al.}
+Parikh et al.~\cite{parikh2025labelbias} show a biased-ruler effect in
+breast-MRI segmentation where the silver ruler makes a real gap look larger
+than it truly is (DIR drops from $0.871$ to $0.815$). Our silver ruler does
+something different: it leaves the gap the same size (or even shrinks it) but
+makes a negligible gap look statistically significant. In their case, the ruler
+exaggerates the signal; in ours, it removes the noise that would otherwise mask
+it. Both lead to the same practical problem -- the fairness verdict depends on
+which reference label you choose -- but through opposite routes.
+
+\paragraph{The age effect is intrinsic.}
+Although the significance is a ruler artifact, the underlying age trend is not.
+It appears on both rulers in the same direction (60+ worst), is
+consistent with the degenerative anatomy documented in
+``\nameref{sec:confounders}'' (vertebral merging in older spines), and is
+independently corroborated by the encoder probe
+(``\nameref{sec:probing_results}''). An effect visible through the true ruler, the
+correlated ruler, and the learned representation is unlikely to be a label
+artifact -- it reflects intrinsic difficulty in older spines.
+
+\paragraph{Not unfairness.}
+A statistically significant gap is not the same as an unfair model. The
+magnitudes here are clinically negligible: the worst-vs-best age group spans
+$2.7$ Dice points on gold ($0.925 \to 0.898$) and $0.6$ points on silver, with
+every patient receiving a ${\sim}0.90$+ Dice segmentation. All gold-ruler DIRs
+exceed $0.94$ -- far above the four-fifths threshold -- and no subgroup is failed
+by any practical measure. The contribution of this experiment is methodological:
+it demonstrates that a machine-generated reference label can manufacture a
+finding out of a non-issue, and that significance alone should not be read as
+evidence of harm.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{age_trend_gold_vs_silver.png}
+\caption{The variance-collapse mechanism behind the verdict flip. Both panels
+show macro Dice by age bin for the same $76$ predictions of $M_{\mathrm{mix}}$,
+scored against the gold ruler (left) and the silver ruler (right). The age
+gradient runs in the same direction on both (60+ worst), but the gold ruler's
+per-group standard deviations ($0.03$--$0.10$) bury the signal below FDR
+correction, while the silver ruler's collapsed variance ($0.01$--$0.02$) exposes
+it. The ruler changed the test's power, not the patient's outcome.}
+\label{fig:biased_ruler}
+\end{figure}
+
+\subsection{Bias Amplification}
+\label{sec:amplification}
+
+The biased-ruler experiment showed that the choice of reference label can distort
+a fairness verdict at evaluation time. We now ask whether label provenance in
+training can do the same. E3 and E4 (\autoref{tab:experiments}) compare
+the three models -- $M_{\mathrm{mix}}$, $M_{\mathrm{gold}}$, and
+$M_{\mathrm{silver}}$ -- on the same $76$ gold-test cases scored against expert
+labels, so any difference in fairness is attributable to the training labels
+alone.
+
+\paragraph{Segmentation quality.}
+$M_{\mathrm{silver}}$ achieves a macro Dice of $0.897$ (vertebral body $0.921$,
+disc $0.872$) -- identical to $M_{\mathrm{mix}}$ to three decimal places despite
+never seeing an expert label during training. $M_{\mathrm{gold}}$ scores slightly
+lower ($0.888$; vertebral body $0.914$, disc $0.862$), likely because it trains on
+fewer cases ($288$ versus $450$ and $798$). Silver training labels do not degrade
+absolute performance in this setting; the larger training pool compensates for the
+noisier supervision.
+
+\paragraph{Fairness verdict.}
+\autoref{tab:amplification} reports the macro Dice DIR for all three models. Zero
+of the $63$ statistical tests reach significance after Benjamini--Hochberg
+correction on any model (smallest $p_{\mathrm{fdr}} = 0.061$,
+$M_{\mathrm{gold}}$ nDSC disc by age). The
+$M_{\mathrm{silver}}$ DIRs are nearly identical to $M_{\mathrm{mix}}$ -- in most
+groupings the values coincide exactly -- and all exceed $0.93$. If anything,
+$M_{\mathrm{gold}}$ is the least fair of the three on the disc (race W/B/O DIR
+$= 0.813$ versus $0.875$ for both $M_{\mathrm{mix}}$ and $M_{\mathrm{silver}}$),
+though even that value clears the four-fifths threshold. There is no evidence that
+silver training labels amplify demographic bias.
+
+\begin{table}[t]
+\centering
+\caption{Bias amplification: macro Dice DIR for the three models on the $76$
+gold-test cases (expert reference). DIR $= 1.0$ denotes parity; the four-fifths
+threshold is $0.80$. $M_{\mathrm{silver}}$ matches $M_{\mathrm{mix}}$ almost
+exactly; $M_{\mathrm{gold}}$ is occasionally worse. All values exceed
+$0.80$; $0/63$ tests reach FDR significance on any model.}
+\label{tab:amplification}
+\small
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l c c c}
+\hline\noalign{\smallskip}
+Grouping & $M_{\mathrm{mix}}$ & $M_{\mathrm{gold}}$ & $M_{\mathrm{silver}}$ \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+Sex          & $1.000$ & $0.946$ & $1.000$ \\
+Race (W/B)   & $0.956$ & $0.994$ & $0.956$ \\
+Race (W/B/O) & $0.938$ & $0.938$ & $0.938$ \\
+Age (3 bins) & $0.952$ & $0.956$ & $0.952$ \\
+Age (median) & $0.998$ & $0.996$ & $0.998$ \\
+\noalign{\smallskip}\hline
+\end{tabular*}
+\end{table}
+
+\paragraph{Interpretation.}
+The null result is expected: bias amplification requires both an underlying
+disparity for noisy labels to exaggerate and a silver source that is
+differentially biased across groups. Neither precondition holds here. The global
+audit (``\nameref{sec:global}'') already found no demographic gap to amplify
+($0/63$, all DIRs $> 0.96$), and the silver labels are high-quality -- Zhou et
+al.~\cite{zhou2025cspineseg} selected which exams to expert-annotate
+pseudo-randomly (by medical record number), leaving the gold and silver pools
+demographically comparable, so the machine-generated labels carry no systematic
+group-level bias for training to propagate.
+This contrasts with Parikh et al.~\cite{parikh2025labelbias}, who observed $66\%$
+gap widening (DIR dropping below $0.80$) when training on their silver labels. The
+difference lies in the preconditions: their silver annotator was an independently
+trained model that was itself biased against younger patients, acting on a task
+with a substantial pre-existing age disparity. In our setting, the silver labels
+are produced by a model trained on a representative subset of the same
+institution's gold annotations, segmenting large high-contrast structures whose
+boundaries may leave little room for demographically differential error --
+though we cannot test this hypothesis directly. The result suggests that
+mixing silver labels into training is unlikely to harm fairness when the
+underlying labels are well-calibrated and no pre-existing disparity exists for
+noisy supervision to exaggerate.
+
+\subsection{Demographic Probing}
+\label{sec:probing_results}
+
+The preceding experiments ask whether demographic groups receive different
+outputs. We now ask a logically independent question: does the model's
+internal representation carry demographic signal at all? Encoding a protected
+attribute and producing a performance disparity are separate phenomena -- a model
+can do one without the other~\cite{petersen2023feature}. The probe setup --
+two encoders (nnU-Net bottleneck and MRI-CORE), each paired with a random-init
+null, scored via PCA(50) and logistic regression in 5-fold CV -- is defined in
+``\nameref{sec:probing_method}'' (\autoref{sec:probing_method}).
+
+\paragraph{Results.}
+\autoref{tab:probe} reports probe scores for all four encoder--null pairs across
+three demographic attributes plus manufacturer (a sanity check). Sex is the most
+strongly encoded attribute: the nnU-Net bottleneck reaches $0.957$ AUROC, with the
+segmentation task contributing $+0.186$ above its random null ($0.771$). MRI-CORE
+scores $0.931$, but its random-init null already achieves $0.836$ -- indicating
+that ${\sim}90\%$ of the sex signal in the task-agnostic encoder comes from raw
+pixel statistics (body silhouette, FOV extent) rather than learned anatomy. Age
+is moderately encoded on both ($0.642$ nnU-Net, $0.632$ MRI-CORE), with task
+training again the larger contributor ($+0.166$ vs.\ $+0.098$).
+Race sits near chance on all encoders (wide CIs, fold variance $0.41$--$0.55$), consistent
+with the null race finding in the fairness audit. Manufacturer reaches ${\sim}0.997$
+universally -- a pixel-level scanner fingerprint independent of learned weights,
+serving as a healthy end-to-end sanity check.
+
+A confounder analysis on the full cohort confirms that the probe signals are not
+artefacts of scanner assignment or attribute entanglement: sex $\times$
+manufacturer ($\chi^2$ $p = 0.21$, Cram\'er's $V = 0.035$) and age $\times$ sex
+($p = 0.08$, $r_{rb} = 0.07$) are not significant; age $\times$ manufacturer
+reaches significance ($p = 0.02$) but at a negligible effect size
+($r_{rb} = -0.09$), meaning older patients are only marginally more likely to
+appear on one scanner -- too weak an association to account for the age probe
+scores observed above.
+
+\begin{table}[t]
+\centering
+\caption{Linear-probe scores for demographic attributes on frozen encoder
+features ($n = 1{,}085$). ``Null'' denotes a random-initialised network of
+identical architecture and preprocessing. $\Delta_{\mathrm{task}}$ is the
+trained-minus-null gap, isolating the contribution of the training objective.
+Sex is strongly encoded yet produces no performance disparity
+(``\nameref{sec:global}''); age is the one axis with both encoding and a
+(negligible) performance trend. Values are mean $\pm$ Nadeau--Bengio 95\% CI.}
+\label{tab:probe}
+\small
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l l c c c}
+\hline\noalign{\smallskip}
+Encoder & Attribute & Trained & Null & $\Delta_{\mathrm{task}}$ \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+nnU-Net        & Sex (AUROC)       & $0.957\pm.030$ & $0.771\pm.066$ & $+0.186$ \\
+(segmentation) & Age (bal.\ acc.)  & $0.642\pm.023$ & $0.476\pm.055$ & $+0.166$ \\
+               & Race (bal.\ acc.) & $0.491\pm.104$          & $0.373\pm.052$ & $+0.118$ \\
+               & Manuf.\ (AUROC)   & $0.997\pm.004$          & $0.983\pm.012$ & $+0.014$ \\
+\noalign{\smallskip}\cline{1-5}\noalign{\smallskip}
+MRI-CORE       & Sex (AUROC)       & $0.931\pm.031$ & $0.836\pm.039$ & $+0.095$ \\
+(task-agnostic) & Age (bal.\ acc.) & $0.632\pm.043$ & $0.534\pm.083$ & $+0.098$ \\
+               & Race (bal.\ acc.) & $0.513\pm.071$ & $0.426\pm.064$ & $+0.087$ \\
+               & Manuf.\ (AUROC)   & $0.997\pm.007$ & $0.992\pm.013$ & $+0.005$ \\
+\noalign{\smallskip}\hline
+\end{tabular*}
+\end{table}
+
+\paragraph{Encoding does not imply disparity.}
+The central finding is a dissociation: sex is by far the most strongly encoded
+attribute ($0.957$), yet the global audit found zero sex disparity ($0/63$
+significant tests, DIR~$= 0.991$). The segmentation task has learned to exploit
+sex-linked vertebral morphology -- larger bodies and discs in men, different canal
+geometry -- without producing differential outcomes. Conversely, age is only
+moderately encoded ($0.642$) yet is the one axis that shows a (clinically
+negligible) performance trend, corroborating the biased-ruler finding that the age
+effect is intrinsic anatomical difficulty rather than a label artefact. The probe
+thus confirms that encoding is neither necessary nor sufficient for disparity: a
+model can strongly represent a demographic feature and still be fair, because the
+decoder maps those different representations to equally accurate outputs.

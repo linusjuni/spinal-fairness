@@ -17,9 +17,18 @@ predict + evaluate    ⏳  predict jobs running
 | Config | Patch Size | Batch Size | Epoch time (A100) | Wall time |
 |---|---|---|---|---|
 | `2d` | 512×512 | 35 | ~3 min | 72h (covers ~1000 epochs) |
-| `3d_fullres` | 15×512×512 | 2 | ~6–10 min (est.) | 72h (partial — needs resume) |
+| `3d_fullres` | 16×512×512 | 2 | ~6–10 min (est.) | 72h (partial — needs resume) |
 
 `3d_lowres` was dropped by the planner (volumes too small).
+
+Patch/batch sizes are from `nnUNetResEncUNetLPlans.json` (ResEnc-L planner).
+Verified 2026-06-11: Dataset002 (gold) and Dataset003 (silver) produce
+**byte-for-byte identical plans** — same patch size, batch size, 8-stage
+`ResidualEncoderUNet` topology, spacing, and Z-score normalization — despite the
+~3× range in `numTraining`. The batch-size cap (5% of dataset voxels) never binds;
+the VRAM-derived batch size (35 for 2d, 2 for 3d_fullres) is the binding
+constraint for all three. So the three regimes share an identical architecture
+and training recipe, and any fairness difference is attributable to labels alone.
 
 ## Custom Trainer
 

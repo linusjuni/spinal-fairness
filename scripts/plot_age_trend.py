@@ -20,10 +20,9 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import polars as pl
 import seaborn as sns
-from matplotlib.patches import Patch
 
 RUN = Path("outputs/fairness/fairness_biased_ruler/20260607_210826")
-OUT = RUN / "age_trend_gold_vs_silver.png"
+OUT = Path("paper/figures/age_trend_gold_vs_silver.png")
 AGE_ORDER = ["<40", "40-60", "60+"]
 # FDR-corrected Kruskal-Wallis p for macro Dice ~ age_3bin (from fdr_{ruler}.csv)
 FDR_P = {"gold": 0.270, "silver": 0.026}
@@ -37,11 +36,15 @@ def load_summary(ruler: str) -> dict[str, dict]:
 def main() -> None:
     sns.set_theme(style="whitegrid", palette="muted")
     muted = sns.color_palette("muted")
-    fig, axes = plt.subplots(1, 2, figsize=(12.5, 6), sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4.5), sharey=True)
 
     panels = [
-        ("Gold ruler (expert labels)", "gold", muted[8]),    # muted gold/yellow
-        ("Silver ruler (twin-model labels)", "silver", muted[7]),  # muted grey
+        ("Gold ruler (expert labels)", "gold", muted[0]),  # blue
+        (
+            "Silver ruler ($M_{\\mathrm{gold}}$ predictions)",
+            "silver",
+            muted[1],
+        ),  # orange
     ]
 
     for ax, (title, ruler, color) in zip(axes, panels):
@@ -49,78 +52,109 @@ def main() -> None:
         xs = list(range(len(AGE_ORDER)))
         medians = []
 
-        spread_bits = []
         for x, g in zip(xs, AGE_ORDER):
             r = s[g]
             q25, med, q75 = r["q25"], r["median"], r["q75"]
             mean, std, n = r["mean"], r["std"], r["n"]
             medians.append(med)
-            spread_bits.append(f"{g}: n={n}, std={std:.3f}")
 
-            # IQR box (q25-q75) with median line
+            # IQR box
             ax.add_patch(
-                plt.Rectangle((x - 0.22, q25), 0.44, q75 - q25,
-                              facecolor=color, alpha=0.30, edgecolor=color, linewidth=1.5)
+                plt.Rectangle(
+                    (x - 0.25, q25),
+                    0.50,
+                    q75 - q25,
+                    facecolor=color,
+                    alpha=0.25,
+                    edgecolor=color,
+                    linewidth=1.2,
+                )
             )
-            ax.plot([x - 0.22, x + 0.22], [med, med], color=color, linewidth=2.6, zorder=5)
-            # +/-1 std whisker (the "spread" = noise) centred on the mean
-            ax.plot([x, x], [mean - std, mean + std], color=color, linewidth=1.3,
-                    alpha=0.8, zorder=3)
-            ax.plot([x - 0.05, x + 0.05], [mean - std, mean - std], color=color, linewidth=1.3)
-            ax.plot([x - 0.05, x + 0.05], [mean + std, mean + std], color=color, linewidth=1.3)
-            # mean diamond
-            ax.plot(x, mean, "D", color="black", markersize=8, markerfacecolor="white",
-                    markeredgewidth=1.6, zorder=6)
+            # Median line
+            ax.plot(
+                [x - 0.25, x + 0.25],
+                [med, med],
+                color=color,
+                linewidth=2.2,
+                solid_capstyle="round",
+                zorder=5,
+            )
+            # ±1 std whiskers
+            ax.plot(
+                [x, x],
+                [mean - std, mean + std],
+                color=color,
+                linewidth=1.0,
+                alpha=0.7,
+                zorder=3,
+            )
+            ax.plot(
+                [x - 0.06, x + 0.06],
+                [mean - std, mean - std],
+                color=color,
+                linewidth=1.0,
+            )
+            ax.plot(
+                [x - 0.06, x + 0.06],
+                [mean + std, mean + std],
+                color=color,
+                linewidth=1.0,
+            )
+            # Mean marker
+            ax.plot(
+                x,
+                mean,
+                "o",
+                color="white",
+                markersize=5,
+                markeredgecolor=color,
+                markeredgewidth=1.2,
+                zorder=6,
+            )
 
-        # connect medians: the downward old-is-lower step
-        ax.plot(xs, medians, "--", color=color, linewidth=1.6, alpha=0.9, zorder=4)
+        # Connect medians
+        ax.plot(xs, medians, "--", color=color, linewidth=1.2, alpha=0.7, zorder=4)
 
+        # Annotation: std and verdict
         p = FDR_P[ruler]
-        verdict = "SIGNIFICANT after FDR" if p < 0.05 else "not significant after FDR"
-        vcolor = "#c0392b" if p < 0.05 else "#2e7d32"
-        ax.text(0.5, 0.30,
-                "per-group spread (noise):\n" + "\n".join(spread_bits),
-                transform=ax.transAxes, ha="center", va="bottom", fontsize=9.5,
-                color="#333",
-                bbox=dict(boxstyle="round,pad=0.4", fc="#fafafa", ec="#bbb", alpha=0.95))
-        ax.text(0.5, 0.10,
-                f"Kruskal–Wallis (Dice ~ age):  FDR p = {p:.3f}\n→ {verdict}",
-                transform=ax.transAxes, ha="center", va="bottom", fontsize=10.5,
-                fontweight="bold", color=vcolor,
-                bbox=dict(boxstyle="round,pad=0.45", fc="white", ec=vcolor, alpha=0.95))
+        stds = [s[g]["std"] for g in AGE_ORDER]
+        std_range = f"std: {min(stds):.3f}–{max(stds):.3f}"
+        sig_label = f"$p_{{\\mathrm{{fdr}}}} = {p:.3f}$"
+        if p < 0.05:
+            sig_label += " (significant)"
+        else:
+            sig_label += " (n.s.)"
 
-        ax.set_title(title, fontsize=13, fontweight="bold")
+        ax.text(
+            0.97,
+            0.05,
+            f"{std_range}\n{sig_label}",
+            transform=ax.transAxes,
+            ha="right",
+            va="bottom",
+            fontsize=9,
+            bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="#cccccc", alpha=0.9),
+        )
+
+        ax.set_title(title, fontsize=11)
         ax.set_xticks(xs)
         ax.set_xticklabels(AGE_ORDER)
         ax.set_xlabel("Age group")
         ax.set_xlim(-0.6, len(AGE_ORDER) - 0.4)
 
-    axes[0].set_ylabel("Macro Dice (vertebrae + disc)")
-    axes[0].set_ylim(0.6, 1.0)
+    axes[0].set_ylabel("Macro Dice")
+    axes[0].set_ylim(0.75, 1.0)
 
-    legend = [
-        Patch(facecolor="grey", alpha=0.30, edgecolor="grey", label="IQR (25–75%)"),
-        plt.Line2D([0], [0], color="grey", lw=2.6, label="median"),
-        plt.Line2D([0], [0], marker="D", color="black", markerfacecolor="white",
-                   lw=0, markersize=8, label="mean"),
-        plt.Line2D([0], [0], color="grey", lw=1.3, label="±1 std (spread / noise)"),
-    ]
-    fig.legend(handles=legend, loc="lower center", ncol=4, fontsize=9.5,
-               framealpha=0.95, bbox_to_anchor=(0.5, 0.005))
+    fig.tight_layout()
+    fig.savefig(OUT, dpi=300, bbox_inches="tight")
+    print(f"Saved {OUT}")
 
-    fig.suptitle(
-        "Older spines score slightly lower on BOTH rulers — but only the low-noise "
-        "silver ruler makes the gap statistically certain",
-        fontsize=12.5, y=0.98,
-    )
-    fig.tight_layout(rect=(0, 0.06, 1, 0.94))
-    fig.savefig(OUT, dpi=150)
-    print(f"saved {OUT}")
-
-    # console sanity check
+    # Console check
     for ruler in ("gold", "silver"):
         s = load_summary(ruler)
-        line = "  ".join(f"{g}: med={s[g]['median']:.3f} std={s[g]['std']:.3f}" for g in AGE_ORDER)
+        line = "  ".join(
+            f"{g}: med={s[g]['median']:.3f} std={s[g]['std']:.3f}" for g in AGE_ORDER
+        )
         print(f"{ruler:6s} | {line}")
 
 

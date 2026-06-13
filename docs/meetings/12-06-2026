@@ -1,0 +1,34 @@
+# Meeting Notes — 12 June 2026
+
+**Attendees:** Linus, Aditya
+
+---
+
+## Oral Presentation (Monday, 15 June)
+
+- Audience: 8 people
+- Duration: 15–20 minutes
+- Less pure technical detail, more narrative
+- Fairness in segmentation is hard (compared to classification) — use as motivation
+- When talking about metrics, focus on how things can fool us (e.g. Dice volume bias)
+
+---
+
+## Presentation Content — Agreed Points
+
+- When discussing gold/silver evaluation: mention that we tried to distinguish silver
+  from gold labels ourselves before we had the annotation-quality list from the dataset
+  authors (adds credibility to the quality question)
+
+- Probing work should definitely be included — make it visually nice. Key message:
+  **encoding demographics does not necessarily translate to performance disparities.**
+  Worth noting that many people assume it does, and even try to remove demographic
+  signal from representations, even though that may not be needed (cite Petersen et al.
+  "encoding ≠ disparity"; our sex result is a clean example: AUROC 0.957 yet zero
+  performance gap)
+
+---
+
+## Open Items
+
+- 

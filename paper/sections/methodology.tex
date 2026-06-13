@@ -225,8 +225,8 @@ We segment every regime with nnU-Net~\cite{isensee2021nnunet}, the self-configur
 framework that has become the standard baseline for biomedical segmentation. Rather
 than fix an architecture by hand, nnU-Net derives the whole pipeline -- patch and
 batch size, network depth, resampling, and intensity normalisation -- from a
-fingerprint of the dataset (image sizes, voxel spacings, modality, class
-frequencies) through a set of rule-based heuristics. Two properties make it the right
+fingerprint of the dataset (image sizes, voxel spacings, and intensity
+statistics) through a set of rule-based heuristics. Two properties make it the right
 backbone for a fairness audit. First, it is a genuinely strong baseline: under
 controlled, equal-resource validation a well-scaled nnU-Net still matches or exceeds
 the transformer and state-space architectures that claim to surpass
@@ -243,7 +243,7 @@ current recommended default, which devotes a larger GPU-memory budget to a
 residual-encoder U-Net~\cite{isensee2024revisited}. Because CSpineSeg is MRI, the planner
 selects per-case $z$-score intensity normalisation. Following nnU-Net's standard protocol
 we train two configurations for every regime -- a 2D model and a full-resolution 3D model
-(patches $512\times512$ and $15\times512\times512$, the latter's shallow depth matching
+(patches $512\times512$ and $16\times512\times512$, the latter's shallow depth matching
 the thin, few-slice sagittal stacks of CSpineSeg) -- each as a five-fold
 cross-validation over the pooled development set
 ($\mathcal{D}_{\mathrm{train}}\cup\mathcal{D}_{\mathrm{val}}$) defined in
@@ -253,18 +253,20 @@ both configurations across all five folds -- ten trained models -- as the final
 predictor. The same recipe runs for all three regimes, changing only the training
 labels.
 
-Two choices depart from nnU-Net's defaults, both to serve the audit. We replace the
+One choice departs from nnU-Net's defaults, to serve the audit: we replace the
 framework's random cross-validation folds with demographically stratified ones, so that
 each fold preserves the joint race~$\times$~age~$\times$~sex composition of the cohort;
 together with the patient-level, sex-balanced split of ``\nameref{sec:splits}'' this
-keeps subgroup representation constant through training and validation. And we apply no
-per-structure largest-component post-processing: nnU-Net's default ``keep largest
-component'' heuristic is built for single-object targets and would collapse the
-multi-vertebra, multi-disc anatomy of a cervical spine into a single blob -- on our
-validation folds it cut vertebral-body Dice from $0.96$ to $0.49$ -- so we keep the raw
-network output. Training otherwise uses the stock nnU-Net trainer; our only addition is
-experiment logging, leaving the loss, optimiser, and augmentation untouched. The splits
-and the sex-balancing downsample are seeded and reproducible.
+keeps subgroup representation constant through training and validation. Post-processing,
+by contrast, we leave to nnU-Net's automatic search, which for this multi-object anatomy
+declines the per-class ``keep largest component'' cleanup that its single-object default
+would otherwise apply: collapsing each class to its largest blob would discard all but one
+of the ${\sim}7$ vertebrae and the multiple discs (vertebral-body Dice $0.96 \to 0.49$ on
+our cross-validation folds). Only a global largest-foreground cleanup, which leaves the
+connected spine column intact, is retained, and it shifts the score negligibly. Training
+otherwise uses the stock nnU-Net trainer; our only addition is experiment logging, leaving
+the loss, optimiser, and augmentation untouched. The splits and the sex-balancing
+downsample are seeded and reproducible.
 % TODO: models not yet released -- add public-model link here once the Hugging Face
 % repo is live (see docs/nnunet/07_huggingface_release.md). E.g.: ", and the trained
 % models are released publicly at \url{...}." Do NOT claim release until it is public.
@@ -275,67 +277,240 @@ accounting~\cite{lacoste2019quantifying,strubell2019energy,patterson2021carbon} 
 2023 Danish grid intensity~\cite{dea_keyfigures2023} this corresponds to an estimated
 $53$--$74$\,kg~CO$_2$e.
 
-\subsection{Evaluation Metrics}
+\subsection{Evaluation Metrics and Statistical Analysis}
 \label{sec:metrics}
 
-% - Overlap/distance metrics: Dice and HD95 (95th-percentile Hausdorff, mm).
-% - nDSC: define as the class-imbalance-normalised Dice of Raina et al. (2023)
-%   -- normalises the false-positive penalty by a reference class/lesion load
-%   so the score stops rewarding large structures. EXPLICIT tie-back: this is
-%   the "volume-aware score introduced in the Methodology" that the Dataset
-%   section (sec:confounders) promised as the volume-confound fix; name it.
-% - Fairness metrics, binarized rate-based (canonical Parikh / Fairlearn /
-%   EEOC): per-case beneficial outcome (success), per-group success rate
-%   P(yhat=1 | group); DPD = max(rate) - min(rate); DIR = min/max.
-%   Thresholds: Dice/nDSC 0.8, HD95 5 mm (configurable). Four-fifths rule
-%   (DIR < 0.8 flags adverse impact). Sensitivity sweep emitted per run.
-%   Portability caveat ("four-fifths from US employment law; adopted as field
-%   convention + for comparability, not a legal claim").
-% - Significance backbone: Mann-Whitney U (sex, race; effect size r_rb) and
-%   Kruskal-Wallis H (age 3-bin; eps^2) on the CONTINUOUS scores; BH-FDR across
-%   the family.
-% - A-PRIORI primacy argument (do NOT justify via saturation -- that leaks a
-%   result): at macro Dice ~0.89, well above the 0.8 beneficial-outcome cutoff,
-%   the binarized DIR is near-degenerate by construction (few failures per
-%   group -> low power), so the continuous tests are the more sensitive
-%   instrument BY DESIGN, and the sweep guards the DIR reading. Frame as: we
-%   report DIR for field-comparability + four-fifths, but the high-Dice regime
-%   makes the continuous tests primary. (This also pre-motivates the sweep.)
+We evaluate every model along two axes: how well it segments, and how evenly that
+quality is spread across the protected groups $\mathcal{A}$. The first calls for
+segmentation-quality metrics, the second for group-level fairness metrics, and
+reading either as evidence calls for a statistical-inference layer on top. We
+define all three here; which experiment applies them to which model and labels is
+deferred to ``\nameref{sec:design}''.
+
+\paragraph{Segmentation-quality metrics.}
+Fix an exam $i$ and a foreground class $c \in \{1, 2\}$ (vertebral body, disc).
+Writing $\hat{Y}_i$ for the model's prediction and $Y_i$ for the reference
+(\autoref{tab:notation}), the predicted and reference voxel sets for class $c$ are
+$P_{i,c} = \{v \in \Omega_i : \hat{Y}_i(v) = c\}$ and
+$R_{i,c} = \{v \in \Omega_i : Y_i(v) = c\}$, from which we take the usual counts
+$\mathrm{TP} = |P_{i,c} \cap R_{i,c}|$, $\mathrm{FP} = |P_{i,c} \setminus R_{i,c}|$,
+and $\mathrm{FN} = |R_{i,c} \setminus P_{i,c}|$. The Dice
+score~\cite{dice1945measures} is the overlap
+\begin{equation}
+  \mathrm{Dice}_{i,c}
+  = \frac{2\,\mathrm{TP}}{2\,\mathrm{TP} + \mathrm{FP} + \mathrm{FN}}.
+  \label{eq:dice}
+\end{equation}
+
+Dice has the volume bias the Dataset section warned of (``\nameref{sec:confounders}''):
+because the false-positive penalty is not scaled by structure size, a fixed
+boundary error costs a smaller fraction of a large structure's score than of a
+small one's, so the larger anatomy of men and of older patients can score higher
+at equal true quality. The normalised Dice score (nDSC) of
+Raina et al.~\cite{raina2023ndsc} -- the volume-aware score promised in
+``\nameref{sec:confounders}'' -- removes this by reweighting only the false-positive
+term. Let $r_c$ be a dataset-level reference load, the mean fraction of
+voxels that class $c$ occupies,
+\begin{equation}
+  r_c = \frac{1}{N}\sum_{i} \frac{|R_{i,c}|}{|\Omega_i|},
+  \label{eq:load}
+\end{equation}
+and define the per-exam weight
+$\kappa_{i,c} = \dfrac{(1 - r_c)\,|R_{i,c}|}{r_c\,(|\Omega_i| - |R_{i,c}|)}$. Then
+\begin{equation}
+  \mathrm{nDSC}_{i,c}
+  = \frac{2\,\mathrm{TP}}{\kappa_{i,c}\,\mathrm{FP} + 2\,\mathrm{TP} + \mathrm{FN}}.
+  \label{eq:ndsc}
+\end{equation}
+The weight $\kappa_{i,c}$ rescales each exam's false-positive penalty as though its
+class occupied the common load $r_c$ rather than its own size -- equivalently,
+$\kappa_{i,c} = 1$ recovers Dice (\autoref{eq:dice}) exactly when an exam's
+reference fraction equals $r_c$ -- so nDSC decouples the score from absolute
+structure volume and neutralises the size confound. Alongside these two overlap
+scores we report a boundary metric, the $95$th-percentile Hausdorff distance
+(HD95, in mm)~\cite{taha2015metrics}: the $95$th percentile of the symmetric set
+of surface distances between the predicted and reference boundaries of class $c$,
+which captures localisation error that overlap scores miss while the percentile
+trims the sensitivity of the raw Hausdorff distance to a few stray voxels (lower
+is better). All three metrics are computed per class and reported separately for
+vertebral bodies and discs, together with their macro average over the two
+foreground classes.
+
+\paragraph{Fairness metrics.}
+To turn a per-exam score into a group-level disparity we adopt the binarized,
+rate-based fairness metrics canonical in this literature -- Parikh
+et al.~\cite{parikh2025labelbias,parikh2025whofails}, Fairlearn~\cite{bird2020fairlearn},
+and the four-fifths rule~\cite{eeoc1978uniform}. Each exam is first reduced to a
+binary beneficial outcome (a ``success''): for the higher-is-better overlap
+scores the outcome succeeds when the score clears a threshold $\tau$, and for
+HD95, where lower is better, when it falls below $\tau$. Following Parikh
+et al.~\cite{parikh2025labelbias,parikh2025whofails} we take $\tau = 0.8$ as the
+beneficial-outcome cutoff for Dice and nDSC, and set $\tau = 5$\,mm for HD95; all
+thresholds are configurable. For an attribute $A$ with value $a$ the group success rate is the
+share of its exams that succeed,
+\begin{equation}
+  \rho_a = \frac{1}{|\mathcal{D}_{A=a}|}
+           \sum_{i \in \mathcal{D}_{A=a}} \mathbf{1}[\text{exam $i$ succeeds}],
+  \label{eq:rate}
+\end{equation}
+and the two disparity measures compare these rates across the groups of $A$,
+\begin{equation}
+  \mathrm{DPD}_A = \max_a \rho_a - \min_a \rho_a,
+  \qquad
+  \mathrm{DIR}_A = \dfrac{\min_a \rho_a}{\max_a \rho_a}.
+  \label{eq:dpddir}
+\end{equation}
+The demographic parity difference (DPD) is the absolute gap in success rate and
+the disparate impact ratio (DIR) the relative one, with $\mathrm{DIR}_A = 1$
+denoting parity. Following the four-fifths rule we flag $\mathrm{DIR}_A < 0.8$ as
+adverse impact, a threshold that applies legitimately here precisely because DIR
+is a ratio of selection (success) rates rather than of continuous means. The rule
+does carry a portability caveat: it originates in US employment
+law~\cite{eeoc1978uniform}, and Fairlearn~\cite{bird2020fairlearn} notes it has no
+validity outside that setting, so we adopt the $0.8$ line as the established
+convention of the fairness-audit literature and for direct comparability with
+Parikh et al., not as a legal claim. Because a single threshold can be brittle, we
+additionally sweep DPD and DIR over a grid of $\tau$ with every run and
+read the verdict off the full sweep rather than any one cutoff.
+
+\paragraph{Statistical inference.}
+The fairness metrics summarise the size of a gap; establishing that one is real
+calls for inference on the underlying scores. Our primary instrument runs on the
+continuous per-exam scores, using the same rank-based battery as the
+Dataset section: a Mann--Whitney $U$ test~\cite{mann1947test} for the two-group
+attributes (sex, and White vs.\ Black race), with the rank-biserial correlation
+$r_{rb}$~\cite{wendt1972rankbiserial} as effect size, and a Kruskal--Wallis $H$
+test~\cite{kruskal1952ranks} across the three age bins, with
+$\varepsilon^2$~\cite{tomczak2014effectsize}. Because we test a family of
+attribute~$\times$~metric combinations per model, we control the false discovery
+rate across that family with the Benjamini--Hochberg
+procedure~\cite{benjamini1995fdr} and report raw and adjusted $p$-values. Three
+further layers support this. We attach BCa bootstrap $95\%$ confidence
+intervals~\cite{efron1987bca} to each DIR, so the disparity estimates carry
+uncertainty rather than standing as point values. Distinct from the anatomy-driven volume confound that nDSC already neutralises,
+one protected attribute can also confound another: ``\nameref{sec:confounders}''
+flagged that White patients are slightly older, so age can leak into the race
+comparison. This is the sole such entanglement here -- sex is balanced and
+independent of the other attributes -- and we control for it by additionally
+fitting a multivariable ordinary-least-squares regression of macro Dice on sex,
+race, and age jointly, so each attribute's association is estimated adjusted for
+the others rather than marginally. And we corroborate the rank-based
+$p$-values with distribution-free permutation tests, which make no asymptotic
+assumption about the bounded, left-skewed score distributions.
+
+\paragraph{Which instrument is primary.}
+The continuous tests, not the binarized DIR, are our primary fairness instrument,
+and the reason is structural rather than empirical. Our models operate in a
+high-overlap regime -- macro Dice around $0.89$ -- so the great majority of exams
+clear any reasonable beneficial-outcome threshold and the per-group success rates
+of \autoref{eq:rate} sit close to the ceiling. With few failures in any group the
+DIR of \autoref{eq:dpddir} is near-degenerate by construction: it has little room
+to move and little power to resolve a true gap. The continuous Mann--Whitney and
+Kruskal--Wallis tests, which use the full distribution of scores rather than a
+thresholded count, are therefore by design the more sensitive instrument in this
+regime. We retain DPD and DIR for comparability with Parikh et al.\ and for the
+four-fifths reading, guarded by the threshold sweep, but we treat the continuous
+tests and their effect sizes as the primary evidence throughout.
 
 \subsection{Experimental Design}
 \label{sec:design}
 
-% - Generated-silver ruler MECHANISM: train M_gold (D002), predict on the 76
-%   gold-test images -> those predictions ARE the "silver ruler" (Ruler B);
-%   expert labels are the "gold ruler" (Ruler A). Mirrors how the original
-%   silver labels were made (gold-trained nnU-Net applied to unseen cases).
-% - WHY generate it / why not reuse Zhou et al.'s silver model: (a) weights
-%   unavailable; (b) their split may overlap our gold test cases (leakage). Our
-%   M_gold is trained on our split, which excludes the test cases by design.
-% - Note: scoring M_mix against its OWN predictions is degenerate (Dice = 1);
-%   rejected. M_mix and M_gold are independently trained, so Dice != 1.
-% - E1-E4 design TABLE, stated NEUTRALLY (no saturation / false-confidence /
-%   "which ruler won" -- those are Results/Discussion):
-%       E1 Global audit       M_mix          | full 228 test, mixed labels
-%       E2 Biased ruler       M_mix          | 76 gold test, gold vs gen-silver
-%       E3 Bias amplification M_gold vs M_silver | 76 gold test, gold labels
-%       E4 Mixed vs gold      M_mix vs M_gold     | 76 gold test, gold labels
-% - MAKE THE TEST-SET DISTINCTION EXPLICIT: E1 is on the full 228 against mixed
-%   labels; E2-E4 all sit on the SAME 76-case gold test set with expert labels
-%   (apples-to-apples; differences attributable to labels/training, not data).
-% - E4 is the production-realistic companion to E3 (same axis: does silver in
-%   training degrade fairness?). Keep it as a row here for design transparency;
-%   Results folds it into the E3 narrative rather than a standalone finding.
+The three regimes and the metrics above combine into four experiments, summarised
+in \autoref{tab:experiments}. Each asks a distinct question about the relationship
+between label provenance and fairness, and together they cover the two ways silver
+labels can distort a fairness verdict: through the reference used to evaluate
+a model (the ``ruler''), and through the labels used to train it.
+
+\paragraph{Test sets.}
+The first experiment (E1) uses the full $228$-case test set
+$\mathcal{D}_{\mathrm{test}}$ and scores each exam against whichever reference
+label it carries -- the operational setting for a realistically trained model. The
+remaining three (E2--E4) all evaluate on the same $76$ gold-test cases
+$\mathcal{D}_{\mathrm{test}} \cap \mathcal{D}^{\mathsf{g}}$, scored against expert
+labels only. This common evaluation surface ensures that any difference between
+E2--E4 is attributable to the ruler or the training labels, not to the test data.
+
+\paragraph{The generated-silver ruler.}
+E2 requires two reference segmentations for the same $76$ images, but CSpineSeg
+images carry gold or silver -- never both
+(``\nameref{sec:splits}''). We construct the second ruler by running
+$M_{\mathrm{gold}}$ -- trained exclusively on our gold split and therefore blind to
+these $76$ test cases -- on the same images and taking its predictions as
+machine-generated reference labels. This mirrors how the dataset's original silver
+labels were produced: Zhou et al.\ trained an nnU-Net on their expert annotations
+and applied it to the unannotated cases~\cite{zhou2025cspineseg}. We cannot reuse
+their model because its weights are not public and its training split may overlap
+our test cases, a leakage risk; $M_{\mathrm{gold}}$, trained on our own split,
+excludes them by design.
+
+The biased-ruler comparison then scores the same predictions of
+$M_{\mathrm{mix}}$ on the $76$ images twice: once against the expert labels
+(Ruler~A, gold) and once against the generated-silver labels (Ruler~B). Because
+$M_{\mathrm{mix}}$ and $M_{\mathrm{gold}}$ are independently trained models that
+share no weights, their predictions differ and the comparison is not degenerate.
+Any change in the observed fairness gap between the two rulers is therefore the
+pure effect of the reference label.
+
+\paragraph{Bias amplification and mixed-vs-gold training.}
+E3 and E4 address the complementary question: does label provenance in
+training -- rather than in evaluation -- change the fairness of the
+resulting model? E3 compares $M_{\mathrm{gold}}$ against $M_{\mathrm{silver}}$ on
+the $76$ gold-test cases, both scored against expert labels, isolating whether
+silver training labels widen demographic gaps relative to gold. E4 is the
+production-realistic companion: it compares $M_{\mathrm{mix}}$ against
+$M_{\mathrm{gold}}$ on the same surface, asking whether mixing silver labels into
+training -- the standard cost-saving practice~\cite{tajbakhsh2020embracing} --
+degrades fairness relative to expert-only training.
+
+\begin{table}[t]
+\centering
+\caption{The four experiments. E1 is the global audit on the full test set; E2--E4
+share the same $76$-case gold test set and expert reference labels, so differences
+across them are attributable to the ruler or the training labels alone.}
+\label{tab:experiments}
+\small
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l l l l l}
+\hline\noalign{\smallskip}
+ & Question & Model(s) & Test set & Ruler \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+E1 & Is the deployed model fair? & $M_{\mathrm{mix}}$ & 228 (full) & mixed \\
+E2 & Does the ruler distort the verdict? & $M_{\mathrm{mix}}$ & 76 (gold) & gold vs.\ gen.\ silver \\
+E3 & Does silver training amplify bias? & $M_{\mathrm{gold}}$ vs.\ $M_{\mathrm{silver}}$ & 76 (gold) & gold \\
+E4 & Does mixing silver hurt fairness? & $M_{\mathrm{mix}}$ vs.\ $M_{\mathrm{gold}}$ & 76 (gold) & gold \\
+\noalign{\smallskip}\hline
+\end{tabular*}
+\end{table}
+
+All four experiments apply the full metric and inference battery of
+``\nameref{sec:metrics}'' -- Dice, nDSC, HD95, DPD/DIR with threshold sweep,
+Mann--Whitney/Kruskal--Wallis tests, bootstrap CIs, and the OLS confounder
+regression -- to every attribute in $\mathcal{A}$. We report results per class
+(vertebral body, disc) and as the macro average.
 
 \subsection{Encoder Probing}
-\label{sec:probing}
+\label{sec:probing_method}
 
-% - Short, last on purpose: diagnostic, not part of the core train/eval loop.
-% - Setup: extract features from M_mix's bottleneck vs a generic medical-image
-%   encoder (MRI-CORE); PCA + UMAP for visualisation; linear probe reporting
-%   balanced accuracy / AUROC for each protected attribute.
-% - CONTROLS (name what they control for, not just that they exist): the
-%   random-init baseline and the permutation null separate genuine task-learned
-%   demographic signal from trivial confounds -- chiefly body extent (the
-%   generic encoder's ~90% body-extent confound). Report the probe relative to
-%   these baselines.
+The fairness audit tells us whether the model's output differs across groups; it
+cannot tell us whether the model's internal representation carries demographic
+signal in the first place. A representation that encodes a protected attribute
+could drive a downstream disparity, but it need not -- encoding and disparity are
+logically independent~\cite{petersen2023feature}. We therefore complement the
+audit with a linear probing diagnostic that asks, for each attribute in
+$\mathcal{A}$: can it be decoded from the encoder's features?
+
+We probe two encoders. The first is $M_{\mathrm{mix}}$'s bottleneck: the
+global-average-pooled final encoder stage of the 3D ResEnc-L ($320$-d), whose
+features are shaped by the segmentation objective on this cohort. The second is
+MRI-CORE~\cite{dong2025mricore}, a ViT-B pretrained with DINOv2 self-supervision
+on ${\sim}110{,}000$ Duke clinical MRI volumes (cervical spine excluded), which
+provides a task-agnostic $768$-d reference. For each we fit PCA($50$) followed by
+$\ell_2$-regularised logistic regression in five-fold stratified
+cross-validation, scoring binary attributes by AUROC and multi-class ones by
+balanced accuracy, with Nadeau--Bengio corrected confidence
+intervals~\cite{nadeau2003inference}.
+
+Each encoder is paired with a random-initialisation null -- the same architecture
+and input pipeline with untrained weights -- which isolates learned signal from
+trivial pixel-level confounds (body extent, intensity histogram). The difference
+between the trained and null scores is the contribution of learning to the
+demographic signal.
