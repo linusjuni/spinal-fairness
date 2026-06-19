@@ -1,6 +1,33 @@
 \section{Conclusion}
 
-% TODO:
-% - [ ] Final summary (remind the reader about our contributions)
-% - [ ] Final note to the medical imaging community
-% - [ ] Any future work, any limitation of our study (only if there's an outstanding), etc
+Cervical-spine MRI segmentation lacked a fairness audit across multiple
+demographic axes. We conducted one on the CSpineSeg dataset ($1{,}254$ exams),
+evaluating performance across sex, race, and age with anatomically informed
+metrics.
+
+The model is fair by every measure we applied: $0/63$ statistical tests reach
+significance after FDR correction, all disparate impact ratios exceed $0.96$, and
+demographics collectively explain $1.3\%$ of Dice variance. Replacing expert
+reference labels with machine-generated ones flips the verdict for age --
+not by inflating the gap but by collapsing within-group variance ${\sim}4\times$,
+a false-confidence mode complementary to the false-magnitude effect of Parikh et
+al.~\cite{parikh2025labelbias}. Training on silver labels does not amplify
+demographic bias in this anatomy, unlike the amplification observed in breast
+MRI~\cite{parikh2025labelbias}. Encoder probing confirms that the residual age
+gradient reflects intrinsic anatomical difficulty -- older spines are harder to
+segment -- rather than algorithmic harm, and that strong encoding of a protected
+attribute (sex, AUROC $0.957$) need not produce any performance disparity.
+
+These results carry two practical implications. First, reference-label provenance
+is a first-order confounder in fairness evaluation: the same predictions, scored
+against different labels, yield opposite conclusions. Any fairness claim must
+state where its ruler comes from. Second, debiasing a model's learned
+representations without first confirming an output-level disparity addresses a
+problem that may not exist -- our model strongly encodes sex yet exhibits no
+sex-based performance gap.
+
+Our audit is limited to a single institution, anatomy, and architecture, and the
+high-performance ceiling of cervical vertebral bodies and discs leaves little room
+for disparity to emerge. Whether these findings generalise to harder anatomies or
+lower-performing models remains open. We hope this work opens a rigorous
+conversation about fairness in spine MRI segmentation.

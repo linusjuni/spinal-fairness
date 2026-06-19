@@ -151,70 +151,25 @@ All $11$ significant tests on the silver ruler are age groupings (three-bin and
 median split, Dice and nDSC).}
 \end{table}
 
-\paragraph{Mechanism: false confidence via variance collapse.}
-The verdict flip does not arise because the silver ruler reveals a larger gap --
-it does the opposite. The age trend is smaller against silver than against
-gold: median macro Dice drops from $0.925$ ($<$40) to $0.898$ (60+) on the gold
-ruler (a $2.7$-point spread) but only from $0.980$ to $0.974$ on silver (a
-$0.6$-point spread). What changes is the within-group variance. Recall that the
-silver ruler is $M_{\mathrm{gold}}$'s predictions -- so scoring against it
-measures inter-model agreement rather than accuracy. That agreement sits at
-${\sim}0.97$ Dice, far above the ${\sim}0.89$ that the same predictions achieve
-against the expert labels, and the standard deviation across the $76$ cases drops
-from $0.058$ (gold) to $0.014$ (silver) -- a ${\sim}4\times$ reduction. We attribute
-this high agreement to the inherent simplicity of cervical-spine segmentation --
-vertebral bodies and discs are large, high-contrast structures with well-defined
-boundaries -- combined with the shared architecture and training recipe, which
-lead both models to converge on similar solutions regardless of the specific
-training cases.\footnote{$M_{\mathrm{mix}}$ and $M_{\mathrm{gold}}$ do share $288$
-training cases, but this is not the primary driver: even
-$M_{\mathrm{gold}}$ and $M_{\mathrm{silver}}$, trained on fully disjoint data
-(zero case overlap), still agree at $0.97$ macro Dice on the same $76$ images.
-The high inter-model agreement is a property of the task, not of shared
-training data.} The Kruskal--Wallis test's power
-scales with signal-to-noise, so the same clinically negligible age gradient that
-is buried in gold's noise ($H = 7.0$, $p = 0.030$,
-$p_{\mathrm{fdr}} = 0.27$) clears correction once silver's collapsed variance
-sharpens the ranks ($H = 11.4$, $p = 0.003$, $p_{\mathrm{fdr}} = 0.026$). The
-ruler did not change the patient; it changed the test's power.
+\paragraph{Quantifying the variance collapse.}
+The age trend is smaller against silver than against gold: median macro Dice
+drops from $0.925$ ($<$40) to $0.898$ (60+) on the gold ruler (a $2.7$-point
+spread) but only from $0.980$ to $0.974$ on silver (a $0.6$-point spread). What
+changes is the within-group variance: the standard deviation across the $76$
+cases drops from $0.058$ (gold) to $0.014$ (silver) -- a ${\sim}4\times$
+reduction. The Kruskal--Wallis $H$ statistic rises from $7.0$ ($p = 0.030$,
+$p_{\mathrm{fdr}} = 0.27$) on the gold ruler to $11.4$ ($p = 0.003$,
+$p_{\mathrm{fdr}} = 0.026$) on silver -- the same age gradient, exposed by
+collapsed noise rather than amplified signal.
 A threshold sensitivity sweep confirms the saturation: the silver DIR remains
 pinned at $1.0$ for all groupings through $\tau = 0.85$ and only drops (to
 $0.97$) at $\tau = 0.90$, whereas the gold DIR already flags age disparity at
 $\tau = 0.70$ and collapses to $0.57$ at $\tau = 0.90$.
 \autoref{fig:biased_ruler} visualises the variance collapse: the same downward
 staircase appears on both rulers, but gold's wide boxes bury the signal while
-silver's razor-thin boxes expose it.
-
-\paragraph{Comparison with Parikh et al.}
-Parikh et al.~\cite{parikh2025labelbias} show a biased-ruler effect in
-breast-MRI segmentation where the silver ruler makes a real gap look larger
-than it truly is (DIR drops from $0.871$ to $0.815$). Our silver ruler does
-something different: it leaves the gap the same size (or even shrinks it) but
-makes a negligible gap look statistically significant. In their case, the ruler
-exaggerates the signal; in ours, it removes the noise that would otherwise mask
-it. Both lead to the same practical problem -- the fairness verdict depends on
-which reference label you choose -- but through opposite routes.
-
-\paragraph{The age effect is intrinsic.}
-Although the significance is a ruler artifact, the underlying age trend is not.
-It appears on both rulers in the same direction (60+ worst), is
-consistent with the degenerative anatomy documented in
-``\nameref{sec:confounders}'' (vertebral merging in older spines), and is
-independently corroborated by the encoder probe
-(``\nameref{sec:probing_results}''). An effect visible through the true ruler, the
-correlated ruler, and the learned representation is unlikely to be a label
-artifact -- it reflects intrinsic difficulty in older spines.
-
-\paragraph{Not unfairness.}
-A statistically significant gap is not the same as an unfair model. The
-magnitudes here are clinically negligible: the worst-vs-best age group spans
-$2.7$ Dice points on gold ($0.925 \to 0.898$) and $0.6$ points on silver, with
-every patient receiving a ${\sim}0.90$+ Dice segmentation. All gold-ruler DIRs
-exceed $0.94$ -- far above the four-fifths threshold -- and no subgroup is failed
-by any practical measure. The contribution of this experiment is methodological:
-it demonstrates that a machine-generated reference label can manufacture a
-finding out of a non-issue, and that significance alone should not be read as
-evidence of harm.
+silver's razor-thin boxes expose it. We discuss the mechanism, its relationship
+to the biased-ruler effect of Parikh et al.~\cite{parikh2025labelbias}, and its
+implications for fairness methodology in ``\nameref{sec:discussion}.''
 
 \begin{figure}[t]
 \centering
@@ -283,28 +238,14 @@ Age (median) & $0.998$ & $0.996$ & $0.998$ \\
 \end{tabular*}
 \end{table}
 
-\paragraph{Interpretation.}
-The null result is expected: bias amplification requires both an underlying
-disparity for noisy labels to exaggerate and a silver source that is
-differentially biased across groups. Neither precondition holds here. The global
-audit (``\nameref{sec:global}'') already found no demographic gap to amplify
-($0/63$, all DIRs $> 0.96$), and the silver labels are high-quality -- Zhou et
-al.~\cite{zhou2025cspineseg} selected which exams to expert-annotate
-pseudo-randomly (by medical record number), leaving the gold and silver pools
-demographically comparable, so the machine-generated labels carry no systematic
-group-level bias for training to propagate.
-This contrasts with Parikh et al.~\cite{parikh2025labelbias}, who observed $66\%$
-gap widening (DIR dropping below $0.80$) when training on their silver labels. The
-difference lies in the preconditions: their silver annotator was an independently
-trained model that was itself biased against younger patients, acting on a task
-with a substantial pre-existing age disparity. In our setting, the silver labels
-are produced by a model trained on a representative subset of the same
-institution's gold annotations, segmenting large high-contrast structures whose
-boundaries may leave little room for demographically differential error --
-though we cannot test this hypothesis directly. The result suggests that
-mixing silver labels into training is unlikely to harm fairness when the
-underlying labels are well-calibrated and no pre-existing disparity exists for
-noisy supervision to exaggerate.
+\paragraph{Summary.}
+There is no evidence that silver training labels amplify demographic bias in this
+setting: $M_{\mathrm{silver}}$ matches or betters $M_{\mathrm{mix}}$ on every
+grouping, and the gold-only model $M_{\mathrm{gold}}$ is occasionally the least
+fair of the three. We discuss why this null result is expected given the
+preconditions of our dataset -- and how it contrasts with the amplification
+observed by Parikh et al.~\cite{parikh2025labelbias} -- in
+``\nameref{sec:discussion}.''
 
 \subsection{Demographic Probing}
 \label{sec:probing_results}
@@ -345,7 +286,7 @@ scores observed above.
 \begin{table}[t]
 \centering
 \caption{Linear-probe scores for demographic attributes on frozen encoder
-features ($n = 1{,}085$). ``Null'' denotes a random-initialised network of
+features. ``Null'' denotes a random-initialised network of
 identical architecture and preprocessing. $\Delta_{\mathrm{task}}$ is the
 trained-minus-null gap, isolating the contribution of the training objective.
 Sex is strongly encoded yet produces no performance disparity
@@ -370,15 +311,10 @@ MRI-CORE       & Sex (AUROC)       & $0.931\pm.031$ & $0.836\pm.039$ & $+0.095$ 
 \end{tabular*}
 \end{table}
 
-\paragraph{Encoding does not imply disparity.}
-The central finding is a dissociation: sex is by far the most strongly encoded
-attribute ($0.957$), yet the global audit found zero sex disparity ($0/63$
-significant tests, DIR~$= 0.991$). The segmentation task has learned to exploit
-sex-linked vertebral morphology -- larger bodies and discs in men, different canal
-geometry -- without producing differential outcomes. Conversely, age is only
-moderately encoded ($0.642$) yet is the one axis that shows a (clinically
-negligible) performance trend, corroborating the biased-ruler finding that the age
-effect is intrinsic anatomical difficulty rather than a label artefact. The probe
-thus confirms that encoding is neither necessary nor sufficient for disparity: a
-model can strongly represent a demographic feature and still be fair, because the
-decoder maps those different representations to equally accurate outputs.
+\paragraph{Summary.}
+The central pattern is a dissociation: sex is strongly encoded ($0.957$ AUROC)
+yet produces no performance disparity, while age is only moderately encoded
+($0.642$) yet is the one axis with a (clinically negligible) performance trend.
+Race sits near chance, consistent with the null race finding in the fairness
+audit. We discuss the implications of this encoding--disparity dissociation in
+``\nameref{sec:discussion}.''

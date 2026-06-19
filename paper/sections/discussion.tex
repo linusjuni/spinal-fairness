@@ -1,6 +1,237 @@
 \section{Discussion}
+\label{sec:discussion}
 
-% TODO:
-% - [ ] Model Bias vs anatomical difference: key findings discussed here
-% - [ ] Danger of automated labels
-% - [ ] Key takeaways, recommendations
+The experiments above establish three factual results: (i)~the deployed model
+$M_{\mathrm{mix}}$ is fair across sex, race, and age by every practical measure;
+(ii)~replacing the expert reference with a machine-generated one flips the
+statistical significance verdict for age; and (iii)~training on silver labels does
+not amplify demographic bias. We now interpret these findings, situate them
+relative to prior work, and draw out their methodological implications.
+
+\subsection{Two Modes of Ruler Bias}
+\label{sec:ruler_modes}
+
+The verdict flip of ``\nameref{sec:biased_ruler}'' does not arise because the
+silver ruler reveals a larger gap -- it does the opposite. The silver ruler is
+$M_{\mathrm{gold}}$'s predictions, so scoring against it measures inter-model
+agreement rather than accuracy. That agreement sits at ${\sim}0.97$ Dice -- far
+above the ${\sim}0.89$ that the same predictions of $M_{\mathrm{mix}}$ achieve
+against the expert labels -- and the standard
+deviation across the $76$ cases drops from $0.058$ (gold) to $0.014$ (silver), a
+${\sim}4\times$ reduction. We attribute this high agreement to the inherent
+simplicity of cervical-spine segmentation -- vertebral bodies and discs are large,
+high-contrast structures with well-defined boundaries, as evidenced by the high
+Dice scores routinely achieved with standard architectures on this
+anatomy~\cite{zhou2025cspineseg} -- combined with the shared architecture and
+training recipe, which lead both models to converge on similar solutions
+regardless of the specific training
+cases.\footnote{$M_{\mathrm{mix}}$ and $M_{\mathrm{gold}}$ do share $288$
+training cases, but this is not the primary driver: even $M_{\mathrm{gold}}$ and
+$M_{\mathrm{silver}}$, trained on fully disjoint data (zero case overlap), still
+agree at $0.97$ macro Dice on the same $76$ images. The high inter-model agreement
+is a property of the task, not of shared training data.}
+
+The Kruskal--Wallis test's power scales with signal-to-noise, so the same
+clinically negligible age gradient that is buried in gold's noise clears FDR
+correction once silver's collapsed variance sharpens the ranks. The ruler did not
+change the patient; it changed the test's power.
+
+Parikh et al.~\cite{parikh2025labelbias} demonstrate a complementary mode in
+breast-MRI segmentation: their silver ruler is an independently trained model that
+is itself biased against younger patients, so it compounds the deficit where the
+patient is hard -- the performance gap between demographic groups inflates
+(DIR drops from $0.871$ to $0.815$). Our silver ruler does something different: it
+shrinks the between-group gap -- the continuous Dice spread falls from
+$2.7$ to $0.6$ points and the rate-based DIR saturates at $1.0$ -- yet makes the
+residual gradient statistically significant by collapsing within-group variance.
+In their case, the ruler exaggerates the signal; in ours, it removes the noise
+that would otherwise mask it. Both lead to the same practical problem -- the
+fairness verdict depends on which reference label you choose -- but through
+opposite routes: false magnitude versus false confidence.
+
+\subsection{The Age Effect Is Intrinsic, Not Unfairness}
+\label{sec:age_intrinsic}
+
+Although the significance on the silver ruler is a methodological artifact, the
+underlying age trend is not. It appears on both rulers in the same direction
+(60+ worst), is consistent with the degenerative anatomy documented in
+``\nameref{sec:confounders}'' (vertebral merging in older spines), and is
+independently confirmed by the encoder probe
+(``\nameref{sec:probing_results}''), which shows age encoded above the
+random-init null while race sits at chance. The model has learned age-related
+anatomical features -- an effect visible through both rulers and the learned
+representation is unlikely to be a label artifact; it reflects intrinsic
+difficulty in older spines.
+
+Crucially, a statistically significant gap is not the same as an unfair model.
+The magnitudes here are clinically negligible: the worst-vs-best age group
+median spans $2.7$ Dice points on gold ($0.925 \to 0.898$) and $0.6$ points on silver, with
+median performance in every age group exceeding $0.89$ Dice. All gold-ruler DIRs
+exceed $0.93$ -- far above the four-fifths threshold -- and no subgroup is failed
+by any practical measure. The contribution of the biased-ruler experiment is
+therefore methodological: it demonstrates that a machine-generated reference label
+can manufacture a finding out of a non-issue, and that significance alone should
+not be read as evidence of harm.
+
+\subsection{Why Silver Training Labels Did Not Amplify Bias}
+\label{sec:no_amplification}
+
+The null result of ``\nameref{sec:amplification}'' is expected: bias amplification
+requires both an underlying disparity for noisy labels to exaggerate and a silver
+source that is differentially biased across groups. Neither precondition holds
+here. The global audit already found no demographic gap to amplify ($0/63$, all
+DIRs $> 0.96$), and the silver labels are high-quality -- Zhou et
+al.~\cite{zhou2025cspineseg} selected which exams to expert-annotate
+pseudo-randomly (by medical record number), leaving the gold and silver pools
+demographically comparable, so the machine-generated labels carry no systematic
+group-level bias for training to propagate.
+
+This contrasts with Parikh et al.~\cite{parikh2025labelbias}, who observed $66\%$
+gap widening (DIR dropping below $0.80$) when training on their silver labels.
+The difference lies in the preconditions: their silver annotator was an
+independently trained model that was itself biased against younger patients,
+acting on a task with a substantial pre-existing age disparity. In our setting,
+the silver labels are produced by a model trained on a representative subset of
+the same institution's gold annotations, segmenting large high-contrast structures
+whose boundaries may leave little room for demographically differential error.
+Whether it is task geometry specifically -- rather than dataset balance or
+institutional homogeneity -- that provides this protection remains an open
+question; isolating that factor would require a contrastive experiment on a harder
+anatomy, which we leave to future work. The result suggests that mixing
+silver labels into training is unlikely to harm fairness when the underlying
+labels are well-calibrated and no pre-existing disparity exists for noisy
+supervision to exaggerate.
+
+This null result is necessary but not sufficient for concluding that silver labels
+are universally safe. It holds here because the task is geometrically simple and
+the silver source is itself unbiased; the conclusion should not be
+over-generalised to settings with more complex anatomy, smaller structures, or
+silver annotators of unknown provenance.
+
+\subsection{Encoding Does Not Imply Disparity}
+\label{sec:encoding_disparity}
+
+The probe results reveal a clear dissociation: sex is by far the most strongly
+encoded attribute ($0.957$ AUROC), yet the global audit found zero sex disparity
+($0/63$ significant tests, DIR~$= 0.991$). The segmentation task has learned to
+exploit sex-linked vertebral morphology -- larger bodies and discs in men,
+different canal geometry -- without producing differential outcomes. Conversely,
+age is only moderately encoded ($0.642$) yet is the one axis that shows a
+(clinically negligible) performance trend, corroborating the biased-ruler finding
+that the age effect is intrinsic anatomical difficulty rather than a label
+artefact.
+
+The probe thus confirms that encoding is neither necessary nor sufficient for
+disparity: a model can strongly represent a demographic feature and still be fair,
+because the decoder maps those different representations to equally accurate
+outputs. This has direct implications for debiasing strategies that attempt to
+remove demographic signal from learned representations~\cite{petersen2023feature}
+-- in our setting such interventions would be unnecessary at best, and could
+degrade segmentation quality by discarding morphologically informative features.
+
+Race deserves separate attention: both the nnU-Net encoder and the MRI-CORE
+foundation model encode race at chance level (AUROC ${\sim}0.50$), consistent
+with the absence of racial disparity in segmentation outcomes. This contrasts
+with Gichoya et al.~\cite{gichoya2022reading}, who found race highly predictable
+(AUC $>0.90$) from radiographs across multiple body regions including the
+cervical spine. Several differences may
+explain the discrepancy: (i)~modality -- MRI and radiographs capture different
+physical signals; (ii)~field of view -- our MRI volumes are tightly cropped to
+the spinal column, whereas their radiographs image broader anatomy; and (iii)~training
+objective -- Gichoya et al.\ trained end-to-end for race classification, whereas
+our probes are linear heads on frozen encoders -- and even the task-agnostic
+MRI-CORE encoder, which was not optimised for segmentation, fails to encode race.
+The absence of race encoding in our MRI features
+suggests that demographic leakage is not inevitable in spine imaging but depends
+on the modality and the training objective.
+
+\subsection{Limitations}
+\label{sec:limitations}
+
+We note the following limitations.
+
+\begin{enumerate}
+\item \textbf{High-performance ceiling.}
+All groups exceed $0.89$ Dice and all DIRs surpass $0.93$, so there is little
+room for disparity to appear. The fair verdict may reflect task simplicity rather
+than a general property of the model.
+
+\item \textbf{Single institution, anatomy, and sequence.}
+All data come from Duke University, cover cervical spine only, and use one MRI
+sequence (sagittal T2). There is no external validation set.
+
+\item \textbf{Correlated silver ruler.}
+CSpineSeg provides a gold or silver label per image, never both. Our generated
+silver ruler is a near-clone of the model under test, so we can only show the
+false-confidence effect, not the false-magnitude effect.
+
+\item \textbf{Training-set size confound.}
+The three models train on different amounts of data ($M_{\mathrm{gold}}$: $288$,
+$M_{\mathrm{silver}}$: $450$, $M_{\mathrm{mix}}$: $798$). When
+$M_{\mathrm{gold}}$ shows the lowest DIRs, this could reflect fewer training
+cases rather than gold-label provenance. The amplification comparison cannot fully
+separate label type from dataset size.
+
+\item \textbf{Small gold test set.}
+Only $76$ gold-labelled test cases, with ${\sim}20$ Black patients, limiting
+power for race comparisons.
+
+\item \textbf{Single architecture.}
+All models use nnU-Net (ResEncUNetL). Other architectures may behave differently.
+\end{enumerate}
+
+\subsection{Future Work}
+\label{sec:future_work}
+
+The most direct extension is to replace our correlated silver ruler with an
+independent one -- either a model trained on external data (e.g.\
+TotalSpineSeg~\cite{deLeener2024totalspineseg}) or a deliberately biased
+generator (e.g.\ trained only on young
+patients). The former would test whether the false-confidence effect persists
+when the ruler is not a twin; the latter would additionally demonstrate the
+false-magnitude effect in spine and reveal how the two modes relate as ruler
+correlation decreases. Second, the $4\times$ variance collapse and high
+inter-model agreement that characterise our correlated ruler are detectable
+signatures; formalising them into a diagnostic test would give practitioners a
+way to flag when a silver ruler is too similar to the model under evaluation
+before drawing fairness conclusions. Looking further ahead, Zhou et
+al.~\cite{zhou2025cspineseg} note that CSpineSeg's label set may be extended to
+additional structures (e.g.\ spinal cord, vertebral level classification);
+repeating the fairness audit on smaller, harder-to-segment targets within the
+same images and demographics would clarify whether our fair verdict reflects the
+model or simply the high-performance ceiling of vertebral body and disc
+segmentation.
+
+\subsection{Recommendations for Practitioners}
+\label{sec:recommendations}
+
+We distil four guidelines from our experiments.
+
+\begin{enumerate}
+\item \textbf{State where your reference labels come from.}
+  Swapping expert labels for model predictions flipped our result from $0/63$ to
+  $11/63$ significant tests -- same model, same patients, same predictions.
+  Without knowing the ruler's provenance, a reader cannot tell whether a reported
+  finding reflects a real disparity or a measurement artifact.
+
+\item \textbf{Check how similar the ruler is to the model.}
+  In our experiment, model--ruler agreement (${\sim}0.97$ Dice) far exceeded
+  model--expert agreement (${\sim}0.89$), and within-group variance dropped
+  $4\times$. That collapse made a $0.6$-point age gradient clear statistical
+  significance. A simple check: if scores against the ruler are much higher and
+  much tighter than scores against expert labels, the ruler may be too close to
+  the model to serve as an independent benchmark.
+
+\item \textbf{Report how large the gap is, not just whether it is significant.}
+  The age effect our silver ruler flags spans $0.6$ Dice points where every group
+  exceeds $0.97$. Significance tells you the gap is non-zero; it does not tell
+  you it matters. Always report the magnitude alongside the $p$-value.
+
+\item \textbf{Do not remove demographic signal without an output disparity.}
+  Sex is strongly encoded in our model ($0.957$ AUROC) yet produces no
+  performance gap (DIR~$= 0.991$, $0/63$ significant). The model uses sex-linked
+  morphology to segment well, not to discriminate. Suppressing demographic
+  features~\cite{petersen2023feature} without first confirming an output disparity
+  addresses a problem that may not exist.
+\end{enumerate}
+

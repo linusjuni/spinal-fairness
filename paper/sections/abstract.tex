@@ -1,11 +1,24 @@
 \begin{abstract}
 
-Lorem Ipsum Dolor.
-
-% TODO: write the abstract (150--250 words)
-% - [ ] Reference: https://www.ias.informatik.tu-darmstadt.de/HowTo/WritingAnEffectiveAbstract
-% - [ ] Should be effectively very concise, no filler words, simple sentences
-% - [ ] Structure: Context -> Problem -> Methods -> Key Findings
+Automated cervical-spine segmentation increasingly guides clinical decisions, yet
+no controlled fairness audit exists for this anatomy. When datasets mix expert and
+machine-generated labels, the reference used to judge fairness can itself be
+biased -- a problem demonstrated in breast MRI but not yet tested in spine
+imaging. We audit an nnU-Net model on the CSpineSeg dataset (1,254 exams) across
+sex, race, and age, comparing verdicts obtained with expert labels against those
+from a machine-generated reference. We further test whether training on
+machine-generated labels amplifies demographic bias, and probe the encoder for
+latent demographic signal. The model is fair across all groups: none of 63
+statistical tests reach significance after correction, and all disparate impact
+ratios exceed 0.96. However, replacing expert labels with machine-generated ones makes 11 age-related
+tests significant despite the model remaining fair by all threshold-based
+measures -- a false alarm driven by variance collapse rather than a real
+disparity. Training
+on machine-generated labels does not amplify bias. Sex is strongly encoded in the
+learned representation yet produces no performance disparity, showing that
+encoding alone does not constitute harm. Reference-label provenance is a
+first-order confounder in fairness evaluation that must be reported alongside any
+fairness claim.
 
 \keywords{Fairness \and Medical segmentation \and Spine MRI \and Bias.}
 \end{abstract}

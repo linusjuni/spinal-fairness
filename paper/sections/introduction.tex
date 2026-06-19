@@ -1,10 +1,69 @@
 \section{Introduction}
 
-% TODO:
-% - [ ] Use the 'inverted triangle' or 'funnel' approach - https://www.thegoldenthread.nl/research-paper-strategy-the-introduction/
-% - [ ] Big picture problem, motivation -> fairness -> medical imaging -> medical segmentation.
-% - [ ] Highlight our arguments (e.g., fairness in segmentation is much harder/complex than segmentation due to X, Y, and Z).
-% - [ ] Combine the introduction and related work. Lots of references to previous work are required, to let the reader/reviewer know that we are aware of recent developments and have done our homework.
-% - [ ] Related work should include: fairness in segmentation/medical segmentation, bias in segmentation (label bias, representational bias, etc), biased ruler effect, use of automated/silver labels, intersectional bias, etc. (not in this order)
-% - [ ] End with a contribution paragraph, with our primary contributions/findings listed. This is where a reader normally looks first and keeps coming back, so make it simple and readable for a first-time reader. (highlight that this is the first work on fairness on spine segmentation -- I hope it's still true)
-% - [ ] Ideally, Introduction + Related Works should be ~1.5-2 pages.
+Deep learning is now the standard approach for segmenting anatomical structures
+in medical images, and its outputs increasingly guide clinical decisions --
+from surgical planning to disease
+monitoring~\cite{isensee2021nnunet,isensee2024revisited}. In cervical-spine MRI,
+automated segmentation of vertebral bodies and intervertebral discs supports
+stenosis grading and degeneration tracking~\cite{zhou2025cspineseg}. If such
+models work worse for certain patient groups -- differing by sex, race, or age --
+they risk worsening the health disparities already present in spine care.
+With the EU AI Act classifying medical AI as high-risk and requiring
+documented demographic representativeness and bias
+assessment~\cite{euaiact2024}, fairness audits are no longer optional: they are
+a precondition for deployment.
+
+Fairness is well studied for classification
+tasks~\cite{bird2020fairlearn,eeoc1978uniform}, but medical image segmentation
+raises challenges with no classification analogue. First, the output is a spatial
+map of millions of voxels, not a single decision, so there is no standard
+fairness metric: one must reduce the map to a single number (e.g.\ Dice or HD95),
+and that reduction can itself introduce bias when anatomy differs systematically
+between demographic groups~\cite{raina2023ndsc,tian2024fairseg}. Second,
+segmentation annotations are far more expensive and subjective than classification
+labels, with inter-annotator disagreement that can vary systematically across
+patient groups~\cite{parikh2025labelbias}. The high cost of expert annotation forces
+datasets to mix expert (gold) and machine-generated (silver) labels -- and if the
+silver labels carry demographic biases of their own, the reference used to judge
+fairness becomes unreliable. Parikh et al.~\cite{parikh2025labelbias} call this
+the biased ruler effect.
+
+Despite growing interest in fairness for medical imaging, segmentation remains
+underexplored. Tian et al.~\cite{tian2024fairseg} released Harvard-FairSeg -- the
+first fairness dataset for medical segmentation (ophthalmology, ICLR 2024) --
+showing how recently the field acquired basic infrastructure. In breast-MRI
+segmentation, Parikh et al.~\cite{parikh2025labelbias,parikh2025whofails} showed
+that machine-generated reference labels can inflate observed disparities and that
+training on biased silver labels widens demographic gaps. The FairMedFM
+benchmark~\cite{jin2024fairmedfm} tested foundation-model fairness across 17
+datasets and found widespread bias, but its only spine entry (SPIDER, lumbar) was
+limited to sex and did not correct for volume differences. Puyol-Ant\'{o}n et
+al.~\cite{puyolanton2021fairness} and Danaee et
+al.~\cite{danaee2026brain} audited cardiac and brain segmentation,
+respectively, but neither covered spine. Gichoya et
+al.~\cite{gichoya2022reading} showed that AI models can infer patient race
+directly from medical images, and Petersen et
+al.~\cite{petersen2023feature} showed that encoding a protected attribute does not
+necessarily cause a performance gap -- a distinction we revisit here. To the best of our knowledge,
+no dedicated fairness audit exists for cervical-spine MRI segmentation
+across multiple demographic axes, and no prior work has tested whether label
+provenance -- in training or evaluation -- changes fairness verdicts in this
+anatomy.
+
+\smallskip\noindent\textbf{Contributions.}\enspace
+We present the first demographic fairness audit of cervical-spine MRI
+segmentation, evaluating performance across sex, race, and age on the CSpineSeg
+dataset~\cite{zhou2025cspineseg} ($1{,}254$ exams). Our main findings are:
+\begin{enumerate}
+  \item The model is fair across all three protected attributes by every
+    standard metric and threshold tested.
+  \item Replacing the expert reference labels with machine-generated ones flips
+    the fairness verdict for age -- revealing a ``false confidence'' mode
+    of biased-ruler bias that complements the ``false magnitude'' mode of Parikh
+    et al.~\cite{parikh2025labelbias}.
+  \item Training on machine-generated labels does not amplify demographic bias in
+    this anatomy, unlike the amplification observed in breast
+    MRI~\cite{parikh2025labelbias}.
+  \item Encoder probing confirms that the observed age gradient reflects
+    intrinsic anatomical difficulty rather than algorithmic harm.
+\end{enumerate}
