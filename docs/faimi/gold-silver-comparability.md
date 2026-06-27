@@ -1,6 +1,6 @@
 # Gold vs. Silver Pool Comparability — HPC Run
 
-**Status:** ⏳ script written, awaiting HPC run.
+**Status:** ⚠️ run complete — race and age flagged (small effects; controls already in place).
 **Owner of the run:** whoever has the CSpineSeg data mounted (HPC). Paste the
 output into [§ Results](#results-paste-hpc-output-here) below.
 
@@ -96,30 +96,63 @@ be widened by swapping the provenance source; not required for the headline clai
 ### 1. Raw console table
 
 ```
-<paste the full printed table + the per-pool percentage breakdown here>
+Analysis cohort D (split_v3): 1142 exams = 448 gold + 694 silver
+
+Attribute                       test        effect        p    p_fdr  verdict
+------------------------------------------------------------------------------------
+Sex                             chi2cramers_v=+0.034    0.250    0.291  comparable
+Manufacturer                    chi2cramers_v=+0.036    0.228    0.291  comparable
+Field strength                  chi2cramers_v=+0.021    0.471    0.471  comparable
+Race (White vs. Black)          chi2cramers_v=+0.084    0.007    0.012  ** CHECK **
+Race (White/Black/Other)        chi2cramers_v=+0.097    0.004    0.010  ** CHECK **
+Age (continuous, years)     mann_whi   r_rb=+0.139    0.000    0.001  ** CHECK **
+Age (3-bin)                     chi2cramers_v=+0.122    0.000    0.001  ** CHECK **
+
+  Sex:
+     gold    Female 52.2%, Male 47.8%
+     silver  Female 48.6%, Male 51.4%
+  Manufacturer:
+     gold    GE MEDICAL SYSTEMS 35.0%, SIEMENS 65.0%
+     silver  GE MEDICAL SYSTEMS 38.8%, SIEMENS 61.2%
+  Field strength:
+     gold    1.5 58.5%, 3.0 41.5%
+     silver  1.5 60.8%, 3.0 39.2%
+  Race (White vs. Black):
+     gold    Black 24.8%, White 75.2%
+     silver  Black 32.9%, White 67.1%
+  Race (White/Black/Other):
+     gold    Black 22.3%, Other 10.0%, White 67.6%
+     silver  Black 30.5%, Other 7.1%, White 62.4%
+  Age (3-bin):
+     gold    40-60 40.0%, 60+ 35.7%, <40 24.3%
+     silver  40-60 37.3%, 60+ 46.4%, <40 16.3%
+
+=> At least one marginal differs -- inspect the flagged row(s).
 ```
 
 ### 2. Verdict
 
-- Overall: `<all comparable / N rows flagged>`
-- Flagged rows (if any) and their effect sizes: `<...>`
-- `n_gold` / `n_silver` in the analysis cohort: `<...>`
+- Overall: **4 / 7 rows flagged** (race and age; sex, manufacturer, field strength comparable)
+- Flagged rows and effect sizes:
+  - Race (White vs. Black): Cramér's V = 0.084, p\_fdr = 0.012 — gold over-represents White (75.2 % vs 67.1 %)
+  - Race (White/Black/Other): Cramér's V = 0.097, p\_fdr = 0.010
+  - Age (continuous): |r\_rb| = 0.139, p\_fdr = 0.001 — gold skews younger/middle-aged (60+: 35.7 % vs 46.4 %)
+  - Age (3-bin): Cramér's V = 0.122, p\_fdr = 0.001
+- `n_gold` = 448, `n_silver` = 694 (analysis cohort D, split\_v3)
+- All flagged effect sizes are small (V < 0.13, |r\_rb| < 0.14) but cross the negligible threshold of 0.1.
+  The differences are consistent with a patient-number enrollment cutoff coinciding with a demographic
+  shift over time, not a deliberate selection.
 
-### 3. One-liner for `dataset.tex`
+### 3. Note for `dataset.tex`
 
-> Replace the `% TODO` at `submission/sections/dataset.tex` (gold/silver
-> comparability) with a sentence backed by these numbers. Draft to adapt once the
-> numbers are in:
+**Do not assert blanket comparability.** The current text (lines 120–124) over-claims.
+Replace with the softened version already applied (see `submission/sections/dataset.tex`, same lines):
+scanner axes are comparable; race and age differ modestly and are already controlled for in all
+stratified comparisons.
 
-```
-The two pools are demographically and acquisition-matched: gold and silver differ
-on none of sex, race, age, manufacturer, or field strength (all p_fdr > 0.05, all
-Cramér's V / |r_rb| < 0.1), confirming that label provenance — not case mix — is
-the only systematic difference between them.
-```
-
-*(Adjust wording if any marginal is flagged: state which one, its effect size,
-and how it is controlled for.)*
+*(Full comparability sentence dropped because pools differ on race and age. Do not add the
+all-clear one-liner. Raise at next supervisor sync — affects E3/E4 framing if not already
+controlled.)*
 
 ---
 

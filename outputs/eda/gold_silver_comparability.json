@@ -1,0 +1,237 @@
+{
+  "split_version": "split_v3",
+  "n_gold": 448,
+  "n_silver": 694,
+  "all_comparable": false,
+  "comparisons": [
+    {
+      "attribute": "Sex",
+      "kind": "categorical",
+      "counts": {
+        "gold": {
+          "Female": 234,
+          "Male": 214
+        },
+        "silver": {
+          "Female": 337,
+          "Male": 357
+        }
+      },
+      "pool_pct": {
+        "gold": {
+          "Female": 52.2,
+          "Male": 47.8
+        },
+        "silver": {
+          "Female": 48.6,
+          "Male": 51.4
+        }
+      },
+      "test": "chi2",
+      "stat": 1.3259764820913957,
+      "dof": 1,
+      "effect": {
+        "name": "cramers_v",
+        "value": 0.034074921085972196
+      },
+      "p": 0.24952226906389788,
+      "p_fdr": 0.29110931390788086,
+      "comparable": true
+    },
+    {
+      "attribute": "Manufacturer",
+      "kind": "categorical",
+      "counts": {
+        "gold": {
+          "GE MEDICAL SYSTEMS": 157,
+          "SIEMENS": 291
+        },
+        "silver": {
+          "GE MEDICAL SYSTEMS": 269,
+          "SIEMENS": 425
+        }
+      },
+      "pool_pct": {
+        "gold": {
+          "GE MEDICAL SYSTEMS": 35.0,
+          "SIEMENS": 65.0
+        },
+        "silver": {
+          "GE MEDICAL SYSTEMS": 38.8,
+          "SIEMENS": 61.2
+        }
+      },
+      "test": "chi2",
+      "stat": 1.4526064400450736,
+      "dof": 1,
+      "effect": {
+        "name": "cramers_v",
+        "value": 0.03566489343187597
+      },
+      "p": 0.2281101872194471,
+      "p_fdr": 0.29110931390788086,
+      "comparable": true
+    },
+    {
+      "attribute": "Field strength",
+      "kind": "categorical",
+      "counts": {
+        "gold": {
+          "1.5": 262,
+          "3.0": 186
+        },
+        "silver": {
+          "1.5": 422,
+          "3.0": 272
+        }
+      },
+      "pool_pct": {
+        "gold": {
+          "1.5": 58.5,
+          "3.0": 41.5
+        },
+        "silver": {
+          "1.5": 60.8,
+          "3.0": 39.2
+        }
+      },
+      "test": "chi2",
+      "stat": 0.5195940313602608,
+      "dof": 1,
+      "effect": {
+        "name": "cramers_v",
+        "value": 0.021330401237504723
+      },
+      "p": 0.47101490803387525,
+      "p_fdr": 0.4710149080338753,
+      "comparable": true
+    },
+    {
+      "attribute": "Race (White vs. Black)",
+      "kind": "categorical",
+      "counts": {
+        "gold": {
+          "Black": 100,
+          "White": 303
+        },
+        "silver": {
+          "Black": 212,
+          "White": 433
+        }
+      },
+      "pool_pct": {
+        "gold": {
+          "Black": 24.8,
+          "White": 75.2
+        },
+        "silver": {
+          "Black": 32.9,
+          "White": 67.1
+        }
+      },
+      "test": "chi2",
+      "stat": 7.315352075734389,
+      "dof": 1,
+      "effect": {
+        "name": "cramers_v",
+        "value": 0.08354817641450532
+      },
+      "p": 0.006836800361676977,
+      "p_fdr": 0.01196440063293471,
+      "comparable": false
+    },
+    {
+      "attribute": "Race (White/Black/Other)",
+      "kind": "categorical",
+      "counts": {
+        "gold": {
+          "Black": 100,
+          "Other": 45,
+          "White": 303
+        },
+        "silver": {
+          "Black": 212,
+          "Other": 49,
+          "White": 433
+        }
+      },
+      "pool_pct": {
+        "gold": {
+          "Black": 22.3,
+          "Other": 10.0,
+          "White": 67.6
+        },
+        "silver": {
+          "Black": 30.5,
+          "Other": 7.1,
+          "White": 62.4
+        }
+      },
+      "test": "chi2",
+      "stat": 10.849493785566608,
+      "dof": 2,
+      "effect": {
+        "name": "cramers_v",
+        "value": 0.09747016151961983
+      },
+      "p": 0.004406181256957344,
+      "p_fdr": 0.010281089599567136,
+      "comparable": false
+    },
+    {
+      "attribute": "Age (continuous, years)",
+      "kind": "continuous",
+      "median_gold": 53.0,
+      "median_silver": 58.0,
+      "n_gold": 443,
+      "n_silver": 687,
+      "test": "mann_whitney",
+      "stat": 131055.0,
+      "effect": {
+        "name": "r_rb",
+        "value": 0.1387621122359458
+      },
+      "p": 8.039760182786517e-05,
+      "p_fdr": 0.0005627832127950562,
+      "comparable": false
+    },
+    {
+      "attribute": "Age (3-bin)",
+      "kind": "categorical",
+      "counts": {
+        "gold": {
+          "40-60": 179,
+          "60+": 160,
+          "<40": 109
+        },
+        "silver": {
+          "40-60": 259,
+          "60+": 322,
+          "<40": 113
+        }
+      },
+      "pool_pct": {
+        "gold": {
+          "40-60": 40.0,
+          "60+": 35.7,
+          "<40": 24.3
+        },
+        "silver": {
+          "40-60": 37.3,
+          "60+": 46.4,
+          "<40": 16.3
+        }
+      },
+      "test": "chi2",
+      "stat": 16.926247673277917,
+      "dof": 2,
+      "effect": {
+        "name": "cramers_v",
+        "value": 0.12174392346763821
+      },
+      "p": 0.0002111115615186256,
+      "p_fdr": 0.0007388904653151896,
+      "comparable": false
+    }
+  ]
+}
