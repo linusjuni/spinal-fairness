@@ -1,0 +1,136 @@
+% =============================================================================
+% DATASET + CONFOUNDERS   --   target ~1.25 pp. Borrowed from paper/ and cut.
+% Cuts vs paper/ (logged in docs/faimi/dataset-section-cuts.md): dropped
+% tab:notation (symbols inlined), fig:volumes, tab:volumes (folded to one
+% sentence), the connected-components paragraph, the GE/Siemens voxel arithmetic
+% (-> 1 line). KEPT: fig:anatomy, tab:cohort. Added: gold/silver comparability
+% (load-bearing for E2) -- still needs an empirical one-liner.
+% =============================================================================
+\section{Dataset and Exploratory Analysis}
+\label{sec:dataset}
+
+\subsection{The CSpineSeg Cohort}
+\label{sec:cohort}
+
+We work with CSpineSeg~\cite{zhou2025cspineseg}, a public collection of 1,255
+sagittal T2-weighted cervical-spine MRI exams from 1,232 patients at Duke
+University. We drop a single localizer series with anomalous dimensions, leaving a
+working set $\mathcal{D}_0$ of $N_0 = 1{,}254$ exams from 1,231 patients. The task
+is semantic segmentation: labelling every voxel of a scan as background, vertebral
+body, or intervertebral disc ($\mathcal{L} = \{0, 1, 2\}$; \autoref{fig:anatomy}).
+About $40\%$ of the exams carry expert (gold) reference segmentations, drafted by one post-doctoral researcher without medical training and reviewed and revised by
+one of six board-certified radiologists; the rest were segmented automatically by the authors' own model, and
+these silver masks were never human-reviewed -- though the mid-sagittal slice of
+each unannotated scan was checked for image quality.
+
+We write the cohort as $\mathcal{D} = \{(X_i, Y_i, A_i, q_i)\}_{i=1}^{N}$: exam
+$i$ pairs a 3D image $X_i$ with a reference segmentation $Y_i$, an attribute value
+$A_i$ over the protected attributes $\mathcal{A} = \{\text{sex}, \text{race},
+\text{age}\}$, and a provenance flag $q_i \in \{\mathsf{g}, \mathsf{s}\}$ marking a
+gold (expert) or silver (machine-generated) label. We write
+$\mathcal{D}_{A=a}$ for the subgroup with $A = a$. The analysis cohort
+$\mathcal{D}$ ($N = 1{,}142$) is the sex-balanced subset of $\mathcal{D}_0$ defined
+in ``\nameref{sec:regimes}''.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.55\textwidth]{anatomy_overlay.png}
+\caption{A representative mid-sagittal T2 slice from CSpineSeg with the expert
+reference segmentation overlaid: vertebral bodies (red, class~$1$) and
+intervertebral discs (green, class~$2$); every other voxel is background. Each
+exam is a 3D volume; a single slice is shown for illustration.}
+\label{fig:anatomy}
+\end{figure}
+
+\autoref{tab:cohort} summarises $\mathcal{D}_0$. The cohort leans slightly female
+(55\%), is predominantly White (65\%) with a sizeable Black minority (28\%) and
+only small numbers in the remaining race groups, and is overwhelmingly
+non-Hispanic. Ages span the adult range (18--89, median 56), and scans are split
+across two manufacturers (Siemens 63\%, GE 37\%) and two field strengths (1.5\,T
+60\%, 3.0\,T 40\%). The volumes are strongly anisotropic: in-plane resolution is
+high (${\sim}0.53$\,mm) but the sagittal slices are thick (${\sim}4$\,mm) and few
+(12--25 per scan). These group sizes decide which fairness axes we can test: sex
+(Female vs.\ Male), race (White vs.\ Black), and age have enough exams per group
+for reliable inference, so we test them formally; the smaller race categories
+(8\% combined) and ethnicity are too sparse and are reported descriptively only.
+
+\begin{table}[t]
+\centering
+\caption{Composition of the working set $\mathcal{D}_0$ ($N_0 = 1{,}254$ exams,
+counted at the exam level). Percentages are of $N_0$.}
+\label{tab:cohort}
+\small
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l r l r}
+\hline\noalign{\smallskip}
+Characteristic & $n$ (\%) & Characteristic & $n$ (\%) \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+\textit{Sex} & & \textit{Age, years}$^{b}$ & $54.6 \pm 16.3$ \\
+\quad Female & 683 (54.5) & \quad $<$40 & 241 (19.2) \\
+\quad Male & 571 (45.5) & \quad 40--60 & 486 (38.8) \\
+\textit{Race} & & \quad $\ge$60 & 527 (42.0) \\
+\quad White & 809 (64.5) & \textit{Manufacturer} & \\
+\quad Black & 349 (27.8) & \quad Siemens & 788 (62.8) \\
+\quad Other/unknown$^{a}$ & 96 (7.7) & \quad GE & 466 (37.2) \\
+\textit{Ethnicity} & & \textit{Field strength} & \\
+\quad Non-Hispanic & 1{,}162 (92.7) & \quad 1.5\,T & 746 (59.5) \\
+\quad Hispanic & 59 (4.7) & \quad 3.0\,T & 508 (40.5) \\
+\quad Not reported & 33 (2.6) & & \\
+\noalign{\smallskip}\hline
+\end{tabular*}
+
+\smallskip
+{\footnotesize $^{a}$\,Asian (25), American Indian or Alaska Native (9), Native
+Hawaiian or other Pacific Islander (1), Other (28), Not Reported (33).
+\quad $^{b}$\,mean $\pm$ SD; 13 exams with missing age (confirmed ${>}89$) are
+grouped into the oldest bin.}
+\end{table}
+
+\subsection{Anatomical Confounders}
+\label{sec:confounders}
+
+A performance gap is bias only if it is not explained by how the groups differ
+anatomically or in acquisition. Anatomy can make a group genuinely harder --
+cervical degeneration rises with age~\cite{kato2012cervical}, bridging and merging
+adjacent vertebrae and blurring the boundaries the model must trace -- and can also
+fool the metric, since Dice rewards large structures (a fixed boundary error costs
+a smaller fraction of a big structure's score than a small one's). Acquisition
+matters only if a group were scanned mostly on particular hardware; imaging site, a
+confounder for multi-centre studies, does not arise in single-institution
+CSpineSeg.
+
+We measured the physical volume (mm$^3$) of the vertebral bodies and discs in
+every $\mathcal{D}_0$ reference and compared across $\mathcal{A}$, reading
+rank-based effect sizes ($r_{rb}$~\cite{wendt1972rankbiserial} for sex/race,
+$\varepsilon^2$~\cite{tomczak2014effectsize} for age) on the conventional
+negligible/small/medium/large scale~\cite{cohen1988power}. Sex drives a large gap
+in both structures (men ${\sim}23$--$24\%$ larger); race and age enlarge the
+vertebral body only (White $+12\%$, small; $\ge$60 vs.\ $<$40 $+20\%$, medium)
+while leaving disc volume essentially unchanged -- making the disc the structure
+least exposed to the size confound. A quick check rules out the scanner: GE yields ${\sim}2.15\times$
+Siemens' voxel count purely from finer in-plane resolution, but in physical mm$^3$
+the volumes align across manufacturers (${\sim}6\%$ gap), so these differences are
+real anatomy, not a resolution artefact.
+
+No attribute is otherwise tangled up with the scanner, which could fake a group
+gap: race is independent of both manufacturer and field strength, and sex of race
+(all Cram\'er's $V \approx 0.05$--$0.07$, none significant). The one mild
+entanglement is age -- White patients are slightly older than Black (median $58$
+vs.\ $54$) -- so because age tracks vertebral-body anatomy, we control for age
+whenever we compare race. Importantly for the biased-ruler experiment
+(``\nameref{sec:design}''), the gold and silver pools are themselves
+demographically comparable: Zhou et al.~chose which exams to expert-annotate
+pseudo-randomly, by medical-record number rather than any demographic or
+difficulty criterion~\cite{zhou2025cspineseg}, so a gold-vs-silver performance gap
+reflects label provenance, not a difference in case mix.
+% TODO: back the comparability claim with one empirical line -- gold vs silver
+% pools match on sex/race/age marginals (and ideally a difficulty proxy). This
+% pre-empts the "maybe gold cases were just harder" objection that the ~8-pt E2
+% gap will otherwise invite. See docs/faimi/paper-framing.md (risk section).
+
+Two choices follow and carry into the rest of the paper. First, we report the
+vertebral body and disc separately as well as their macro average; because the
+disc is anatomically uniform across race and age, it is the structure least
+confounded by size and so serves as a cleaner cross-check on any macro-level gap.
+Second, we evaluate with a volume-aware score -- the normalised Dice score (nDSC,
+``\nameref{sec:metrics}'') -- alongside raw Dice, to neutralise the size confound
+before any performance gap can be read as bias.

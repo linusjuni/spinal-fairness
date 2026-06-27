@@ -1,0 +1,66 @@
+% =============================================================================
+% EXPERIMENTS & RESULTS   --   target ~2.5 pp (REALLOCATE toward E2)
+% 2 subsections (E1 setup, E2 headline); E3-E4 + probe are \paragraph{} run-ins.
+% Float budget for this section: ~2 figures + ~3 tables.
+% =============================================================================
+\section{Experiments and Results}
+% 1 sentence: nnU-Net selected the 2D+3D ensemble for all regimes (30 folds);
+% results follow E1-E4 + probe.
+
+\subsection{Global Fairness Audit (E1)}
+\label{sec:global}
+% SHORT. M_mix on 228 test cases.
+% - Quality: macro Dice 0.947 (VB .959 / disc .935); nDSC tracks Dice; on the 76
+%   gold cases 0.897, comparable to Zhou's 0.916 (diff split, smaller pool).
+% - Fairness: every DIR > 0.96, all lower CIs > 0.80; 0/63 FDR-sig (smallest
+%   p_fdr=0.72); OLS R^2=0.013 (p=0.43). => fair by every measure.
+% - TABLE: tab:global_dir (DIR/DPD + BCa CI, sex/race/age x Dice/nDSC/HD95).
+% - FIG: dir_forest_global.png (all DIRs near 1.0, lower bounds clear 0.80).
+%   (Drop the standalone violin -- fold age distribution into the E2 figure.)
+
+\subsection{The Biased Ruler: False Confidence (E2)}
+\label{sec:biased_ruler}
+% ** THE HEADLINE EXPERIMENT -- give it the most room. **
+% Same model, same 76 images, scored twice: gold ruler vs generated-silver ruler
+% (M_gold's predictions). Predictions identical => any change = pure ruler effect.
+
+% \paragraph{Performance gap (the leakage angle).}
+% - gold macro 0.897 vs silver 0.973 -- ~8 pts inflation; silver shares the model's
+%   systematic errors. State broadly: affects ANY user of the dataset, not just
+%   auditors.
+
+% \paragraph{The verdict flip.}
+% - gold ruler 0/63 FDR-sig (smallest p_fdr=0.13); silver ruler 11/63 FDR-sig, ALL
+%   age groupings.
+
+% \paragraph{Mechanism: variance collapse, not magnitude.}
+% - age spread shrinks (2.7 -> 0.6 Dice pts) yet KW H rises 7.0 -> 11.4 because
+%   within-group SD drops 0.058 -> 0.014 (~4x). DIR saturates at 1.0 (silver) while
+%   the continuous test goes significant. Threshold sweep confirms saturation.
+% - TABLE: tab:biased_ruler (gold vs silver: DIR/DPD/p_fdr per grouping).
+% - FIG: age_trend_gold_vs_silver.png (THE money figure: same staircase both
+%   rulers; gold's wide boxes bury it, silver's razor-thin boxes expose it).
+% - OPTIONAL FIG: two_modes_ruler_bias.png (false-magnitude (Parikh) vs
+%   false-confidence (ours) schematic) -- include only if budget allows.
+% - Interpretation deferred to Discussion (two modes).
+
+% \paragraph{Bias amplification (E3--E4).}
+% COMPRESSED. Three models on the same 76 gold cases vs expert labels.
+% - Quality: M_silver 0.897 == M_mix to 3 dp (never saw expert labels); M_gold
+%   slightly lower 0.888 (fewer cases). Larger pool offsets noisier labels.
+% - Fairness: 0/63 FDR-sig on any model (smallest p_fdr=0.061). M_silver ~ M_mix
+%   (often identical DIRs); if anything M_gold least fair (disc race W/B/O 0.813).
+%   => NO amplification. Boundary condition vs Parikh's +66% (-> Discussion).
+% - TABLE: tab:amplification (macro Dice DIR, three models x groupings).
+
+% \paragraph{Demographic probing.}
+% Does the representation encode demographics at all?
+% - Sex strongly encoded: nnU-Net 0.957 AUROC (Delta +0.186); MRI-CORE 0.931 but
+%   null already 0.836 (mostly pixel stats). Age moderate (0.642/0.632). Race ~
+%   chance both. Manufacturer ~0.997 (sanity check).
+% - 1 sentence: confounder check (sex x manuf, age x sex n.s.; age x manuf sig but
+%   negligible) => signals not scanner artefacts.
+% - TABLE: tab:probe (encoder x attribute: trained / null / Delta_task). (Drop
+%   probe_bar_chart -- the table carries it.)
+% - Dissociation: sex encoded but no disparity; age mildly encoded + the one axis
+%   with a (negligible) trend; race at chance. -> Discussion.

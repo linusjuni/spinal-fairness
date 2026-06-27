@@ -1,0 +1,91 @@
+% main.tex -- master file for the spinal-fairness paper (LLNCS / Springer LNCS)
+% Build: latexmk -pdf main.tex   (runs pdflatex -> bibtex -> pdflatex x2)
+% Structure:
+%   sections/  -- one .tex per section, pulled in via \input below
+%   figures/   -- media (declared on \graphicspath so \includegraphics needs no prefix)
+%   template/  -- Springer boilerplate docs (not used in the build)
+%
+\documentclass[runningheads,a4paper]{llncs}
+%
+\usepackage[T1]{fontenc}
+% T1 fonts will be used to generate the final print and online PDFs,
+% so please use T1 fonts in your manuscript whenever possible.
+% Other font encondings may result in incorrect characters.
+%
+\usepackage{graphicx}
+% Used for displaying a sample figure. If possible, figure files should
+% be included in EPS format.
+\graphicspath{{figures/}}
+\usepackage{amsmath,amssymb}  % math environments + blackboard-bold (\mathbb)
+\usepackage{tabularx}         % full-width tables with an auto-stretching column
+\renewcommand{\arraystretch}{1.2}  % slightly more breathing room between table rows
+%
+% If you use the hyperref package, please uncomment the following two lines
+% to display URLs in blue roman font according to Springer's eBook style:
+\usepackage{color}
+\usepackage{hyperref}         % enables \autoref and clickable cross-references
+\renewcommand\UrlFont{\color{blue}\rmfamily}
+\urlstyle{rm}
+%
+% --- TikZ setup for the three-label-regime schematic (sec:regimes) -----------
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
+\definecolor{regimeGold}{HTML}{B8941F}
+\definecolor{regimeSilver}{HTML}{6E7782}
+\definecolor{regimeMix}{HTML}{3D6FA5}
+\definecolor{regimeCohort}{HTML}{8A8A8A}
+\tikzset{
+  regnode/.style={
+    rectangle, rounded corners=4pt, draw=#1, line width=0.9pt, fill=#1!12,
+    align=center, inner sep=6pt, minimum height=10mm, font=\footnotesize,
+  },
+  regedge/.style={
+    draw=#1, line width=0.9pt, -{Stealth[length=4.5pt, width=4pt]},
+    shorten >=1.5pt, shorten <=1.5pt,
+  },
+}
+%
+\begin{document}
+%
+\title{Fairness in Cervical Spine MRI Segmentation}
+%
+\titlerunning{Fairness in Cervical Spine MRI Segmentation}
+% If the paper title is too long for the running head, you can set
+% an abbreviated paper title here
+%
+% !! ANONYMIZE FOR REVIEW (FAIMI is double-blind). For submission, replace the
+% author/institute block below with anonymous placeholders and strip any
+% self-identifying phrasing in the body (e.g. "our prior work"). De-anonymize only
+% for camera-ready / arXiv. See docs/faimi/submission-requirements.md.
+\author{Linus Juni \and Aasa Feragen \and Aditya Parikh}
+%
+\authorrunning{L. Juni et al.}
+% First names are abbreviated in the running head.
+% If there are more than two authors, 'et al.' is used.
+%
+\institute{Section for Visual Computing, DTU Compute,\\
+Technical University of Denmark, Kongens Lyngby, Denmark\\
+\email{\{s225224, afhar, adipa\}@dtu.dk}}
+
+\maketitle              % typeset the header of the contribution
+%
+\input{sections/abstract}
+%
+\input{sections/introduction}
+\input{sections/dataset}
+\input{sections/methodology}
+\input{sections/experiments}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+% -- Bibliography --
+%
+% BibTeX users should specify bibliography style 'splncs04'.
+% References will then be sorted and formatted in the correct style.
+%
+\bibliographystyle{splncs04}
+\bibliography{mybibliography}
+%
+% Do check for citation formatting using Google Scholar
+%
+\end{document}

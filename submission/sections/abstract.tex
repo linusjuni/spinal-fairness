@@ -1,0 +1,25 @@
+% =============================================================================
+% ABSTRACT  (~150-180 words)
+% Beats, in order:
+%   1. Hook: automated cervical-spine segmentation guides care; no fairness audit
+%      exists for this anatomy.
+%   2. Lineage: when datasets mix expert (gold) + machine (silver) labels, the
+%      *reference* used to judge fairness can itself be biased -- the biased-ruler
+%      effect of Parikh et al. (shown in breast MRI, not yet in spine).
+%   3. What we do: audit an nnU-Net on CSpineSeg (1,254 exams) across sex/race/age;
+%      compare gold vs machine-generated ruler; test bias amplification; probe the
+%      encoder.
+%   4. Findings (one clause each): (a) model is fair by every measure; (b) swapping
+%      to a machine ruler flips the AGE verdict -- a *false confidence* mode
+%      (variance collapse) complementary to Parikh et al.'s *false magnitude*;
+%      (c) silver training does NOT amplify bias here; (d) sex strongly encoded yet
+%      no disparity.
+%   5. Takeaway: reference-label provenance is a first-order confounder in fairness
+%      evaluation and must be reported with any fairness claim.
+% =============================================================================
+\begin{abstract}
+
+% TODO: write abstract per beats above.
+
+\keywords{Fairness \and Medical segmentation \and Spine MRI \and Bias.}
+\end{abstract}

@@ -1,0 +1,56 @@
+% =============================================================================
+% DISCUSSION   --   target ~0.75 pp (COMPRESS hard)
+% No subsections -- all beats are \paragraph{} run-ins. 0.75 pp can't carry
+% subsection whitespace. Limitations + recommendations stay as compact lists.
+% =============================================================================
+\section{Discussion}
+\label{sec:discussion}
+
+% \paragraph{Two modes of ruler bias.}
+% THE interpretive core. Our silver ruler = M_gold's predictions => measures
+% inter-model AGREEMENT (~0.97), not accuracy; SD 0.058 -> 0.014 (~4x). High
+% agreement = task simplicity + shared recipe (footnote: even M_gold vs M_silver,
+% disjoint data, agree at 0.97 -> property of the task, not shared cases). KW power
+% scales with SNR => same negligible age gradient clears FDR once silver collapses
+% the noise. "The ruler changed the test's power, not the patient."
+% CONTRAST Parikh et al.: their silver = independently biased model => inflates the
+% gap (DIR 0.871->0.815) = FALSE MAGNITUDE. Ours shrinks the gap yet manufactures
+% significance by removing noise = FALSE CONFIDENCE. Same practical problem (verdict
+% depends on the ruler), opposite route. <- credit lineage explicitly here.
+
+% \paragraph{The age effect is intrinsic; encoding != disparity.}
+% - Significance on silver is an artefact, but the age TREND is real: same direction
+%   both rulers (60+ worst), matches degenerative anatomy (confounders), confirmed
+%   by the probe (age encoded > null; race at chance). Intrinsic difficulty, not a
+%   label artefact -- and NOT unfairness: magnitudes clinically negligible (<=2.7
+%   Dice pts, all groups > 0.89, all gold DIR > 0.93).
+% - Encoding dissociation: sex strongly encoded (0.957) yet zero disparity (DIR
+%   0.991) -> decoder maps different reps to equally good outputs. Debiasing-by-
+%   suppression [petersen2023feature] would be unnecessary here, could discard
+%   useful morphology.
+% - Race at chance on BOTH encoders -- contrast Gichoya (race readable from X-ray):
+%   modality / tight FOV / frozen-linear-probe vs end-to-end.
+
+% \paragraph{Why silver training did not amplify bias.}
+% Null is EXPECTED: amplification needs (a) a pre-existing disparity and (b) a
+% differentially-biased silver source. Neither holds: 0/63 gap to amplify; silver
+% labels demographically unbiased (Zhou's pseudo-random annotation choice). Contrast
+% Parikh's +66% (independently-biased silver annotator, harder task). CAVEAT:
+% necessary not sufficient -- don't over-generalise to harder anatomy / smaller
+% structures / silver of unknown provenance.
+
+% \paragraph{Limitations.}
+% Tight list: high-performance ceiling (>0.89 Dice -> little room); single
+% institution/anatomy/sequence, no external val; correlated silver ruler (near-clone
+% -> only false-confidence shown, not false-magnitude); training-set size confound
+% (288/450/798); small gold test set (76, ~20 Black); single architecture.
+
+% \paragraph{Recommendations.}
+% The actionable, FAIMI-friendly takeaways (keep all four, terse):
+%   (1) state where reference labels come from (0/63 -> 11/63, same model);
+%   (2) check ruler-vs-model similarity (much higher AND much tighter => too close);
+%   (3) report magnitude, not just significance;
+%   (4) don't strip demographic signal without a confirmed output disparity.
+% (Optional, if space: 1-2 sentences of future work -- independent / deliberately-
+%  biased ruler to show false-magnitude in spine; formalise variance-collapse +
+%  agreement signatures into a diagnostic test.)

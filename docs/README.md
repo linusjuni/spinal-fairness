@@ -9,6 +9,7 @@ then the per-folder tables for individual documents.
 | Folder | What lives here |
 |---|---|
 | [`project-plan/`](#project-plan) | Formal course project plan — goals, methods, risks |
+| [`faimi/`](#faimi-submission) | FAIMI workshop submission requirements (page limits, format, deadlines) |
 | [`eda/`](#exploratory-data-analysis-eda) | Exploratory data analysis — distributions, volumes, full-vs-train comparison |
 | [`statistical-testing/`](#methodology) | Statistical test battery used across EDA |
 | [`splits/`](#methodology) | Train/val/test split design and sex-balancing decisions |
@@ -23,6 +24,14 @@ then the per-folder tables for individual documents.
 | Document | Contents |
 |---|---|
 | [Project Plan](project-plan/project-plan.md) | Formal course project plan — research goals, infrastructure, methods, risks |
+
+## FAIMI Submission
+
+| Document | Contents |
+|---|---|
+| [Submission Requirements](faimi/submission-requirements.md) | FAIMI workshop hard constraints — 8-page limit (+2 for references), LNCS template, double-blind anonymization, CMT platform, supplementary-material rules, and dates (based on FAIMI 2024/2025; 2026 CfP TBA) |
+| [Content Cut from paper/](faimi/content-cut-from-paper.md) | Per-section log of what was dropped/shortened when compressing the long `paper/` draft into the 8-page `submission/` — so cuts are deliberate and reinstatable (e.g. the connected-components degeneration finding, `tab:notation`, `tab:volumes`) |
+| [Paper Framing & Positioning](faimi/paper-framing.md) | How to frame the paper for FAIMI — the biased-ruler lineage (Parikh et al., which we *extend*, not invent) reconciled with Aasa's validation-problem headline and Aditya's "first cervical-spine fairness audit" hook; our novelty as a complementary "false confidence" mode; revised contributions list, the ~8-point leakage angle, and the pseudo-random-assignment risk to back up |
 
 ## Exploratory Data Analysis (EDA)
 
