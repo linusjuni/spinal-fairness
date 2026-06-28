@@ -1,7 +1,8 @@
 % =============================================================================
 % METHODOLOGY   --   target ~1.5 pp. Compressed from paper/sections/methodology.tex.
 % 2 subsections; finer beats are \paragraph{} run-ins. One display eq (nDSC);
-% Dice + DPD/DIR inline. Floats: fig:regimes (partition), tab:experiments. Cuts in
+% Dice + DPD/DIR inline. No floats (fig:regimes + tab:experiments dropped for 8pp;
+% regime counts and E1--E2 design inlined in prose). Cuts in
 % docs/faimi/content-cut-from-paper.md.
 % =============================================================================
 \section{Methodology}
@@ -31,161 +32,58 @@ gap~\cite{parikh2025labelbias}. Because nnU-Net is cross-validation-native, we p
 $\mathcal{D}_{\mathrm{train}}$ and $\mathcal{D}_{\mathrm{val}}$ into a single
 development set and hold out $\mathcal{D}_{\mathrm{test}}$.
 
-To ask whether the provenance of the \emph{training} labels changes fairness, we
-train three models that differ only in the labels they see
-(\autoref{fig:regimes}): the mixed model $M_{\mathrm{mix}}$ on the full training
-split, and $M_{\mathrm{gold}}$ / $M_{\mathrm{silver}}$ on its gold-only /
-silver-only exams. $M_{\mathrm{mix}}$ is the deployment-realistic model --
-combining scarce expert labels with abundant automated ones is the standard
-response to annotation cost~\cite{tajbakhsh2020embracing}. Each regime is
-sex-balanced independently, so the counts do not sum ($288 + 450 \neq 798$):
-re-balancing within the gold pool alone discards its $30$-exam female surplus, and
-the silver pool its male surplus. Two caveats carry into the comparison: the gold
-set is smaller ($288$ vs.\ $450$) simply because fewer exams were expertly
-annotated; and the gold and silver pools are demographically comparable
-(``\nameref{sec:confounders}''), so label provenance is the only variable
-separating $M_{\mathrm{gold}}$ from $M_{\mathrm{silver}}$.
-
-\begin{figure}[t]
-\centering
-\begin{tikzpicture}
-  \node[regnode=regimeCohort, text width=64mm] (D) at (0,2.5)
-    {Analysis cohort $\mathcal{D}$\\ $1{,}142$ exams ($50/50$ M/F)\\[2pt]
-     {\scriptsize each exam carries gold \emph{or} silver, never both}};
-
-  \node[regnode=regimeGold,   text width=30mm] (DG) at (-2.7,0.7)
-    {Gold set $\mathcal{D}^{\mathsf{g}}$\\[1pt] {\scriptsize expert annotation}};
-  \node[regnode=regimeSilver, text width=32mm] (DS) at ( 2.7,0.7)
-    {Silver set $\mathcal{D}^{\mathsf{s}}$\\[1pt] {\scriptsize machine-generated}};
-
-  \node[regnode=regimeGold,   text width=22mm] (MG) at (-4.6,-1.8)
-    {$M_{\mathrm{gold}}$\\[1pt] train $288$\\ {\scriptsize gold only}\\
-     {\scriptsize ($50/50$ M/F)}};
-  \node[regnode=regimeMix,    text width=38mm] (MM) at ( 0,  -1.8)
-    {$M_{\mathrm{mix}}$\\ train $798$\\ {\scriptsize $318$ gold $+$ $480$ silver}\\
-     {\scriptsize ($50/50$ M/F)}};
-  \node[regnode=regimeSilver, text width=22mm] (MS) at ( 4.6,-1.8)
-    {$M_{\mathrm{silver}}$\\[1pt] train $450$\\ {\scriptsize silver only}\\
-     {\scriptsize ($50/50$ M/F)}};
-
-  \draw[regedge=regimeCohort] (D)  -- (DG);
-  \draw[regedge=regimeCohort] (D)  -- (DS);
-  \draw[regedge=regimeGold]   (DG) -- (MG);
-  \draw[regedge=regimeGold]   (DG) -- (MM);
-  \draw[regedge=regimeSilver] (DS) -- (MS);
-  \draw[regedge=regimeSilver] (DS) -- (MM);
-\end{tikzpicture}
-\caption{The three label regimes. The provenance flag $q_i$ partitions the
-analysis cohort $\mathcal{D}$ into a disjoint gold (expert) set
-$\mathcal{D}^{\mathsf{g}}$ and silver (machine-generated) set
-$\mathcal{D}^{\mathsf{s}}$; the mixed model $M_{\mathrm{mix}}$ trains on both,
-while $M_{\mathrm{gold}}$ and $M_{\mathrm{silver}}$ each train on one. Counts are
-training exams and do not add up across regimes ($798 \neq 288 + 450$) because
-each regime is sex-balanced independently; all three share the architecture,
-training recipe, patient-level split, and stratification.}
-\label{fig:regimes}
-\end{figure}
+We train two models that differ only in the labels they see, both sharing the
+architecture, recipe, patient-level split, and stratification: the deployment-realistic
+$M_{\mathrm{mix}}$ on the full split ($798$ exams: $318$ gold, $480$ silver) -- combining
+scarce expert labels with abundant automated ones is the standard response to annotation
+cost~\cite{tajbakhsh2020embracing} -- and a gold-only $M_{\mathrm{gold}}$ ($288$ exams),
+which doubles as the generated-silver ruler for E2 (it never sees the test cases). Each
+is sex-balanced independently within its split.
 
 \subsection{Models, Metrics, and Experimental Design}
 \label{sec:model}
 
 \paragraph{Model and training.}
 We segment every regime with nnU-Net v2 (ResEnc-L
-preset)~\cite{isensee2021nnunet,isensee2024revisited}, which derives its
-architecture and training recipe from a dataset fingerprint. This serves the audit
-twice over: it is a strong equal-resource baseline, so any gap reflects the data
-and labels rather than a weak model, and holding the fingerprint-derived
-configuration fixed guarantees the three regimes share one recipe -- the assumption
-behind every model-to-model comparison here. Per regime we train the standard 2D
-and 3D full-resolution configurations as five-fold cross-validations over the
-pooled development set, and take the softmax-averaged ten-fold ensemble as the
-predictor (thirty folds total). The one audit-driven change is demographically
-stratified CV folds; post-processing keeps only a global largest-foreground
-cleanup. The thirty folds cost ${\sim}1{,}105$ GPU-hours
+preset)~\cite{isensee2021nnunet,isensee2024revisited}: a strong equal-resource baseline
+in one fixed configuration shared across regimes, so every comparison is like-for-like
+and any gap reflects the data and labels, not a weak model. Per regime we train the
+standard 2D and 3D full-resolution configurations as five-fold cross-validations over
+the pooled development set and ensemble the ten folds (twenty total); the one
+audit-driven change is demographically stratified folds, with post-processing limited
+to a global largest-foreground cleanup. Training cost ${\sim}1{,}105$ GPU-hours
 (${\sim}53$--$74$\,kg\,CO$_2$e)~\cite{lacoste2019quantifying,dea_keyfigures2023}.
 % Double-blind: do NOT add the HF model-release URL here for review; camera-ready/arXiv only.
 
 \paragraph{Metrics and statistical inference.}
 \label{sec:metrics}
-For a foreground class $c \in \{1,2\}$ on exam $i$, with true/false positives and
-false negatives $\mathrm{TP}, \mathrm{FP}, \mathrm{FN}$ between prediction and
-reference, $\mathrm{Dice} = 2\,\mathrm{TP} / (2\,\mathrm{TP} + \mathrm{FP} +
-\mathrm{FN})$. Because Dice's false-positive penalty is not scaled by structure
-size -- the volume bias of ``\nameref{sec:confounders}'' -- we also report the
-normalised Dice score (nDSC) of Raina et al.~\cite{raina2023ndsc}, which reweights
-only the false-positive term by
-$\kappa_{i,c} = (1 - r_c)\,|R_{i,c}| / \big(r_c\,(|\Omega_i| - |R_{i,c}|)\big)$,
-where $r_c$ is the dataset-mean fraction of voxels in class $c$:
-\begin{equation}
-  \mathrm{nDSC}_{i,c}
-  = \frac{2\,\mathrm{TP}}{\kappa_{i,c}\,\mathrm{FP} + 2\,\mathrm{TP} + \mathrm{FN}},
-  \label{eq:ndsc}
-\end{equation}
-so each exam is scored as though its class occupied the common load $r_c$
-($\kappa = 1$ recovers Dice). We add HD95 (95th-percentile Hausdorff distance, mm;
-lower is better)~\cite{taha2015metrics}, all three reported per class and
-macro-averaged. For group disparities we use the binarized, rate-based metrics
-canonical in this
-literature~\cite{parikh2025labelbias,bird2020fairlearn,eeoc1978uniform}: an exam
-\emph{succeeds} when its score clears $\tau$ ($0.8$ for Dice/nDSC, $5$\,mm for
-HD95), giving per-group success rates $\rho_a$, the demographic parity difference
-$\mathrm{DPD} = \max_a \rho_a - \min_a \rho_a$ and disparate impact ratio
-$\mathrm{DIR} = \min_a \rho_a / \max_a \rho_a$ ($<0.8$ flags adverse impact), read
-off a sweep of $\tau$. For significance we test the continuous scores --
-Mann--Whitney $U$~\cite{mann1947test} (sex, race) with $r_{rb}$ and
-Kruskal--Wallis~\cite{kruskal1952ranks} (age) with $\varepsilon^2$, FDR-corrected
-across the attribute~$\times$~metric family~\cite{benjamini1995fdr} -- backed by
-BCa bootstrap CIs on each DIR, an OLS of macro Dice on sex, race, and age jointly
-(adjusting the age--race entanglement of ``\nameref{sec:confounders}''), and
-permutation checks. These continuous tests are our \emph{primary} instrument: in
-this high-overlap regime (macro Dice ${\approx}0.89$) success rates sit near the
-ceiling and DIR is near-degenerate, so the rank tests carry more power.
+For class $c$ on exam $i$, $\mathrm{Dice} = 2\,\mathrm{TP} / (2\,\mathrm{TP} +
+\mathrm{FP} + \mathrm{FN})$. Because its false-positive penalty is not scaled by
+structure size -- the volume bias of ``\nameref{sec:confounders}'' -- we also report the
+normalised Dice score (nDSC)~\cite{raina2023ndsc}, which rescales that term to the
+dataset-mean volume (recovering Dice when a class is already average-sized), and HD95
+(mm; lower better)~\cite{taha2015metrics}; all three are reported per class and
+macro-averaged. For group disparities we use the binarized, rate-based metrics canonical
+in this literature~\cite{parikh2025labelbias,bird2020fairlearn,eeoc1978uniform}: an exam
+\emph{succeeds} when its score clears $\tau$ ($0.8$ for Dice/nDSC, $5$\,mm for HD95),
+giving per-group success rates whose spread (DPD) and ratio (DIR, ${<}0.8$ flags adverse
+impact) we read off a $\tau$-sweep. For significance we test the continuous scores --
+Mann--Whitney~\cite{mann1947test} (sex, race) and Kruskal--Wallis~\cite{kruskal1952ranks}
+(age) with rank-based effect sizes, FDR-corrected across the attribute$\times$metric
+family~\cite{benjamini1995fdr} -- backed by bootstrap DIR intervals, a joint OLS on
+$\mathcal{A}$, and permutation checks. These continuous tests are our \emph{primary}
+instrument: at macro Dice ${\approx}0.89$ success rates sit near the ceiling and DIR is
+near-degenerate, so the rank tests carry more power.
 
-\paragraph{Experimental design (E1--E4).}
+\paragraph{Experimental design (E1--E2).}
 \label{sec:design}
-\autoref{tab:experiments} lays out four experiments. E1 audits the deployed
-$M_{\mathrm{mix}}$ on the full $228$-case test set, each exam scored against its own
-label. E2--E4 share a common surface -- the $76$ gold-labelled test cases scored
-against expert labels -- so any difference among them is attributable to the ruler
-or the training labels, not the data. E2 needs two references for the same images,
-but CSpineSeg gives gold or silver, never both; we generate the second by running
-$M_{\mathrm{gold}}$ (trained only on our gold split, hence blind to these $76$) and
-taking its predictions as the silver ruler -- mirroring how Zhou et al.\ produced
-the dataset's silver labels~\cite{zhou2025cspineseg}, whose model we cannot reuse
-(private weights, and a split that may overlap our test cases). Scoring
-$M_{\mathrm{mix}}$'s \emph{same} predictions against the gold ruler and the
-generated-silver ruler isolates the pure ruler effect. E3
-($M_{\mathrm{gold}}$ vs.\ $M_{\mathrm{silver}}$) and E4 ($M_{\mathrm{mix}}$ vs.\
-$M_{\mathrm{gold}}$) instead vary the training labels, testing whether silver
-supervision amplifies bias or whether mixing it in harms fairness. Every experiment
-applies the full metric and inference battery to every attribute in $\mathcal{A}$.
-
-\begin{table}[t]
-\centering
-\caption{The four experiments. E1 is the global audit on the full test set; E2--E4
-share the same $76$-case gold test set and expert reference labels, so differences
-across them are attributable to the ruler or the training labels alone.}
-\label{tab:experiments}
-\small
-\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l l l l l}
-\hline\noalign{\smallskip}
- & Question & Model(s) & Test set & Ruler \\
-\noalign{\smallskip}\hline\noalign{\smallskip}
-E1 & Is the deployed model fair? & $M_{\mathrm{mix}}$ & 228 (full) & mixed \\
-E2 & Does the ruler distort the verdict? & $M_{\mathrm{mix}}$ & 76 (gold) & gold vs.\ gen.\ silver \\
-E3 & Does silver training amplify bias? & $M_{\mathrm{gold}}$ vs.\ $M_{\mathrm{silver}}$ & 76 (gold) & gold \\
-E4 & Does mixing silver hurt fairness? & $M_{\mathrm{mix}}$ vs.\ $M_{\mathrm{gold}}$ & 76 (gold) & gold \\
-\noalign{\smallskip}\hline
-\end{tabular*}
-\end{table}
-
-\paragraph{Encoder probing.}
-\label{sec:probing_method}
-The audit measures outputs, not representations, and encoding a protected attribute
-need not produce a disparity~\cite{petersen2023feature}. We probe two frozen
-encoders -- $M_{\mathrm{mix}}$'s 3D bottleneck ($320$-d) and the task-agnostic
-MRI-CORE~\cite{dong2025mricore} (a ViT-B DINOv2-pretrained on ${\sim}110{,}000$ Duke
-MRI volumes, cervical spine excluded, $768$-d) -- with PCA($50$) and
-$\ell_2$-regularised logistic regression in five-fold cross-validation (AUROC or
-balanced accuracy), each against a random-init null of identical architecture so
-the trained-minus-null gap isolates learned signal from pixel-level confounds.
+Two experiments isolate where label provenance acts; each applies the full battery to
+every attribute in $\mathcal{A}$. \textbf{E1} asks whether the deployed model is fair:
+it audits $M_{\mathrm{mix}}$ on the full $228$-case test set against the dataset's own
+(mixed) labels. \textbf{E2} asks whether the \emph{reference} distorts that verdict, on
+the $76$ gold test cases scored against expert labels: it needs two references per image,
+but CSpineSeg gives only one, so we generate the second as $M_{\mathrm{gold}}$'s
+predictions (it never saw these $76$), mirroring how Zhou et al.\ produced the dataset's
+silver labels~\cite{zhou2025cspineseg}, and score $M_{\mathrm{mix}}$'s \emph{same}
+predictions against both the gold and this generated-silver ruler to isolate the pure
+ruler effect.

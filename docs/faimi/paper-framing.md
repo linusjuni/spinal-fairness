@@ -208,6 +208,55 @@ result Aasa is escalating to the dataset authors. The paper already reports it
 prominently** — it generalizes beyond fairness to anyone validating on this
 dataset, which widens the audience.
 
+#### Aasa's letter to the CSpineSeg authors (2026-06-28) — mechanism is *leakage*
+
+After Linus's group presentation, Aasa wrote to Evan et al. stating the mechanism
+precisely, and we now **follow this story entirely**:
+
+- Cause of the offset is **label leakage**: the dataset's silver labels were generated
+  by a model trained on its gold labels, so silver "already carries information about
+  the human-labelled images." Any new model trained (partly) on the same gold labels
+  then agrees more with the silver labels than with truth — *"the outputs of two models
+  trained on (in part) the same data are likely to be more similar to each other than to
+  the underlying true or human-labelled segmentations."*
+- Her headline to the authors is the **offset, not the age dependency** (she explicitly
+  says the age trend "looks similar across label types" — matching our both-rulers
+  finding — and that the *interesting* thing is the performance offset). So in the
+  paper the **offset/overestimation gets co-equal-or-leading billing** with the
+  false-confidence verdict-flip.
+- Her fix: **report on gold (expert) test labels**, which presupposes users know which
+  labels are which. Now recommendation **(1)** in `discussion.tex`.
+- She wants to publish the warning **with** the dataset authors — external traction, and
+  confirmation that the leakage angle is the load-bearing contribution.
+
+**Mechanism resolution (was ambiguous, now settled).** The decision note
+[`../fairness/biased-ruler-silver-source.md`](../fairness/biased-ruler-silver-source.md)
+had two co-equal hypotheses: H1 (leakage / correlated errors) and H2 (task simplicity).
+Aasa's letter resolves this: **H1/leakage is primary; H2/task simplicity is a compounding
+amplifier.** This corrected a real internal inconsistency — `experiments.tex` already said
+"leakage," but `discussion.tex` had attributed the offset to "the inherent simplicity of
+the task" with a footnote claiming the $M_{\text{gold}}$/$M_{\text{silver}}$ disjoint-data
+agreement proved it was "a property of the task, not the training overlap." That inference
+was wrong: the images are disjoint but $M_{\text{silver}}$'s *labels* are downstream of
+gold, so that 0.97 agreement is **evidence for** pervasive label leakage, not against it.
+The footnote is removed and folded into the main text as exactly that evidence.
+
+#### Status of the reframe (2026-06-28)
+
+Done in `submission/`: `experiments.tex` (E2 retitled "Performance Inflation and False
+Confidence"; leakage mechanism named), `discussion.tex` (leakage-primary "Two modes" para;
+report-against-gold added as recommendation 1), and the three previously-skeleton sections
+now **drafted leakage-forward** — `abstract.tex`, `introduction.tex` (contributions list
+filled: #2 = leakage/overestimation, #3 = false-confidence mode), `conclusion.tex`.
+
+**8pp scope cut (round 3):** the **E3/E4 amplification thread was removed** as the
+least-Aasa-supporting content (see `content-cut-from-paper.md`). The submission is now
+audit (E1) + biased-ruler/leakage (E2); contribution #4 (boundary condition on
+amplification) is gone, leaving 4 contributions. `M_silver` is retained only as leakage
+evidence. Amplification is reinstatable from `paper/` for a longer venue — **flag to
+Aditya**, whose boundary-condition result this was.
+Still pending: anonymize `main.tex`; rebuild + check 8pp budget (no local LaTeX toolchain).
+
 ---
 
 ## Risk to shore up before writing the story

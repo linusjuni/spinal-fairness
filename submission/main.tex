@@ -53,19 +53,26 @@
 % If the paper title is too long for the running head, you can set
 % an abbreviated paper title here
 %
-% !! ANONYMIZE FOR REVIEW (FAIMI is double-blind). For submission, replace the
-% author/institute block below with anonymous placeholders and strip any
-% self-identifying phrasing in the body (e.g. "our prior work"). De-anonymize only
-% for camera-ready / arXiv. See docs/faimi/submission-requirements.md.
-\author{Linus Juni \and Aasa Feragen \and Aditya Parikh}
+% =============================================================================
+% DOUBLE-BLIND: anonymized for FAIMI review. To DE-ANONYMIZE for camera-ready /
+% arXiv, delete the anonymous block below and uncomment the original block.
+% See docs/faimi/submission-requirements.md.
 %
-\authorrunning{L. Juni et al.}
-% First names are abbreviated in the running head.
-% If there are more than two authors, 'et al.' is used.
+% --- ORIGINAL (de-anonymized) block -- uncomment for camera-ready / arXiv: ---
+% \author{Linus Juni \and Aasa Feragen \and Aditya Parikh}
+% \authorrunning{L. Juni et al.}
+% \institute{Section for Visual Computing, DTU Compute,\\
+% Technical University of Denmark, Kongens Lyngby, Denmark\\
+% \email{\{s225224, afhar, adipa\}@dtu.dk}}
+% -----------------------------------------------------------------------------
 %
-\institute{Section for Visual Computing, DTU Compute,\\
-Technical University of Denmark, Kongens Lyngby, Denmark\\
-\email{\{s225224, afhar, adipa\}@dtu.dk}}
+% --- ANONYMOUS block (for review): -------------------------------------------
+\author{Anonymous}
+%
+\authorrunning{Anonymous}
+%
+\institute{Anonymous Institution\\
+\email{anonymous@example.com}}
 
 \maketitle              % typeset the header of the contribution
 %
@@ -83,6 +90,7 @@ Technical University of Denmark, Kongens Lyngby, Denmark\\
 % BibTeX users should specify bibliography style 'splncs04'.
 % References will then be sorted and formatted in the correct style.
 %
+\newpage
 \bibliographystyle{splncs04}
 \bibliography{mybibliography}
 %

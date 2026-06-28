@@ -1,63 +1,54 @@
 % =============================================================================
 % INTRODUCTION + (folded) RELATED WORK   --   target ~1.25 pp incl. contributions
-% No standalone Related Work section at 8 pp: fold positioning into the para below.
+% No standalone Related Work section at 8 pp: positioning folded into para 4.
+% Framing: lineage-first (Parikh et al.), leakage-forward findings (Aasa's story):
+% contribution 2 is the ~8-pt leakage/overestimation; contribution 3 is the
+% fairness-specific false-confidence mode that the same leakage produces.
 % =============================================================================
 \section{Introduction}
 
-% --- Para 1: Motivation -------------------------------------------------------
-% Automated cervical-spine segmentation (VB + discs) guides stenosis grading /
-% degeneration tracking. If it works worse per group (sex/race/age) it worsens
-% existing spine-care disparities. EU AI Act -> bias audits are a deployment
-% precondition, not optional. Keep tight (3-4 sentences).
+Automated segmentation of the cervical spine -- labelling the vertebral bodies and
+intervertebral discs on MRI -- helps clinicians grade stenosis and track degeneration
+over time~\cite{kato2012cervical}. A model that works less well for some patient groups
+than for others would quietly widen existing gaps in spine care, and bias audits are
+increasingly required before clinical use, not an optional extra. Yet no demographic
+fairness audit exists for this anatomy.
 
-% --- Para 2: Why segmentation fairness is hard (sets up the ruler) ------------
-% (i) output is millions of voxels, not one decision -> must reduce to a scalar
-%     (Dice/HD95), and that reduction is itself volume-biased when anatomy differs
-%     by group. (ii) annotations are expensive + subjective -> datasets MIX expert
-%     (gold) and machine (silver) labels. If silver carries bias, the *reference*
-%     used to judge fairness is unreliable.
+Auditing a segmentation model is harder than auditing a classifier. Its output is
+millions of voxels rather than a single decision, so fairness has to be reduced to one
+score (Dice, HD95) -- and that score is itself biased by structure size when anatomy
+differs between groups, because the same boundary error counts for less on a larger
+structure. Expert annotation is also costly, so datasets increasingly mix a few expert
+(gold) labels with many machine-generated (silver) ones. If the silver labels are
+flawed, the reference used to judge a model is itself unreliable.
 
-% --- Para 3: LINEAGE -- credit the biased ruler to Parikh et al. --------------
-% State plainly: Parikh et al. [parikh2025labelbias] introduced the "biased ruler"
-% effect for segmentation in breast MRI -- a biased silver reference can INFLATE
-% apparent disparity ("false magnitude"), and training on silver can AMPLIFY bias.
-% This is the framework we EXTEND; we do not claim the effect.
+Parikh et al.~\cite{parikh2025labelbias} introduced this ``biased ruler'' effect for
+segmentation in breast MRI: a biased silver reference can \emph{inflate} apparent
+disparity (``false magnitude''). We do not claim this effect; we take their
+framework~\cite{parikh2025labelbias,parikh2025whofails} to a new anatomy and find a
+second way it can mislead.
 
-% --- Para 4: Folded related-work / positioning (4-5 sentences) ----------------
-% FairMedFM [jin2024fairmedfm]: only prior spine fairness entry (SPIDER, lumbar),
-%   sex-only, no volume correction. Tian/FairSeg [tian2024fairseg]: first seg
-%   fairness dataset (ophthalmology). Puyol-Anton (cardiac), Danaee (brain) -- not
-%   spine. Gichoya [gichoya2022reading]: race readable from images (we revisit via
-%   probe). Petersen [petersen2023feature]: encoding != disparity. Gap: no fairness
-%   audit of cervical-spine MRI seg across multiple axes; no test of whether label
-%   provenance (train OR eval) flips verdicts in this anatomy.
+Fairness in segmentation is much less studied than in classification. The only prior
+spine fairness study, FairMedFM~\cite{jin2024fairmedfm}, covers the lumbar spine, sex
+only, and uses no volume correction; FairSeg~\cite{tian2024fairseg} is in ophthalmology.
+None audit cervical-spine MRI across several protected attributes, and none ask whether
+where the labels come from -- for training or for evaluation -- can by itself flip a
+fairness verdict here.
 
-% --- Contributions (REFRAMED: lineage-first, then 5 findings) -----------------
-% Lead-in sentence MUST credit lineage, e.g.:
-%   "Building on the biased-ruler framework of Parikh et al. [parikh2025labelbias,
-%    parikh2025whofails], we present the first demographic fairness audit of
-%    cervical-spine MRI segmentation (CSpineSeg, 1,254 exams) and ..."
-\smallskip\noindent\textbf{Contributions.}\enspace
-\begin{enumerate}
-  % 1. (HOOK) First fairness audit of cervical-spine MRI seg across sex/race/age;
-  %    model is fair by every standard metric.
-  \item % ...
-  % 2. (HEADLINE) A COMPLEMENTARY MODE of Parikh et al.'s biased ruler: swapping
-  %    expert -> machine reference flips AGE from non-sig to sig, NOT by inflating
-  %    the gap (their "false magnitude") but by collapsing within-group variance
-  %    ("false confidence"). Mode depends on whether the silver ruler is
-  %    independently biased (theirs) or correlated with the model (ours).
-  \item % ...
-  % 3. (SUPPORT / leakage angle -- Aasa) Same mechanism inflates RAW performance
-  %    ~8 Dice pts (gold vs silver ruler, identical predictions) -> affects any
-  %    user of a mixed-label dataset, not just fairness auditors.
-  \item % ...
-  % 4. (BOUNDARY CONDITION) Training on silver does NOT amplify bias here, unlike
-  %    the +66% amplification Parikh et al. report in breast MRI; and encoding !=
-  %    disparity (sex strongly encoded, zero gap).
-  \item % ...
-  % 5. (ACTIONABLE) A diagnostic for an over-correlated ruler: scores much higher
-  %    AND much tighter vs the ruler than vs expert labels (~4x variance collapse)
-  %    => ruler too close to the model to be an independent benchmark.
-  \item % ...
-\end{enumerate}
+\smallskip\noindent\textbf{Contributions.}\enspace Building on the biased-ruler
+framework of Parikh et al.~\cite{parikh2025labelbias,parikh2025whofails}, we contribute:
+(1)~the \textbf{first demographic fairness audit of cervical-spine MRI segmentation}
+(CSpineSeg, $1{,}254$ exams) across sex, race, and age, on which the deployed model is
+fair by every standard metric; (2)~evidence that a dataset's machine-generated labels
+\textbf{leak information from the expert labels they were derived from}, so scoring
+identical predictions against silver rather than expert labels \textbf{overestimates
+performance by ${\sim}8$ Dice points} -- which affects \emph{any} user who validates on
+such a dataset, not only fairness auditors; (3)~a \textbf{complementary mode of the
+biased-ruler effect} from that same leakage -- the machine ruler flips age from
+non-significant to significant not by widening the gap (Parikh et al.'s \emph{false
+magnitude}) but by collapsing within-group variance (\emph{false confidence}); which mode
+shows up depends on whether the silver ruler is independently biased (theirs) or a
+near-copy of the model (ours); and (4)~\textbf{practitioner guidance} -- report
+performance and fairness against expert labels, and treat a reference that scores both
+much higher and much more tightly than experts (${\sim}4\times$ variance collapse) as too
+close to the model to be an independent benchmark.
